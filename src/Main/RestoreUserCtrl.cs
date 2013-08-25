@@ -17,57 +17,53 @@ namespace steamBackup
             InitializeComponent();
         }
 
-        Main mainForm = new Main();
-        Utilities utilities = new Utilities();
-        string steamDir;
-        string backupDir;
-        public bool canceled = true;
+        public RestoreTask restoreTask = new RestoreTask();
 
-        public int threads = 1;
-        public List<Item> List;
+        public bool canceled = true;
 
         private void RestoreUserCtrl_Load(object sender, EventArgs e)
         {
-            steamDir = Settings.steamDir;
-            backupDir = Settings.backupDir;
-
             tbarThread.Value = Settings.threadsRest;
+            restoreTask.threadCount = Settings.threadsRest;
             threadText();
 
             btnRestAll.Enabled = false;
 
-            utilities.scanBackup(steamDir, backupDir);
-            popCheckBoxList();
-            popLibDropBox();
+            restoreTask.steamDir = Settings.steamDir;
+            restoreTask.backupDir = Settings.backupDir;
+
+            restoreTask.scan();
+            updCheckBoxList();
+            updLibDropBox();
         }
 
         private void RestoreUserCtrl_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Settings.threadsRest = tbarThread.Value;
+            Settings.threadsRest = restoreTask.threadCount;
             Settings.save();
         }
 
-        private void popCheckBoxList()
+        private void updCheckBoxList()
         {
             chkList.BeginUpdate();
             chkList.Items.Clear();
-            foreach (Item item in utilities.List)
+            foreach (Job item in restoreTask.list)
             {
                 chkList.Items.Add(item.name, item.enabled);
             }
             chkList.EndUpdate();
         }
 
-        private void popLibDropBox()
+        private void updLibDropBox()
         {
             dboxLibList.Items.Clear();
-            dboxLibList.Items.AddRange(utilities.getLibraries(steamDir));
+            dboxLibList.Items.AddRange(Utilities.getLibraries(Settings.steamDir));
         }
 
         private void lblRefreshList_Click(object sender, EventArgs e)
         {
-                popLibDropBox();
-                dboxLibListUpd();
+            updLibDropBox();
+            dboxLibListUpd();
         }
 
         private void chkList_SelectedIndexChanged(object sender, EventArgs e)
@@ -80,7 +76,7 @@ namespace steamBackup
 
             if (chkList.SelectedItem != null)
             {
-                foreach (Item item in utilities.List)
+                foreach (Job item in restoreTask.list)
                 {
                     if (item.name.Equals(chkList.SelectedItem.ToString()))
                     {
@@ -95,7 +91,7 @@ namespace steamBackup
 
                         if (!item.name.Equals(Settings.sourceEngineGames))
                         {
-                            dboxLibList.SelectedItem = utilities.upDirLvl(item.dirSteam);
+                            dboxLibList.SelectedItem = Utilities.upDirLvl(item.dirSteam);
                         }
                         else
                         {
@@ -108,7 +104,7 @@ namespace steamBackup
 
         private void dboxLibList_SelectedValueChanged(object sender, EventArgs e)
         {
-            foreach (Item item in utilities.List)
+            foreach (Job item in restoreTask.list)
             {
                 if (item.name.Equals(chkList.SelectedItem.ToString()))
                 {
@@ -123,8 +119,8 @@ namespace steamBackup
             btnRestAll.Enabled = false;
             btnRestNone.Enabled = true;
 
-            utilities.setEnableAll();
-            popCheckBoxList();
+            restoreTask.setEnableAll();
+            updCheckBoxList();
         }
 
         private void btnRestNone_Click(object sender, EventArgs e)
@@ -132,14 +128,13 @@ namespace steamBackup
             btnRestNone.Enabled = false;
             btnRestAll.Enabled = true;
 
-            utilities.setEnableNone();
-            popCheckBoxList();
+            restoreTask.setEnableNone();
+            updCheckBoxList();
         }
 
         private void btnStartRest_Click(object sender, EventArgs e)
         {
-            Process[] pname = Process.GetProcessesByName("Steam");
-            if (pname.Length != 0 && Settings.checkSteamRun)
+            if (Utilities.isSteamRunning())
             {
                 MessageBox.Show("Please exit Steam before restoring. To continue, exit Steam and then click the 'Start Restore' button again. Do Not start Steam untill the restore process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
@@ -147,10 +142,7 @@ namespace steamBackup
             {
                 canceled = false;
 
-                utilities.setupRestore(chkList, steamDir, backupDir);
-
-                threads = tbarThread.Value;
-                List = utilities.List;
+                restoreTask.setupRestore(chkList);
 
                 this.Close();
             }
@@ -171,6 +163,11 @@ namespace steamBackup
         private void threadText() 
         {
             lblThread.Text = "Number Of Instances:\r\n" + tbarThread.Value.ToString();
+        }
+
+        public Task getTask()
+        {
+            return restoreTask;
         }
 
         private void controls_MouseLeave(object sender, EventArgs e)

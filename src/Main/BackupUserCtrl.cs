@@ -17,47 +17,44 @@ namespace steamBackup
             InitializeComponent();
         }
 
-        Utilities utilities = new Utilities();
-        string steamDir;
-        string backupDir;
+        public BackupTask backupTask = new BackupTask();
+        
         public bool canceled = true;
-
-        public int threads = 1;
-        public List<Item> List;
-
         bool updCheck = false;
 
         private void BackupUserCtrl_Load(object sender, EventArgs e)
         {
 
-            steamDir = Settings.steamDir;
-            backupDir = Settings.backupDir;
-
             tbarThread.Value = Settings.threadsBup;
+            backupTask.threadCount = Settings.threadsBup;
             threadText();
+
             tbarComp.Value = Settings.compresion;
+            backupTask.compresionLevel = Settings.compresion;
             compresionText();
+
             ramUsage();
 
-            utilities.List.Clear();
-            utilities.scanMisc(steamDir, backupDir);
-            utilities.scanSteamAcf(steamDir, backupDir);
-            utilities.scanSteamLostCommonFolders(steamDir, backupDir);
-            popCheckBoxList();
+            backupTask.steamDir = Settings.steamDir;
+            backupTask.backupDir = Settings.backupDir;
+
+            backupTask.list.Clear();
+            backupTask.scan();
+            updCheckBoxList();
         }
 
         private void BackupUserCtrl_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Settings.compresion = tbarComp.Value;
-            Settings.threadsBup = tbarThread.Value;
+            Settings.compresion = backupTask.compresionLevel;
+            Settings.threadsBup = backupTask.threadCount;
             Settings.save();
         }
 
-        private void popCheckBoxList()
+        private void updCheckBoxList()
         {
             chkList.BeginUpdate();
             chkList.Items.Clear();
-            foreach (Item item in utilities.List)
+            foreach (Job item in backupTask.list)
             {
                 chkList.Items.Add(item.name, item.enabled);
             }
@@ -69,8 +66,8 @@ namespace steamBackup
             cBoxDelBup.Enabled = true;
             cBoxDelBup.Checked = false;
 
-            utilities.setEnableAll();
-            popCheckBoxList();
+            backupTask.setEnableAll();
+            updCheckBoxList();
         }
 
         private void btnBupNone_Click(object sender, EventArgs e)
@@ -78,18 +75,20 @@ namespace steamBackup
             cBoxDelBup.Enabled = true;
             cBoxDelBup.Checked = false;
 
-            utilities.setEnableNone();
-            popCheckBoxList();
+            backupTask.setEnableNone();
+            updCheckBoxList();
         }
 
         private void btnBupUpd_Click(object sender, EventArgs e)
         {
+            // TODO make this faster
+            
             cBoxDelBup.Enabled = false;
             cBoxDelBup.Checked = false;
 
             if (updCheck)
             {
-                foreach (Item item in utilities.List)
+                foreach (Job item in backupTask.list)
                 {
                     if (item.folderTime > item.archiveTime)
                         item.enabled = true;
@@ -97,13 +96,13 @@ namespace steamBackup
                         item.enabled = false;
                 }
                 
-                popCheckBoxList();
+                updCheckBoxList();
             }
             else
             {
                 this.Cursor = Cursors.WaitCursor;
                 chkList.Items.Clear();
-                foreach (Item item in utilities.List)
+                foreach (Job item in backupTask.list)
                 {
                     if (!item.name.Equals(Settings.sourceEngineGames))
                     {
@@ -151,8 +150,7 @@ namespace steamBackup
 
         private void btnStartBup_Click(object sender, EventArgs e)
         {
-            Process[] pname = Process.GetProcessesByName("Steam");
-            if (pname.Length != 0 && Settings.checkSteamRun)
+            if (Utilities.isSteamRunning())
             {
                 MessageBox.Show("Please exit Steam before backing up. To continue, exit Steam and then click the 'Backup' button again. Do Not start Steam untill the backup process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
@@ -160,10 +158,7 @@ namespace steamBackup
             {
                 canceled = false;
 
-                utilities.setupBackup(chkList, tbarComp, steamDir, backupDir, cBoxDelBup.Checked);
-
-                threads = tbarThread.Value;
-                List = utilities.List;
+                backupTask.setupBackup(chkList);
 
                 this.Close();
             }
@@ -178,18 +173,22 @@ namespace steamBackup
 
         private void tbarThread_Scroll(object sender, EventArgs e)
         {
+            backupTask.threadCount = tbarThread.Value;
+
             threadText();
-            
+
             ramUsage();
         }
 
-        private void threadText() 
+        private void threadText()
         {
             lblThread.Text = "Number Of Instances:\r\n" + tbarThread.Value.ToString();
         }
 
         private void tbarComp_Scroll(object sender, EventArgs e)
         {
+            backupTask.compresionLevel = tbarComp.Value;
+            
             compresionText();
 
             ramUsage();
@@ -197,45 +196,31 @@ namespace steamBackup
 
         private void compresionText()
         {
-            if (tbarComp.Value == 6)
+            if (backupTask.compresionLevel == 6)
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "Ultra";
-            else if (tbarComp.Value == 5)
+            else if (backupTask.compresionLevel == 5)
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "Maximum";
-            else if (tbarComp.Value == 4)
+            else if (backupTask.compresionLevel == 4)
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "Normal";
-            else if (tbarComp.Value == 3)
+            else if (backupTask.compresionLevel == 3)
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "Fast";
-            else if (tbarComp.Value == 2)
+            else if (backupTask.compresionLevel == 2)
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "Fastest";
-            else if (tbarComp.Value == 1)
+            else if (backupTask.compresionLevel == 1)
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "Copy";
             else
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "N/A";
         }
 
-        public void ramUsage()
+        private void ramUsage()
         {
-            int ramPerThread = 0;
+            int ram = backupTask.ramUsage();
 
-            if (tbarComp.Value == 6)
-                ramPerThread = 709;
-            else if (tbarComp.Value == 5)
-                ramPerThread = 376;
-            else if (tbarComp.Value == 4)
-                ramPerThread = 192;
-            else if (tbarComp.Value == 3)
-                ramPerThread = 19;
-            else if (tbarComp.Value == 2)
-                ramPerThread = 6;
-            else if (tbarComp.Value == 1)
-                ramPerThread = 1;
+            lblRamBackup.Text = "Max Ram Usage: " + ram.ToString() + "MB";
 
-            int ramBackup = (tbarThread.Value + 1) * ramPerThread;
-            lblRamBackup.Text = "Max Ram Usage: " + ramBackup.ToString() + "MB";
-
-            if (ramBackup >= 1500)
+            if (ram >= 1500)
                 lblRamBackup.ForeColor = Color.Red;
-            else if (ramBackup >= 750)
+            else if (ram >= 750)
                 lblRamBackup.ForeColor = Color.Orange;
             else
                 lblRamBackup.ForeColor = Color.Black;
@@ -247,6 +232,13 @@ namespace steamBackup
                 cBoxDelBup.ForeColor = Color.Red;
             else
                 cBoxDelBup.ForeColor = Color.Black;
+
+            backupTask.deleteAll = cBoxDelBup.Checked;
+        }
+
+        public Task getTask()
+        {
+            return backupTask;
         }
 
         private void controls_MouseLeave(object sender, EventArgs e)
@@ -298,6 +290,5 @@ namespace steamBackup
         {
             infoBox.Text = "Click to select all games that have been changed since the last backup. The selection can be modified in the check box list.";
         }
-        
     }
 }

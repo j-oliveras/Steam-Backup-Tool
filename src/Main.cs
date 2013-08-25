@@ -48,7 +48,7 @@ namespace steamBackup
         bool isBackup;
         string errorList = null;
 
-        List<Item> List;
+        Task task = null;
         int numThreads;
 
         private void main_FormClosing(object sender, FormClosingEventArgs e)
@@ -130,64 +130,19 @@ namespace steamBackup
                 if (backupUserCtrl.canceled)
                     return;
 
-                startBackup(backupUserCtrl.List, backupUserCtrl.threads);
+                if (!Directory.Exists(tbxBackupDir.Text.ToString()))
+                {
+                    Directory.CreateDirectory(tbxBackupDir.Text.ToString());
+                    while (!Directory.Exists(tbxBackupDir.Text.ToString()))
+                        Thread.Sleep(10);
+                }
+                isBackup = true;
+                
+                task = backupUserCtrl.getTask();
+                start();
 
             }
             pname = null;
-        }
-
-        public void startBackup(List<Item> BackupList, int NumThreads)
-        {
-            jobsToDoCount = 0;
-            jobsToSkipCount = 0;
-            jobsAnalysed = 0;
-            jobsDone = 0;
-            jobsSkiped = 0;
-            jobCount = 0;
-            errorList = null;
-
-            List = BackupList;
-            numThreads = NumThreads;
-
-            foreach (Item item in List)
-            {
-                if(item.enabled)
-                    jobsToDoCount++;
-                else
-                    jobsToSkipCount++;
-            }
-
-            progressBar.Value = 0;
-            progressBar.Maximum = jobsToDoCount;
-            jobCount = jobsToDoCount + jobsToSkipCount;
-
-            if (!Directory.Exists(tbxBackupDir.Text.ToString()))
-            {
-                Directory.CreateDirectory(tbxBackupDir.Text.ToString());
-                while (!Directory.Exists(tbxBackupDir.Text.ToString()))
-                    Thread.Sleep(10);
-            }
-
-            btnBackup.Visible = false;
-            btnRestore.Visible = false;
-
-            btnBrowseSteam.Enabled = false;
-            btnFindSteam.Enabled = false;
-            btnBrowseBackup.Enabled = false;
-            tbxSteamDir.Enabled = false;
-            tbxBackupDir.Enabled = false;
-            
-            lblStarted.Text = "Started: " + DateTime.Now.ToString("H:mm.ss dd/MM/yyyy");
-            cancelJob = false;
-            pauseJob = false;
-            threadDone = 0;
-
-            btnCancel.Visible = true;
-            btnPause.Visible = true;
-            btnShowLog.Visible = true;
-
-            isBackup = true;
-            startThreads();
         }
 
         private void btnRestore_Click(object sender, EventArgs e)
@@ -225,15 +180,17 @@ namespace steamBackup
                 if (restoreUserCtrl.canceled)
                     return;
 
-                startRestore(restoreUserCtrl.List, restoreUserCtrl.threads);
+                isBackup = false;
+
+                task = restoreUserCtrl.getTask();
+                start();
 
             }
             pname = null;
         }
 
-        private void startRestore(List<Item> BackupList, int NumThreads)
+        private void start()
         {
-
             jobsToDoCount = 0;
             jobsToSkipCount = 0;
             jobsAnalysed = 0;
@@ -242,10 +199,9 @@ namespace steamBackup
             jobCount = 0;
             errorList = null;
 
-            List = BackupList;
-            numThreads = NumThreads;
+            numThreads = task.threadCount;
 
-            foreach (Item item in List)
+            foreach (Job item in task.list)
             {
                 if (item.enabled)
                     jobsToDoCount++;
@@ -266,7 +222,7 @@ namespace steamBackup
             tbxSteamDir.Enabled = false;
             tbxBackupDir.Enabled = false;
 
-            lblStarted.Text = "Started: " + DateTime.Now.ToString("dd/MM/yyyy H:mm.ss");
+            lblStarted.Text = "Started: " + DateTime.Now.ToString("H:mm.ss dd/MM/yyyy");
             cancelJob = false;
             pauseJob = false;
             threadDone = 0;
@@ -275,7 +231,6 @@ namespace steamBackup
             btnPause.Visible = true;
             btnShowLog.Visible = true;
 
-            isBackup = false;
             startThreads();
         }
 
@@ -369,12 +324,12 @@ namespace steamBackup
             InstOut[3].Length = 5000;
         }
 
-        private Item getJob()
+        private Job getJob()
         {
-            Item item = null;
+            Job item = null;
             while (jobsAnalysed < jobCount)
             {
-                item = List[jobsAnalysed];
+                item = task.list[jobsAnalysed];
                 jobsAnalysed++;
 
                 if (item.enabled)
@@ -396,7 +351,7 @@ namespace steamBackup
             while (jobsAnalysed < jobCount)
             {
                 Thread.Sleep(100 * thread);
-                Item job = getJob();
+                Job job = getJob();
 
                 if (job == null)
                     break;
@@ -476,7 +431,7 @@ namespace steamBackup
             jobsFinished();
         }
 
-        private void addToErrorList(Item job, int exitCode)
+        private void addToErrorList(Job job, int exitCode)
         {
             if (string.IsNullOrEmpty(errorList))
             {
@@ -577,7 +532,7 @@ namespace steamBackup
             }
         }
 
-        private void copyAcfToBackup(Item job)
+        private void copyAcfToBackup(Job job)
         {
             string[] acfId = job.appId.Split('|');
 
@@ -593,7 +548,7 @@ namespace steamBackup
                 StreamReader reader = fi.OpenText();
 
                 string acf = reader.ReadToEnd().ToString();
-                string gameCommonFolder = upDirLvl(job.dirSteam);
+                string gameCommonFolder = Utilities.upDirLvl(job.dirSteam);
                 acf = acf.Replace(gameCommonFolder, "|DIRECTORY-STD|");
                 acf = acf.Replace(gameCommonFolder.ToLower(), "|DIRECTORY-LOWER|");
                 acf = acf.Replace(gameCommonFolder.ToLower().Replace("\\", "\\\\"), "|DIRECTORY-ESCSLASH-LOWER|");
@@ -603,7 +558,7 @@ namespace steamBackup
             }
         }
 
-        private void copyAcfToRestore(Item job)
+        private void copyAcfToRestore(Job job)
         {
             string[] acfId = job.appId.Split('|');
 
@@ -629,24 +584,13 @@ namespace steamBackup
             }
         }
 
-        private string upDirLvl(string dir)
-        {
-            string[] splits = dir.TrimEnd('\\').Split('\\');
-            string rdir = "";
-
-            for (int i = 0; i < splits.Length - 1; i++)
-            {
-                rdir += splits[i] + "\\"; 
-            }
-
-            return rdir;
-        }
-
         private void jobsFinished()
         {
             threadDone++;
             if (numThreads == threadDone)
             {
+                task = null;
+                
                 btnBrowseSteam.Enabled = true;
                 btnFindSteam.Enabled = true;
                 btnBrowseBackup.Enabled = true;
@@ -683,7 +627,7 @@ namespace steamBackup
                     "Jobs total: " + jobsAnalysed + " of " + jobCount;
         }
 
-        private void checkPause(Item item, int thread)
+        private void checkPause(Job item, int thread)
         {
             if (pauseJob)
             {
@@ -779,7 +723,7 @@ namespace steamBackup
                 int i = 0;
 
                 listView.BeginUpdate();
-                foreach (Item item in List)
+                foreach (Job item in task.list)
                 {
                     i++;
                     listItem = listView.Items.Add(i.ToString());

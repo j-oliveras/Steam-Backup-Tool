@@ -4,7 +4,7 @@ using System.Text;
 
 namespace steamBackup
 {
-    public class Item
+    public class Job
     {
         public string appId;
         public string name;
