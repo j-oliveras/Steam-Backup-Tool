@@ -19,9 +19,6 @@ namespace steamBackup
         public string status;
         public string acfDir;
 
-        public DateTime folderTime;
-        public DateTime archiveTime;
-
         public string toString()
         {
             return "appId = " + appId + Environment.NewLine +
@@ -33,9 +30,7 @@ namespace steamBackup
                 "program = " + program + Environment.NewLine +
                 "argument = " + argument + Environment.NewLine +
                 "status = " + status + Environment.NewLine +
-                "acfDir = " + acfDir + Environment.NewLine +
-                "folderTime = " + folderTime + Environment.NewLine +
-                "archiveTime = " + archiveTime;
+                "acfDir = " + acfDir;
         }
     }
 }

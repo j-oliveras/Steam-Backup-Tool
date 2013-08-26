@@ -13,7 +13,7 @@ namespace steamBackup
     {
         public override int ramUsage()
         {
-            return 0;
+            return threadCount * 40;
         }
 
         public override void scan()
@@ -112,7 +112,7 @@ namespace steamBackup
             }
         }
 
-        public void setupRestore(CheckedListBox chkList)
+        public override void setup(CheckedListBox chkList)
         {
             checkEnabledItems(chkList);
             setArgument();

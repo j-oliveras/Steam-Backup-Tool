@@ -6,6 +6,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Threading;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace steamBackup
 {
@@ -54,15 +55,55 @@ namespace steamBackup
                 return "-mx0";
         }
 
-        public void setEnableUpd()
+        public void setEnableUpd(CheckedListBox chkList)
         {
-            foreach (Job item in list)
-            {
-                if (item.folderTime > item.archiveTime)
-                    item.enabled = true;
+            chkList.Items.Clear();
+            
+            foreach (Job job in list)
+            {  
+                if (job.name.Equals(Settings.sourceEngineGames))
+                {
+                    enableJob(job);
+
+                    chkList.Items.Add(job.name, job.enabled);
+                    chkList.Refresh();
+                }
                 else
-                    item.enabled = false;
-            }
+                {
+                    DateTime achiveDate = new FileInfo(job.dirBackup).LastWriteTimeUtc;
+                    string[] fileList = Directory.GetFiles(job.dirSteam, "*.*", SearchOption.AllDirectories);
+
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+
+                    bool isNewer = false;
+
+                    foreach (string file in fileList)
+                    {
+                        DateTime fileDate = new FileInfo(file).LastWriteTimeUtc;
+
+                        if (fileDate.CompareTo(achiveDate) > 0)
+                        {
+                            isNewer = true;
+
+                            break;
+                        }
+
+                        if (sw.ElapsedMilliseconds > 100)
+                        {
+                            Application.DoEvents();
+                            sw.Restart();
+                        }
+                    }
+
+                    if (isNewer)
+                        enableJob(job);
+                    else
+                        disableJob(job);
+                    chkList.Items.Add(job.name, job.enabled);
+                    chkList.Refresh();
+                }
+            } 
         }
 
         public override void scan()
@@ -72,6 +113,18 @@ namespace steamBackup
             scanMisc();
             scanSteamAcf();
             scanSteamLostCommonFolders();
+        }
+
+        public override void setup(CheckedListBox chkList)
+        {
+            checkEnabledItems(chkList);
+            setArgument();
+
+            // Delete backup if the achive is not being updated (i.e all items are checked)
+            if (deleteAll && Directory.Exists(backupDir))
+                Directory.Delete(backupDir, true);
+
+            makeConfigFile();
         }
 
         private void scanMisc()
@@ -87,9 +140,6 @@ namespace steamBackup
 
             item.program = "7za_cmd.exe";
             item.status = "Waiting";
-
-            item.folderTime = DateTime.UtcNow;
-            item.archiveTime = new DirectoryInfo(item.dirBackup).LastWriteTimeUtc;
 
             if (File.Exists(item.dirBackup))
                 item.alreadyArchived = true;
@@ -360,18 +410,6 @@ namespace steamBackup
                 return false;
 
             return true;
-        }
-
-        public void setupBackup(CheckedListBox chkList)
-        {
-            checkEnabledItems(chkList);
-            setArgument();
-
-            // Delete backup if the achive is not being updated (i.e all items are checked)
-            if (deleteAll && Directory.Exists(backupDir))
-                Directory.Delete(backupDir, true);
-
-            makeConfigFile();
         }
 
         private void setArgument()

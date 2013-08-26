@@ -19,8 +19,22 @@ namespace steamBackup
         public int threadCount = 0;
 
         abstract public int ramUsage();
-
         abstract public void scan();
+        abstract public void setup(CheckedListBox chkList);
+
+        public void enableJob(int id){enableJob(list[id]);}
+        public void enableJob(Job job)
+        {
+            job.enabled = true;
+            job.status = "Waiting";
+        }
+
+        public void disableJob(int id){disableJob(list[id]);}
+        public void disableJob(Job job)
+        {
+            job.enabled = false;
+            job.status = "Skipped";
+        }
 
         protected void checkEnabledItems(CheckedListBox chkList)
         {
@@ -28,19 +42,17 @@ namespace steamBackup
             int i = 0;
             foreach (object o in chkList.Items)
             {
-                foreach (Job item in list)
+                foreach (Job job in list)
                 {
-                    if (o.ToString().Equals(item.name))
+                    if (o.ToString().Equals(job.name))
                     {
                         if (chkList.GetItemChecked(i))
                         {
-                            item.enabled = true;
-                            item.status = "Waiting";
+                            enableJob(job);
                         }
                         else
                         {
-                            item.enabled = false;
-                            item.status = "Skipped";
+                            disableJob(job);
                         }
                         break;
                     }
@@ -53,18 +65,18 @@ namespace steamBackup
         public void setEnableAll()
         {
             // Mark all jobs as enable
-            foreach (Job item in list)
+            foreach (Job job in list)
             {
-                item.enabled = true;
+                enableJob(job);
             }
         }
 
         public void setEnableNone()
         {
             // Mark all jobs as disabled
-            foreach (Job item in list)
+            foreach (Job job in list)
             {
-                item.enabled = false;
+                disableJob(job);
             }
         }
     }

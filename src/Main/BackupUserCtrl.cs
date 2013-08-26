@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-using System.Diagnostics;
 
 namespace steamBackup
 {
@@ -24,7 +23,6 @@ namespace steamBackup
 
         private void BackupUserCtrl_Load(object sender, EventArgs e)
         {
-
             tbarThread.Value = Settings.threadsBup;
             backupTask.threadCount = Settings.threadsBup;
             threadText();
@@ -86,79 +84,24 @@ namespace steamBackup
             cBoxDelBup.Enabled = false;
             cBoxDelBup.Checked = false;
 
-            if (updCheck)
-            {
-                foreach (Job item in backupTask.list)
-                {
-                    if (item.folderTime > item.archiveTime)
-                        item.enabled = true;
-                    else
-                        item.enabled = false;
-                }
-                
-                updCheckBoxList();
-            }
-            else
-            {
-                this.Cursor = Cursors.WaitCursor;
-                chkList.Items.Clear();
-                foreach (Job item in backupTask.list)
-                {
-                    if (!item.name.Equals(Settings.sourceEngineGames))
-                    {
-                        item.folderTime = folderTime(item.dirSteam);
-                        item.archiveTime = new DirectoryInfo(item.dirBackup).LastWriteTimeUtc;
-                    }
-
-                    if (item.folderTime > item.archiveTime)
-                        item.enabled = true;
-                    else
-                        item.enabled = false;
-
-                    chkList.Items.Add(item.name, item.enabled);
-                    chkList.Refresh();
-                }
-                this.Cursor = Cursors.Arrow;
-            }
+            this.Cursor = Cursors.WaitCursor;
+            backupTask.setEnableUpd(chkList);
+            this.Cursor = Cursors.Arrow;
+            
             updCheck = true;
-        }
-
-        private DateTime folderTime(string folder)
-        {
-            DateTime newestDate = new DateTime();
-            string[] files = Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories);
-
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
-            foreach (string file in files)
-            {
-                DateTime fileDate = new FileInfo(file).LastWriteTimeUtc;
-
-                if (fileDate.CompareTo(newestDate) > 0)
-                    newestDate = new FileInfo(file).LastWriteTimeUtc;
-
-                if(sw.ElapsedMilliseconds > 100)
-                {
-                    Application.DoEvents();
-                    sw.Restart();
-                }
-            }
-
-            return newestDate;
         }
 
         private void btnStartBup_Click(object sender, EventArgs e)
         {
             if (Utilities.isSteamRunning())
             {
-                MessageBox.Show("Please exit Steam before backing up. To continue, exit Steam and then click the 'Backup' button again. Do Not start Steam untill the backup process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("Please exit Steam before backing up. To continue, exit Steam and then click the 'Backup' button again. Do Not start Steam until the backup process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else
             {
                 canceled = false;
 
-                backupTask.setupBackup(chkList);
+                backupTask.setup(chkList);
 
                 this.Close();
             }

@@ -136,13 +136,13 @@ namespace steamBackup
         {
             if (Utilities.isSteamRunning())
             {
-                MessageBox.Show("Please exit Steam before restoring. To continue, exit Steam and then click the 'Start Restore' button again. Do Not start Steam untill the restore process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("Please exit Steam before restoring. To continue, exit Steam and then click the 'Start Restore' button again. Do Not start Steam until the restore process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else
             {
                 canceled = false;
 
-                restoreTask.setupRestore(chkList);
+                restoreTask.setup(chkList);
 
                 this.Close();
             }

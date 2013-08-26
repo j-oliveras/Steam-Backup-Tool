@@ -111,7 +111,7 @@ namespace steamBackup
             Process[] pname = Process.GetProcessesByName("Steam");
             if (pname.Length != 0 && Settings.checkSteamRun)
             {
-                MessageBox.Show("Please exit Steam before backing up. To continue, exit Steam and then click the 'Backup' button again. Do Not start Steam untill the backup process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("Please exit Steam before backing up. To continue, exit Steam and then click the 'Backup' button again. Do Not start Steam until the backup process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else
             {
@@ -150,7 +150,7 @@ namespace steamBackup
             Process[] pname = Process.GetProcessesByName("Steam");
             if (pname.Length != 0 && Settings.checkSteamRun)
             {
-                MessageBox.Show("Please exit Steam before restoring. To continue, exit Steam and then click the 'Restore' button again. Do Not start Steam untill the restore process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("Please exit Steam before restoring. To continue, exit Steam and then click the 'Restore' button again. Do Not start Steam until the restore process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else
             {
