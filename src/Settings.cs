@@ -10,17 +10,17 @@ namespace steamBackup
     public static class Settings
     {
 
-        private static string settingsDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\SBT";
+        private static string settingsDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\SteamBackupTool";
 
         public static string steamDir = "Steam Install Directory";
         public static string backupDir = "Backup Directory";
-        public static int compresion = 6;
+        public static int compresion = 5;
         public static int threadsBup = 1;
         public static int threadsRest = 4;
         public static bool checkSteamRun = true;
         public static bool debugMode = false;
 
-        public static string sourceEngineGames = " Source Engine Games Released Before 2009";
+        public static string sourceEngineGames = " Old Source Engine Games";
 
         public static void load()
         {

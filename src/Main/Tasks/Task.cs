@@ -6,8 +6,18 @@ using System.Windows.Forms;
 
 namespace steamBackup
 {
+    public enum TaskType
+    {
+        UNSET = -1,
+        BACKUP,
+        RESTORE
+    }
+    
     public abstract class Task
     {
+        protected TaskType type = TaskType.UNSET;
+        public TaskType getTaskType() { return type; }
+        
         public List<Job> list = new List<Job>();
 
         public const int archiveVer = 2;
@@ -20,46 +30,18 @@ namespace steamBackup
 
         abstract public int ramUsage();
         abstract public void scan();
-        abstract public void setup(CheckedListBox chkList);
+        abstract public void setup();
 
         public void enableJob(int id){enableJob(list[id]);}
         public void enableJob(Job job)
         {
-            job.enabled = true;
-            job.status = "Waiting";
+            job.status = JobStatus.WAITING;
         }
 
         public void disableJob(int id){disableJob(list[id]);}
         public void disableJob(Job job)
         {
-            job.enabled = false;
-            job.status = "Skipped";
-        }
-
-        protected void checkEnabledItems(CheckedListBox chkList)
-        {
-
-            int i = 0;
-            foreach (object o in chkList.Items)
-            {
-                foreach (Job job in list)
-                {
-                    if (o.ToString().Equals(job.name))
-                    {
-                        if (chkList.GetItemChecked(i))
-                        {
-                            enableJob(job);
-                        }
-                        else
-                        {
-                            disableJob(job);
-                        }
-                        break;
-                    }
-                }
-
-                i++;
-            }
+            job.status = JobStatus.SKIPED;
         }
         
         public void setEnableAll()

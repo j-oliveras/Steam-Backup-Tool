@@ -11,6 +11,11 @@ namespace steamBackup
 {
     public class RestoreTask : Task
     {
+        public RestoreTask()
+        {
+            type = TaskType.RESTORE;
+        }
+        
         public override int ramUsage()
         {
             return threadCount * 40;
@@ -25,16 +30,13 @@ namespace steamBackup
             {
                 string name = Path.GetFileNameWithoutExtension(file);
 
-                Job job = new Job();
+                Job job = new RestoreJob();
 
 
                 job.name = name;
-                job.dirSteam = steamDir + "\\steamapps\\common\\";
-                job.dirBackup = backupDir + "\\common\\" + job.name + ".7z";
-                job.enabled = true;
-
-                job.program = "7za_cmd.exe";
-                job.status = "Waiting";
+                job.setSteamDir(steamDir + "\\steamapps\\common\\");
+                job.setBackupDir(backupDir + "\\common\\" + job.name + ".7z");
+                job.status = JobStatus.WAITING;
 
                 list.Add(job);
             }
@@ -97,26 +99,22 @@ namespace steamBackup
                 item.name = textInfo.ToTitleCase(item.name);
 
             // if we are using v2 of the archiver add 'Source Games.7z'
-            if (currentArchiveVer.Equals("2") && File.Exists(backupDir + "\\Source Games.7z"))
+            if (currentArchiveVer == 2 && File.Exists(backupDir + "\\Source Games.7z"))
             {
-                Job item = new Job();
+                Job item = new RestoreJob();
 
-                item.dirSteam = steamDir + "\\";
-                item.dirBackup = backupDir + "\\Source Games.7z";
+                item.setSteamDir(steamDir + "\\");
+                item.setBackupDir(backupDir + "\\Source Games.7z");
                 item.name = Settings.sourceEngineGames;
-                item.enabled = true;
-
-                item.program = "7za_cmd.exe";
+                item.status = JobStatus.WAITING;
 
                 list.Insert(0, item);
             }
         }
 
-        public override void setup(CheckedListBox chkList)
+        public override void setup()
         {
-            checkEnabledItems(chkList);
-            setArgument();
-            if (currentArchiveVer.Equals("1"))
+            if (currentArchiveVer == 1)
                 addMiscItems();
         }
 
@@ -124,33 +122,14 @@ namespace steamBackup
         {
             // for legacy backups (version 1)
 
-            Job item = new Job();
+            Job item = new RestoreJob();
 
-            item.dirSteam = backupDir + "\\";
+            item.setBackupDir(backupDir + "\\");
             item.name = "steamapps";
-            item.enabled = true;
-
-            item.program = "7za_cmd.exe";
-            item.argument = "x \"" + item.dirSteam + "\\steamapps.7z\" -o\"" + steamDir + "\\\" -aoa";
+            item.status = JobStatus.WAITING;
 
             list.Insert(0, item);
 
         }
-
-        private void setArgument()
-        {
-            foreach (Job item in list)
-            {
-                if (item.name.Equals(Settings.sourceEngineGames))
-                {
-                    item.argument = "x \"" + item.dirBackup + "\" -o\"" + item.dirSteam + "\" -aoa";
-                }
-                else
-                {
-                    item.argument = "x \"" + item.dirBackup + "\" -o\"" + item.dirSteam + "\" -aoa";
-                }
-            }
-        }
-
     }
 }

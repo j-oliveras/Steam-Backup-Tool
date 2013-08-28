@@ -57,8 +57,8 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>lib\json.net\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SharpZipLib">
-      <HintPath>lib\sharpZip\SharpZipLib.dll</HintPath>
+    <Reference Include="SevenZipSharp">
+      <HintPath>lib\SevenZipSharp\SevenZipSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -83,7 +83,9 @@
     <Compile Include="src\Main\BackupUserCtrl.Designer.cs">
       <DependentUpon>BackupUserCtrl.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\Main\Tasks\Backup\BackupJob.cs" />
     <Compile Include="src\Main\Tasks\Backup\BackupTask.cs" />
+    <Compile Include="src\Main\Tasks\Restore\RestoreJob.cs" />
     <Compile Include="src\Main\Tasks\Restore\RestoreTask.cs" />
     <Compile Include="src\Settings.cs" />
     <Compile Include="src\Main\RestoreUserCtrl.cs">
@@ -139,7 +141,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="rsc\7za_cmd.exe">
+    <Content Include="rsc\7z.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="rsc\flamew.ico" />

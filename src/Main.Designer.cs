@@ -41,15 +41,11 @@
             this.lbl0 = new System.Windows.Forms.Label();
             this.thread0 = new System.ComponentModel.BackgroundWorker();
             this.thread3 = new System.ComponentModel.BackgroundWorker();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.pgsBarAll = new System.Windows.Forms.ProgressBar();
             this.lblProgress = new System.Windows.Forms.Label();
             this.lblStarted = new System.Windows.Forms.Label();
-            this.tBoxInst0Out = new System.Windows.Forms.RichTextBox();
-            this.tBoxInst1Out = new System.Windows.Forms.RichTextBox();
             this.lbl1 = new System.Windows.Forms.Label();
-            this.tBoxInst2Out = new System.Windows.Forms.RichTextBox();
             this.lbl2 = new System.Windows.Forms.Label();
-            this.tBoxInst3Out = new System.Windows.Forms.RichTextBox();
             this.lbl3 = new System.Windows.Forms.Label();
             this.lbl4 = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -65,6 +61,14 @@
             this.cHeadArg = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cHeadAcfId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnPause = new System.Windows.Forms.Button();
+            this.pgsBar1 = new System.Windows.Forms.ProgressBar();
+            this.pgsBar2 = new System.Windows.Forms.ProgressBar();
+            this.pgsBar3 = new System.Windows.Forms.ProgressBar();
+            this.pgsBar0 = new System.Windows.Forms.ProgressBar();
+            this.lbl0Info = new System.Windows.Forms.Label();
+            this.lbl1Info = new System.Windows.Forms.Label();
+            this.lbl2Info = new System.Windows.Forms.Label();
+            this.lbl3Info = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -150,6 +154,7 @@
             // lbl0
             // 
             this.lbl0.AutoSize = true;
+            this.lbl0.BackColor = System.Drawing.Color.Transparent;
             this.lbl0.Location = new System.Drawing.Point(12, 356);
             this.lbl0.Name = "lbl0";
             this.lbl0.Size = new System.Drawing.Size(23, 13);
@@ -164,16 +169,17 @@
             // 
             this.thread3.DoWork += new System.ComponentModel.DoWorkEventHandler(this.thread3_DoWork);
             // 
-            // progressBar
+            // pgsBarAll
             // 
-            this.progressBar.Location = new System.Drawing.Point(15, 279);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(363, 23);
-            this.progressBar.TabIndex = 15;
+            this.pgsBarAll.Location = new System.Drawing.Point(15, 279);
+            this.pgsBarAll.Name = "pgsBarAll";
+            this.pgsBarAll.Size = new System.Drawing.Size(363, 23);
+            this.pgsBarAll.TabIndex = 15;
             // 
             // lblProgress
             // 
             this.lblProgress.AutoSize = true;
+            this.lblProgress.BackColor = System.Drawing.Color.Transparent;
             this.lblProgress.Location = new System.Drawing.Point(23, 305);
             this.lblProgress.Name = "lblProgress";
             this.lblProgress.Size = new System.Drawing.Size(102, 39);
@@ -183,81 +189,37 @@
             // lblStarted
             // 
             this.lblStarted.AutoSize = true;
+            this.lblStarted.BackColor = System.Drawing.Color.Transparent;
             this.lblStarted.Location = new System.Drawing.Point(23, 263);
             this.lblStarted.Name = "lblStarted";
             this.lblStarted.Size = new System.Drawing.Size(51, 13);
             this.lblStarted.TabIndex = 21;
             this.lblStarted.Text = "lblStarted";
             // 
-            // tBoxInst0Out
-            // 
-            this.tBoxInst0Out.BackColor = System.Drawing.Color.White;
-            this.tBoxInst0Out.DetectUrls = false;
-            this.tBoxInst0Out.Location = new System.Drawing.Point(12, 372);
-            this.tBoxInst0Out.Name = "tBoxInst0Out";
-            this.tBoxInst0Out.ReadOnly = true;
-            this.tBoxInst0Out.Size = new System.Drawing.Size(365, 61);
-            this.tBoxInst0Out.TabIndex = 22;
-            this.tBoxInst0Out.Text = "";
-            this.tBoxInst0Out.WordWrap = false;
-            // 
-            // tBoxInst1Out
-            // 
-            this.tBoxInst1Out.BackColor = System.Drawing.Color.White;
-            this.tBoxInst1Out.DetectUrls = false;
-            this.tBoxInst1Out.Location = new System.Drawing.Point(12, 452);
-            this.tBoxInst1Out.Name = "tBoxInst1Out";
-            this.tBoxInst1Out.ReadOnly = true;
-            this.tBoxInst1Out.Size = new System.Drawing.Size(365, 61);
-            this.tBoxInst1Out.TabIndex = 24;
-            this.tBoxInst1Out.Text = "";
-            this.tBoxInst1Out.WordWrap = false;
-            // 
             // lbl1
             // 
             this.lbl1.AutoSize = true;
+            this.lbl1.BackColor = System.Drawing.Color.Transparent;
             this.lbl1.Location = new System.Drawing.Point(12, 436);
             this.lbl1.Name = "lbl1";
             this.lbl1.Size = new System.Drawing.Size(23, 13);
             this.lbl1.TabIndex = 23;
             this.lbl1.Text = "lbl1";
             // 
-            // tBoxInst2Out
-            // 
-            this.tBoxInst2Out.BackColor = System.Drawing.Color.White;
-            this.tBoxInst2Out.DetectUrls = false;
-            this.tBoxInst2Out.Location = new System.Drawing.Point(12, 532);
-            this.tBoxInst2Out.Name = "tBoxInst2Out";
-            this.tBoxInst2Out.ReadOnly = true;
-            this.tBoxInst2Out.Size = new System.Drawing.Size(365, 61);
-            this.tBoxInst2Out.TabIndex = 26;
-            this.tBoxInst2Out.Text = "";
-            this.tBoxInst2Out.WordWrap = false;
-            // 
             // lbl2
             // 
             this.lbl2.AutoSize = true;
+            this.lbl2.BackColor = System.Drawing.Color.Transparent;
             this.lbl2.Location = new System.Drawing.Point(12, 516);
             this.lbl2.Name = "lbl2";
             this.lbl2.Size = new System.Drawing.Size(23, 13);
             this.lbl2.TabIndex = 25;
             this.lbl2.Text = "lbl2";
             // 
-            // tBoxInst3Out
-            // 
-            this.tBoxInst3Out.BackColor = System.Drawing.Color.White;
-            this.tBoxInst3Out.DetectUrls = false;
-            this.tBoxInst3Out.Location = new System.Drawing.Point(12, 612);
-            this.tBoxInst3Out.Name = "tBoxInst3Out";
-            this.tBoxInst3Out.ReadOnly = true;
-            this.tBoxInst3Out.Size = new System.Drawing.Size(365, 61);
-            this.tBoxInst3Out.TabIndex = 28;
-            this.tBoxInst3Out.Text = "";
-            this.tBoxInst3Out.WordWrap = false;
-            // 
             // lbl3
             // 
             this.lbl3.AutoSize = true;
+            this.lbl3.BackColor = System.Drawing.Color.Transparent;
             this.lbl3.Location = new System.Drawing.Point(12, 596);
             this.lbl3.Name = "lbl3";
             this.lbl3.Size = new System.Drawing.Size(23, 13);
@@ -386,6 +348,74 @@
             this.btnPause.Visible = false;
             this.btnPause.Click += new System.EventHandler(this.btnPause_Click);
             // 
+            // pgsBar1
+            // 
+            this.pgsBar1.Location = new System.Drawing.Point(15, 453);
+            this.pgsBar1.Name = "pgsBar1";
+            this.pgsBar1.Size = new System.Drawing.Size(363, 23);
+            this.pgsBar1.TabIndex = 42;
+            // 
+            // pgsBar2
+            // 
+            this.pgsBar2.Location = new System.Drawing.Point(15, 532);
+            this.pgsBar2.Name = "pgsBar2";
+            this.pgsBar2.Size = new System.Drawing.Size(363, 23);
+            this.pgsBar2.TabIndex = 43;
+            // 
+            // pgsBar3
+            // 
+            this.pgsBar3.Location = new System.Drawing.Point(15, 612);
+            this.pgsBar3.Name = "pgsBar3";
+            this.pgsBar3.Size = new System.Drawing.Size(363, 23);
+            this.pgsBar3.TabIndex = 44;
+            // 
+            // pgsBar0
+            // 
+            this.pgsBar0.Location = new System.Drawing.Point(15, 372);
+            this.pgsBar0.Name = "pgsBar0";
+            this.pgsBar0.Size = new System.Drawing.Size(363, 23);
+            this.pgsBar0.TabIndex = 45;
+            // 
+            // lbl0Info
+            // 
+            this.lbl0Info.AutoSize = true;
+            this.lbl0Info.BackColor = System.Drawing.Color.Transparent;
+            this.lbl0Info.Location = new System.Drawing.Point(12, 398);
+            this.lbl0Info.Name = "lbl0Info";
+            this.lbl0Info.Size = new System.Drawing.Size(41, 13);
+            this.lbl0Info.TabIndex = 46;
+            this.lbl0Info.Text = "lbl0Info";
+            // 
+            // lbl1Info
+            // 
+            this.lbl1Info.AutoSize = true;
+            this.lbl1Info.BackColor = System.Drawing.Color.Transparent;
+            this.lbl1Info.Location = new System.Drawing.Point(12, 479);
+            this.lbl1Info.Name = "lbl1Info";
+            this.lbl1Info.Size = new System.Drawing.Size(41, 13);
+            this.lbl1Info.TabIndex = 47;
+            this.lbl1Info.Text = "lbl1Info";
+            // 
+            // lbl2Info
+            // 
+            this.lbl2Info.AutoSize = true;
+            this.lbl2Info.BackColor = System.Drawing.Color.Transparent;
+            this.lbl2Info.Location = new System.Drawing.Point(12, 558);
+            this.lbl2Info.Name = "lbl2Info";
+            this.lbl2Info.Size = new System.Drawing.Size(41, 13);
+            this.lbl2Info.TabIndex = 48;
+            this.lbl2Info.Text = "lbl2Info";
+            // 
+            // lbl3Info
+            // 
+            this.lbl3Info.AutoSize = true;
+            this.lbl3Info.BackColor = System.Drawing.Color.Transparent;
+            this.lbl3Info.Location = new System.Drawing.Point(12, 638);
+            this.lbl3Info.Name = "lbl3Info";
+            this.lbl3Info.Size = new System.Drawing.Size(41, 13);
+            this.lbl3Info.TabIndex = 49;
+            this.lbl3Info.Text = "lbl3Info";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -393,20 +423,24 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(390, 370);
+            this.Controls.Add(this.lbl3Info);
+            this.Controls.Add(this.lbl2Info);
+            this.Controls.Add(this.lbl1Info);
+            this.Controls.Add(this.lbl0Info);
+            this.Controls.Add(this.pgsBar0);
+            this.Controls.Add(this.pgsBar3);
+            this.Controls.Add(this.pgsBar2);
+            this.Controls.Add(this.pgsBar1);
             this.Controls.Add(this.listView);
             this.Controls.Add(this.btnShowLog);
             this.Controls.Add(this.btnFindSteam);
             this.Controls.Add(this.lbl4);
-            this.Controls.Add(this.tBoxInst3Out);
             this.Controls.Add(this.lbl3);
-            this.Controls.Add(this.tBoxInst2Out);
             this.Controls.Add(this.lbl2);
-            this.Controls.Add(this.tBoxInst1Out);
             this.Controls.Add(this.lbl1);
-            this.Controls.Add(this.tBoxInst0Out);
             this.Controls.Add(this.lblStarted);
             this.Controls.Add(this.lblProgress);
-            this.Controls.Add(this.progressBar);
+            this.Controls.Add(this.pgsBarAll);
             this.Controls.Add(this.lbl0);
             this.Controls.Add(this.btnBrowseBackup);
             this.Controls.Add(this.tbxBackupDir);
@@ -443,15 +477,11 @@
         private System.Windows.Forms.Label lbl0;
         private System.ComponentModel.BackgroundWorker thread0;
         private System.ComponentModel.BackgroundWorker thread3;
-        private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.ProgressBar pgsBarAll;
         private System.Windows.Forms.Label lblProgress;
         private System.Windows.Forms.Label lblStarted;
-        private System.Windows.Forms.RichTextBox tBoxInst0Out;
-        private System.Windows.Forms.RichTextBox tBoxInst1Out;
         private System.Windows.Forms.Label lbl1;
-        private System.Windows.Forms.RichTextBox tBoxInst2Out;
         private System.Windows.Forms.Label lbl2;
-        private System.Windows.Forms.RichTextBox tBoxInst3Out;
         private System.Windows.Forms.Label lbl3;
         private System.Windows.Forms.Label lbl4;
         private System.Windows.Forms.Button btnCancel;
@@ -469,6 +499,14 @@
         private System.Windows.Forms.TextBox tbxSteamDir;
         private System.Windows.Forms.TextBox tbxBackupDir;
         private System.Windows.Forms.ColumnHeader cHeadAcfId;
+        private System.Windows.Forms.ProgressBar pgsBar1;
+        private System.Windows.Forms.ProgressBar pgsBar2;
+        private System.Windows.Forms.ProgressBar pgsBar3;
+        private System.Windows.Forms.ProgressBar pgsBar0;
+        private System.Windows.Forms.Label lbl0Info;
+        private System.Windows.Forms.Label lbl1Info;
+        private System.Windows.Forms.Label lbl2Info;
+        private System.Windows.Forms.Label lbl3Info;
     }
 }
 

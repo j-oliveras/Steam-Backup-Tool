@@ -82,7 +82,7 @@ namespace steamBackup
             return rdir;
         }
 
-        static public bool isSteamRunning()
+        public static bool isSteamRunning()
         {
             Process[] pname = Process.GetProcessesByName("Steam");
             if (pname.Length != 0 && Settings.checkSteamRun)

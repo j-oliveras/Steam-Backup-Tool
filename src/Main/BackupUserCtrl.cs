@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using SevenZip;
 
 namespace steamBackup
 {
@@ -23,15 +24,6 @@ namespace steamBackup
 
         private void BackupUserCtrl_Load(object sender, EventArgs e)
         {
-            tbarThread.Value = Settings.threadsBup;
-            backupTask.threadCount = Settings.threadsBup;
-            threadText();
-
-            tbarComp.Value = Settings.compresion;
-            backupTask.compresionLevel = Settings.compresion;
-            compresionText();
-
-            ramUsage();
 
             backupTask.steamDir = Settings.steamDir;
             backupTask.backupDir = Settings.backupDir;
@@ -39,11 +31,21 @@ namespace steamBackup
             backupTask.list.Clear();
             backupTask.scan();
             updCheckBoxList();
+
+            tbarThread.Value = Settings.threadsBup;
+            backupTask.threadCount = Settings.threadsBup;
+            threadText();
+
+            tbarComp.Value = Settings.compresion;
+            backupTask.setCompLevel((CompressionLevel)Settings.compresion);
+            compresionText();
+
+            ramUsage();
         }
 
         private void BackupUserCtrl_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Settings.compresion = backupTask.compresionLevel;
+            Settings.compresion = (int)backupTask.getCompLevel();
             Settings.threadsBup = backupTask.threadCount;
             Settings.save();
         }
@@ -52,9 +54,13 @@ namespace steamBackup
         {
             chkList.BeginUpdate();
             chkList.Items.Clear();
-            foreach (Job item in backupTask.list)
+            foreach (Job job in backupTask.list)
             {
-                chkList.Items.Add(item.name, item.enabled);
+                bool enabled = false;
+                if (job.status == JobStatus.WAITING)
+                    enabled = true;
+
+                chkList.Items.Add(job.name, enabled);
             }
             chkList.EndUpdate();
         }
@@ -78,9 +84,7 @@ namespace steamBackup
         }
 
         private void btnBupUpd_Click(object sender, EventArgs e)
-        {
-            // TODO make this faster
-            
+        {            
             cBoxDelBup.Enabled = false;
             cBoxDelBup.Checked = false;
 
@@ -101,7 +105,7 @@ namespace steamBackup
             {
                 canceled = false;
 
-                backupTask.setup(chkList);
+                backupTask.setup();
 
                 this.Close();
             }
@@ -130,7 +134,7 @@ namespace steamBackup
 
         private void tbarComp_Scroll(object sender, EventArgs e)
         {
-            backupTask.compresionLevel = tbarComp.Value;
+            backupTask.setCompLevel((CompressionLevel)tbarComp.Value);
             
             compresionText();
 
@@ -139,17 +143,17 @@ namespace steamBackup
 
         private void compresionText()
         {
-            if (backupTask.compresionLevel == 6)
+            if ((int)backupTask.getCompLevel() == 5)
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "Ultra";
-            else if (backupTask.compresionLevel == 5)
+            else if ((int)backupTask.getCompLevel() == 4)
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "Maximum";
-            else if (backupTask.compresionLevel == 4)
+            else if ((int)backupTask.getCompLevel() == 3)
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "Normal";
-            else if (backupTask.compresionLevel == 3)
+            else if ((int)backupTask.getCompLevel() == 2)
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "Fast";
-            else if (backupTask.compresionLevel == 2)
+            else if ((int)backupTask.getCompLevel() == 1)
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "Fastest";
-            else if (backupTask.compresionLevel == 1)
+            else if ((int)backupTask.getCompLevel() == 0)
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "Copy";
             else
                 lblComp.Text = "Compression Level:" + Environment.NewLine + "N/A";
@@ -167,6 +171,27 @@ namespace steamBackup
                 lblRamBackup.ForeColor = Color.Orange;
             else
                 lblRamBackup.ForeColor = Color.Black;
+        }
+
+        private void chkList_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            foreach (Job job in backupTask.list)
+            {
+                CheckedListBox chkList = (CheckedListBox)sender;
+
+                if (chkList.Items[e.Index].ToString().Equals(job.name))
+                {
+                    if (e.NewValue == CheckState.Checked)
+                    {
+                        backupTask.enableJob(job);
+                    }
+                    else
+                    {
+                        backupTask.disableJob(job);
+                    }
+                    break;
+                }
+            }
         }
 
         private void cBoxDelBup_CheckedChanged(object sender, EventArgs e)

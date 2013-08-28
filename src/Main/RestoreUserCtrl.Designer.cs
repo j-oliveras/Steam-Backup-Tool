@@ -58,6 +58,7 @@
             this.chkList.Size = new System.Drawing.Size(260, 454);
             this.chkList.Sorted = true;
             this.chkList.TabIndex = 0;
+            this.chkList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkList_ItemCheck);
             this.chkList.SelectedIndexChanged += new System.EventHandler(this.chkList_SelectedIndexChanged);
             this.chkList.MouseLeave += new System.EventHandler(this.controls_MouseLeave);
             this.chkList.MouseHover += new System.EventHandler(this.chkList_MouseHover);

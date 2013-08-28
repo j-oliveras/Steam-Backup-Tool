@@ -7,30 +7,37 @@ using Newtonsoft.Json;
 using System.Threading;
 using System.Globalization;
 using System.Diagnostics;
+using SevenZip;
 
 namespace steamBackup
 {
     public class BackupTask : Task
     {
-        public int compresionLevel = 0;
-
         public bool deleteAll = false;
+
+        protected CompressionLevel compLevel;
+        public CompressionLevel getCompLevel(){return compLevel;}
+
+        public BackupTask()
+        {
+            type = TaskType.BACKUP;
+        }
         
         public override int ramUsage()
         {
             int ramPerThread = 0;
 
-            if (compresionLevel == 6)
+            if ((int)compLevel == 5)
                 ramPerThread = 709;
-            else if (compresionLevel == 5)
+            else if ((int)compLevel == 4)
                 ramPerThread = 376;
-            else if (compresionLevel == 4)
+            else if ((int)compLevel == 3)
                 ramPerThread = 192;
-            else if (compresionLevel == 3)
+            else if ((int)compLevel == 2)
                 ramPerThread = 19;
-            else if (compresionLevel == 2)
+            else if ((int)compLevel == 1)
                 ramPerThread = 6;
-            else if (compresionLevel == 1)
+            else if ((int)compLevel == 0)
                 ramPerThread = 1;
             else
                 return -1;
@@ -38,69 +45,78 @@ namespace steamBackup
             return (threadCount) * ramPerThread;
         }
 
-        public string compresionLevelString(int val)
+        internal void setCompLevel(CompressionLevel compressionLevel)
         {
+            compLevel = compressionLevel;
 
-            if (val == 6)
-                return "-mx9";
-            else if (val == 5)
-                return "-mx7";
-            else if (val == 4)
-                return "-mx5";
-            else if (val == 3)
-                return "-mx3";
-            else if (val == 2)
-                return "-mx1";
-            else
-                return "-mx0";
+            foreach (Job job in list)
+            {
+                BackupJob bJob = (BackupJob)job;
+
+                bJob.setCompression(compressionLevel);
+            }
         }
 
         public void setEnableUpd(CheckedListBox chkList)
         {
             chkList.Items.Clear();
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             
             foreach (Job job in list)
             {  
+                
+                
                 if (job.name.Equals(Settings.sourceEngineGames))
                 {
                     enableJob(job);
 
-                    chkList.Items.Add(job.name, job.enabled);
+                    bool enabled = false;
+                    if (job.status == JobStatus.WAITING)
+                        enabled = true;
+
+                    chkList.Items.Add(job.name, enabled);
                     chkList.Refresh();
                 }
                 else
                 {
-                    DateTime achiveDate = new FileInfo(job.dirBackup).LastWriteTimeUtc;
-                    string[] fileList = Directory.GetFiles(job.dirSteam, "*.*", SearchOption.AllDirectories);
-
-                    Stopwatch sw = new Stopwatch();
-                    sw.Start();
-
                     bool isNewer = false;
 
-                    foreach (string file in fileList)
+                    if (File.Exists(job.getBackupDir()))
                     {
-                        DateTime fileDate = new FileInfo(file).LastWriteTimeUtc;
+                        DateTime achiveDate = new FileInfo(job.getBackupDir()).LastWriteTimeUtc;
+                        string[] fileList = Directory.GetFiles(job.getSteamDir(), "*.*", SearchOption.AllDirectories);
 
-                        if (fileDate.CompareTo(achiveDate) > 0)
+                        foreach (string file in fileList)
                         {
-                            isNewer = true;
+                            DateTime fileDate = new FileInfo(file).LastWriteTimeUtc;
 
-                            break;
-                        }
+                            if (fileDate.CompareTo(achiveDate) > 0)
+                            {
+                                isNewer = true;
 
-                        if (sw.ElapsedMilliseconds > 100)
-                        {
-                            Application.DoEvents();
-                            sw.Restart();
+                                break;
+                            }
+
+                            if (sw.ElapsedMilliseconds > 100)
+                            {
+                                Application.DoEvents();
+                                sw.Restart();
+                            }
                         }
+                    }
+                    else
+                    {
+                        isNewer = true;
                     }
 
                     if (isNewer)
                         enableJob(job);
                     else
                         disableJob(job);
-                    chkList.Items.Add(job.name, job.enabled);
+
+                    chkList.Items.Add(job.name);
                     chkList.Refresh();
                 }
             } 
@@ -115,12 +131,9 @@ namespace steamBackup
             scanSteamLostCommonFolders();
         }
 
-        public override void setup(CheckedListBox chkList)
+        public override void setup()
         {
-            checkEnabledItems(chkList);
-            setArgument();
-
-            // Delete backup if the achive is not being updated (i.e all items are checked)
+            // Delete backup if the archive is not being updated (i.e all items are checked)
             if (deleteAll && Directory.Exists(backupDir))
                 Directory.Delete(backupDir, true);
 
@@ -131,20 +144,12 @@ namespace steamBackup
         {
             // Add misc backup
 
-            Job item = new Job();
+            Job item = new BackupJob();
 
             item.name = Settings.sourceEngineGames;
-            item.dirSteam = steamDir + "\\steamapps\\";
-            item.dirBackup = backupDir + "\\Source Games.7z";
-            item.enabled = true;
-
-            item.program = "7za_cmd.exe";
-            item.status = "Waiting";
-
-            if (File.Exists(item.dirBackup))
-                item.alreadyArchived = true;
-            else
-                item.alreadyArchived = false;
+            item.setSteamDir(steamDir + "\\steamapps\\");
+            item.setBackupDir(backupDir + "\\Source Games.7z");
+            item.status = JobStatus.WAITING;
 
             list.Add(item);
         }
@@ -161,7 +166,7 @@ namespace steamBackup
                 string[] files = Directory.GetFiles(lib, "*.acf", SearchOption.TopDirectoryOnly);
                 foreach (string file in files)
                 {
-                    Job item = new Job();
+                    Job item = new BackupJob();
                     bool dependsOnApps = false;
 
                     FileInfo fi = new FileInfo(file);
@@ -191,14 +196,14 @@ namespace steamBackup
                                 i++;
                                 string dir = lineData[i].Trim('\"').Replace("\\\\", "\\");
                                 if (filterAcfDir(dir))
-                                    item.dirSteam = Utilities.getFileSystemCasing(dir);
+                                    item.setSteamDir(Utilities.getFileSystemCasing(dir));
                             }
                             else if (data.Equals("appinstalldir"))
                             {
                                 i++;
                                 string dir = lineData[i].Trim('\"');
                                 if (filterAcfDir(dir))
-                                    item.dirSteam = Utilities.getFileSystemCasing(dir);
+                                    item.setSteamDir(Utilities.getFileSystemCasing(dir));
                             }
                             else if (data.Equals("DependsOnApps"))
                             {
@@ -214,22 +219,14 @@ namespace steamBackup
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(item.name) && !string.IsNullOrEmpty(item.dirSteam) && !dependsOnApps)
+                    if (!string.IsNullOrEmpty(item.name) && !string.IsNullOrEmpty(item.getSteamDir()) && !dependsOnApps)
                     {
-                        string[] splits = item.dirSteam.Split('\\');
+                        string[] splits = item.getSteamDir().Split('\\');
                         string name = splits[splits.Length - 1];
 
-                        item.dirBackup = backupDir + "\\common\\" + name + ".7z";
-                        item.enabled = true;
-
-                        item.program = "7za_cmd.exe";
-                        item.status = "Waiting";
+                        item.setBackupDir(backupDir + "\\common\\" + name + ".7z");
+                        item.status = JobStatus.WAITING;
                         item.acfDir = lib;
-
-                        if (File.Exists(item.dirBackup))
-                            item.alreadyArchived = true;
-                        else
-                            item.alreadyArchived = false;
 
                         list.Add(item);
                     }
@@ -268,7 +265,7 @@ namespace steamBackup
                             string file = lib + "\\appmanifest_" + dependent[0] + ".acf";
                             if (File.Exists(file))
                             {
-                                Job item = new Job();
+                                Job item = new BackupJob();
 
                                 FileInfo fi = new FileInfo(file);
                                 StreamReader reader = fi.OpenText();
@@ -292,35 +289,27 @@ namespace steamBackup
                                             i++;
                                             string dir = lineData[i].Trim('\"').Replace("\\\\", "\\");
                                             if (filterAcfDir(dir))
-                                                item.dirSteam = Utilities.getFileSystemCasing(dir);
+                                                item.setSteamDir(Utilities.getFileSystemCasing(dir));
                                         }
                                         else if (data.Equals("appinstalldir"))
                                         {
                                             i++;
                                             string dir = lineData[i].Trim('\"');
                                             if (filterAcfDir(dir))
-                                                item.dirSteam = Utilities.getFileSystemCasing(dir);
+                                                item.setSteamDir(Utilities.getFileSystemCasing(dir));
                                         }
                                     }
                                 }
 
-                                if (!string.IsNullOrEmpty(item.name) && !string.IsNullOrEmpty(item.dirSteam))
+                                if (!string.IsNullOrEmpty(item.name) && !string.IsNullOrEmpty(item.getSteamDir()))
                                 {
-                                    string[] splits = item.dirSteam.Split('\\');
+                                    string[] splits = item.getSteamDir().Split('\\');
                                     string name = splits[splits.Length - 1];
 
-                                    item.dirBackup = backupDir + "\\common\\" + name + ".7z";
+                                    item.setBackupDir(backupDir + "\\common\\" + name + ".7z");
                                     item.appId = dependent[1] + "|" + dependent[0];
-                                    item.enabled = true;
-
-                                    item.program = "7za_cmd.exe";
-                                    item.status = "Waiting";
+                                    item.status = JobStatus.WAITING;
                                     item.acfDir = lib;
-
-                                    if (File.Exists(item.dirBackup))
-                                        item.alreadyArchived = true;
-                                    else
-                                        item.alreadyArchived = false;
 
                                     list.Add(item);
                                 }
@@ -351,7 +340,7 @@ namespace steamBackup
 
                         foreach (Job itemSearch in list)
                         {
-                            string listDir = itemSearch.dirSteam.ToLower();
+                            string listDir = itemSearch.getSteamDir().ToLower();
                             string folderDir = folder.ToLower();
 
                             if (listDir.Equals(folderDir))
@@ -369,20 +358,12 @@ namespace steamBackup
 
                             TextInfo textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
 
-                            Job item = new Job();
+                            Job item = new BackupJob();
 
                             item.name = textInfo.ToTitleCase(name);
-                            item.dirSteam = folder;
-                            item.dirBackup = backupDir + "\\common\\" + name + ".7z";
-                            item.enabled = true;
-
-                            item.program = "7za_cmd.exe";
-                            item.status = "Waiting";
-
-                            if (File.Exists(item.dirBackup))
-                                item.alreadyArchived = true;
-                            else
-                                item.alreadyArchived = false;
+                            item.setSteamDir(folder);
+                            item.setBackupDir(backupDir + "\\common\\" + name + ".7z");
+                            item.status = JobStatus.WAITING;
 
                             list.Add(item);
                         }
@@ -412,26 +393,6 @@ namespace steamBackup
             return true;
         }
 
-        private void setArgument()
-        {
-            string compType = compresionLevelString(compresionLevel);
-
-            foreach (Job item in list)
-            {
-                if (item.name.Equals(Settings.sourceEngineGames))
-                {
-                    item.argument = "a \"" + item.dirBackup + "\" \"" + item.dirSteam + "\" " + compresionLevelString(compresionLevel) + " -w\"" + backupDir + "\\\" -t7z -aoa -xr!*.acf -xr!common -xr!temp -xr!downloading";
-                }
-                else
-                {
-                    string[] splits = item.dirSteam.Split('\\');
-                    string name = splits[splits.Length - 1];
-
-                    item.argument = "a \"" + item.dirBackup + "\" \"" + item.dirSteam + "\" " + compType + " -w\"" + backupDir + "\\common\\\" -t7z -aoa";
-                }
-            }
-        }
-
         public void makeConfigFile()
         {
             string configDir = backupDir + "\\config.sbt";
@@ -450,7 +411,7 @@ namespace steamBackup
                 writer.WriteValue(archiveVer);
                 writer.WritePropertyName("ACF IDs");
                 writer.WriteStartObject();
-                // Add alread archived apps back into the list if they are not being backed up again (so we dont get any orphaned acf files).
+                // Add already archived apps back into the list if they are not being backed up again (so we don't get any orphaned acf files).
                 if (File.Exists(configDir))
                 {
                     writer.WriteWhitespace(Environment.NewLine);
@@ -492,9 +453,9 @@ namespace steamBackup
                 writer.WriteComment("From latest backup");
                 foreach (Job item in list)
                 {
-                    if (!string.IsNullOrEmpty(item.appId) && item.enabled)
+                    if (!string.IsNullOrEmpty(item.appId) && item.status == JobStatus.WAITING)
                     {
-                        string[] nameSplit = item.dirSteam.Split('\\');
+                        string[] nameSplit = item.getSteamDir().Split('\\');
                         string name = nameSplit[nameSplit.Length - 1];
 
                         if (!sb.ToString().Contains(name))
@@ -511,6 +472,5 @@ namespace steamBackup
             File.WriteAllText(configDir, sb.ToString());
             sw.Close();
         }
-
     }
 }

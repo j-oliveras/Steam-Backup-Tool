@@ -47,9 +47,13 @@ namespace steamBackup
         {
             chkList.BeginUpdate();
             chkList.Items.Clear();
-            foreach (Job item in restoreTask.list)
+            foreach (Job job in restoreTask.list)
             {
-                chkList.Items.Add(item.name, item.enabled);
+                bool enabled = false;
+                if (job.status == JobStatus.WAITING)
+                    enabled = true;
+
+                chkList.Items.Add(job.name, enabled);
             }
             chkList.EndUpdate();
         }
@@ -91,7 +95,7 @@ namespace steamBackup
 
                         if (!item.name.Equals(Settings.sourceEngineGames))
                         {
-                            dboxLibList.SelectedItem = Utilities.upDirLvl(item.dirSteam);
+                            dboxLibList.SelectedItem = Utilities.upDirLvl(item.getSteamDir());
                         }
                         else
                         {
@@ -108,7 +112,7 @@ namespace steamBackup
             {
                 if (item.name.Equals(chkList.SelectedItem.ToString()))
                 {
-                    item.dirSteam = dboxLibList.SelectedItem.ToString() + "common\\";
+                    item.setSteamDir(dboxLibList.SelectedItem.ToString() + "common\\");
                     item.acfDir = dboxLibList.SelectedItem.ToString();
                 }
             }
@@ -142,9 +146,30 @@ namespace steamBackup
             {
                 canceled = false;
 
-                restoreTask.setup(chkList);
+                restoreTask.setup();
 
                 this.Close();
+            }
+        }
+
+        private void chkList_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            foreach (Job job in restoreTask.list)
+            {
+                CheckedListBox chkList = (CheckedListBox)sender;
+
+                if (chkList.Items[e.Index].ToString().Equals(job.name))
+                {
+                    if (e.NewValue == CheckState.Checked)
+                    {
+                        restoreTask.enableJob(job);
+                    }
+                    else
+                    {
+                        restoreTask.disableJob(job);
+                    }
+                    break;
+                }
             }
         }
 

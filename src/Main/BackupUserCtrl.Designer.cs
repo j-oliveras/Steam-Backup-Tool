@@ -64,6 +64,7 @@
             this.chkList.Size = new System.Drawing.Size(260, 454);
             this.chkList.Sorted = true;
             this.chkList.TabIndex = 0;
+            this.chkList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkList_ItemCheck);
             this.chkList.MouseLeave += new System.EventHandler(this.controls_MouseLeave);
             this.chkList.MouseHover += new System.EventHandler(this.chkList_MouseHover);
             // 
@@ -96,12 +97,10 @@
             // 
             this.tbarComp.LargeChange = 1;
             this.tbarComp.Location = new System.Drawing.Point(308, 212);
-            this.tbarComp.Maximum = 6;
-            this.tbarComp.Minimum = 1;
+            this.tbarComp.Maximum = 5;
             this.tbarComp.Name = "tbarComp";
             this.tbarComp.Size = new System.Drawing.Size(120, 45);
             this.tbarComp.TabIndex = 34;
-            this.tbarComp.Value = 1;
             this.tbarComp.Scroll += new System.EventHandler(this.tbarComp_Scroll);
             this.tbarComp.MouseLeave += new System.EventHandler(this.controls_MouseLeave);
             this.tbarComp.MouseHover += new System.EventHandler(this.lblComp_MouseHover);
