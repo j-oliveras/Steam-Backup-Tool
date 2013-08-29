@@ -119,7 +119,7 @@ namespace steamBackup
                     chkList.Items.Add(job.name);
                     chkList.Refresh();
                 }
-            } 
+            }
         }
 
         public override void scan()
@@ -127,8 +127,7 @@ namespace steamBackup
             // Find all of the backed up items and a it to the job list
             
             scanMisc();
-            scanSteamAcf();
-            scanSteamLostCommonFolders();
+            scanCommonFolders();
         }
 
         public override void setup()
@@ -138,39 +137,84 @@ namespace steamBackup
                 Directory.Delete(backupDir, true);
 
             makeConfigFile();
+
+            sharedStart();
         }
 
         private void scanMisc()
         {
             // Add misc backup
 
-            Job item = new BackupJob();
+            Job job = new BackupJob();
 
-            item.name = Settings.sourceEngineGames;
-            item.setSteamDir(steamDir + "\\steamapps\\");
-            item.setBackupDir(backupDir + "\\Source Games.7z");
-            item.status = JobStatus.WAITING;
+            job.name = Settings.sourceEngineGames;
+            job.setSteamDir(steamDir + "\\steamapps\\");
+            job.setBackupDir(backupDir + "\\Source Games.7z");
+            job.status = JobStatus.WAITING;
 
-            list.Add(item);
+            list.Add(job);
         }
 
-        private void scanSteamAcf()
+        private void scanCommonFolders()
         {
-            // appId,dependentOn|appId,dependentOn
-            string dependentAppList = null;
 
             string[] libraries = Utilities.getLibraries(steamDir);
 
             foreach (string lib in libraries)
             {
-                string[] files = Directory.GetFiles(lib, "*.acf", SearchOption.TopDirectoryOnly);
-                foreach (string file in files)
+                
+                Dictionary<string, string> acfFiles = new Dictionary<string, string>();
+                buildAcfFileList(acfFiles, lib);
+
+                
+                string[] folders = Directory.GetDirectories(lib + "common\\");
+                foreach (string folder in folders)
                 {
-                    Job item = new BackupJob();
-                    bool dependsOnApps = false;
+                        
+                    string[] splits = folder.Split('\\');
+                    string name = splits[splits.Length - 1];
+
+                    TextInfo textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
+
+                    Job job = new BackupJob();
+
+                    job.name = textInfo.ToTitleCase(name);
+                    job.setSteamDir(folder);
+                    job.setBackupDir(backupDir + "\\common\\" + name + ".7z");
+                    job.status = JobStatus.WAITING;
+                    job.acfDir = lib;
+
+                    if (acfFiles.ContainsKey(folder))
+                    {
+                        job.acfFiles = acfFiles[folder];
+                        acfFiles.Remove(folder);
+                    }
+                    else
+                    {
+                        job.acfFiles = null;
+                    }
+
+                    list.Add(job);
+                }
+                
+            }
+        }
+
+        private void buildAcfFileList(Dictionary<string, string> acfFiles, string lib)
+        {
+            string[] acfFileList = Directory.GetFiles(lib, "*.acf", SearchOption.TopDirectoryOnly);
+
+            foreach (string file in acfFileList)
+            {
+                
+                if (!String.IsNullOrEmpty(file))
+                {
+                    string dir = "";
+                    string appId = "";
 
                     FileInfo fi = new FileInfo(file);
                     StreamReader reader = fi.OpenText();
+
                     string line = null;
                     while ((line = reader.ReadLine()) != null)
                     {
@@ -184,189 +228,31 @@ namespace steamBackup
                             if (data.Equals("appID"))
                             {
                                 i++;
-                                item.appId = lineData[i].Trim('\"');
-                            }
-                            else if (data.Equals("name"))
-                            {
-                                i++;
-                                item.name = lineData[i].Trim('\"');
+                                appId = lineData[i].Trim('\"');
                             }
                             else if (data.Equals("installdir"))
                             {
                                 i++;
-                                string dir = lineData[i].Trim('\"').Replace("\\\\", "\\");
-                                if (filterAcfDir(dir))
-                                    item.setSteamDir(Utilities.getFileSystemCasing(dir));
+                                string str = lineData[i].Trim('\"').Replace("\\\\", "\\");
+                                if (filterAcfDir(str))
+                                    dir = Utilities.getFileSystemCasing(str);
                             }
                             else if (data.Equals("appinstalldir"))
                             {
                                 i++;
-                                string dir = lineData[i].Trim('\"');
-                                if (filterAcfDir(dir))
-                                    item.setSteamDir(Utilities.getFileSystemCasing(dir));
-                            }
-                            else if (data.Equals("DependsOnApps"))
-                            {
-                                i++;
-                                string dependantId = lineData[i].Trim('\"');
-
-                                dependsOnApps = true;
-
-                                if (!string.IsNullOrEmpty(dependentAppList))
-                                    dependentAppList += "|";
-                                dependentAppList += item.appId + "," + dependantId;
+                                string str = lineData[i].Trim('\"');
+                                if (filterAcfDir(str))
+                                    dir = Utilities.getFileSystemCasing(str);
                             }
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(item.name) && !string.IsNullOrEmpty(item.getSteamDir()) && !dependsOnApps)
+                    if (!String.IsNullOrEmpty(dir) && !String.IsNullOrEmpty(appId))
                     {
-                        string[] splits = item.getSteamDir().Split('\\');
-                        string name = splits[splits.Length - 1];
-
-                        item.setBackupDir(backupDir + "\\common\\" + name + ".7z");
-                        item.status = JobStatus.WAITING;
-                        item.acfDir = lib;
-
-                        list.Add(item);
-                    }
-                }
-            }
-
-            if (!string.IsNullOrEmpty(dependentAppList))
-            {
-                string[] dependentApps = dependentAppList.Split('|');
-                foreach (string dependentApp in dependentApps)
-                {
-                    string[] dependent = dependentApp.Split(',');
-                    bool found = false;
-                    foreach (Job item in list)
-                    {
-                        if (!string.IsNullOrEmpty(item.appId))
-                        {
-                            string[] appIdList = item.appId.Split('|');
-
-                            foreach (string idToCheck in appIdList)
-                            {
-                                if (idToCheck.Equals(dependent[1]))
-                                {
-                                    item.appId += "|" + dependent[0];
-                                    found = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (!found)
-                    {
-
-                        foreach (string lib in libraries)
-                        {
-                            string file = lib + "\\appmanifest_" + dependent[0] + ".acf";
-                            if (File.Exists(file))
-                            {
-                                Job item = new BackupJob();
-
-                                FileInfo fi = new FileInfo(file);
-                                StreamReader reader = fi.OpenText();
-                                string line = null;
-                                while ((line = reader.ReadLine()) != null)
-                                {
-                                    line = line.Trim();
-                                    string[] lineData = line.Split(new string[] { "		" }, StringSplitOptions.RemoveEmptyEntries);
-
-                                    for (int i = 0; i < lineData.Length; i++)
-                                    {
-                                        string data = lineData[i].Trim('\"');
-
-                                        if (data.Equals("name"))
-                                        {
-                                            i++;
-                                            item.name = lineData[i].Trim('\"');
-                                        }
-                                        else if (data.Equals("installdir"))
-                                        {
-                                            i++;
-                                            string dir = lineData[i].Trim('\"').Replace("\\\\", "\\");
-                                            if (filterAcfDir(dir))
-                                                item.setSteamDir(Utilities.getFileSystemCasing(dir));
-                                        }
-                                        else if (data.Equals("appinstalldir"))
-                                        {
-                                            i++;
-                                            string dir = lineData[i].Trim('\"');
-                                            if (filterAcfDir(dir))
-                                                item.setSteamDir(Utilities.getFileSystemCasing(dir));
-                                        }
-                                    }
-                                }
-
-                                if (!string.IsNullOrEmpty(item.name) && !string.IsNullOrEmpty(item.getSteamDir()))
-                                {
-                                    string[] splits = item.getSteamDir().Split('\\');
-                                    string name = splits[splits.Length - 1];
-
-                                    item.setBackupDir(backupDir + "\\common\\" + name + ".7z");
-                                    item.appId = dependent[1] + "|" + dependent[0];
-                                    item.status = JobStatus.WAITING;
-                                    item.acfDir = lib;
-
-                                    list.Add(item);
-                                }
-
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void scanSteamLostCommonFolders()
-        {
-
-            string[] libraries = Utilities.getLibraries(steamDir);
-
-            foreach (string lib in libraries)
-            {
-
-                if (Directory.Exists(lib + "common\\"))
-                {
-                    string[] folders = Directory.GetDirectories(lib + "common\\");
-                    foreach (string folder in folders)
-                    {
-
-                        bool isNew = true;
-
-                        foreach (Job itemSearch in list)
-                        {
-                            string listDir = itemSearch.getSteamDir().ToLower();
-                            string folderDir = folder.ToLower();
-
-                            if (listDir.Equals(folderDir))
-                            {
-                                isNew = false;
-                                break;
-                            }
-                        }
-
-
-                        if (isNew)
-                        {
-                            string[] splits = folder.Split('\\');
-                            string name = splits[splits.Length - 1];
-
-                            TextInfo textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
-
-                            Job item = new BackupJob();
-
-                            item.name = textInfo.ToTitleCase(name);
-                            item.setSteamDir(folder);
-                            item.setBackupDir(backupDir + "\\common\\" + name + ".7z");
-                            item.status = JobStatus.WAITING;
-
-                            list.Add(item);
-                        }
+                        if (acfFiles.ContainsKey(dir))
+                            acfFiles[dir] += "|" + appId;
+                        else
+                            acfFiles.Add(dir, appId);
                     }
                 }
             }
@@ -451,17 +337,17 @@ namespace steamBackup
                 // Add new apps to the list
                 writer.WriteWhitespace(Environment.NewLine);
                 writer.WriteComment("From latest backup");
-                foreach (Job item in list)
+                foreach (Job job in list)
                 {
-                    if (!string.IsNullOrEmpty(item.appId) && item.status == JobStatus.WAITING)
+                    if (!string.IsNullOrEmpty(job.acfFiles) && job.status == JobStatus.WAITING)
                     {
-                        string[] nameSplit = item.getSteamDir().Split('\\');
+                        string[] nameSplit = job.getSteamDir().Split('\\');
                         string name = nameSplit[nameSplit.Length - 1];
 
                         if (!sb.ToString().Contains(name))
                         {
                             writer.WritePropertyName(name);
-                            writer.WriteValue(item.appId);
+                            writer.WriteValue(job.acfFiles);
                         }
                     }
                 }

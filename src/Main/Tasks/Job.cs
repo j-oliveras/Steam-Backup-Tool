@@ -30,10 +30,11 @@ namespace steamBackup
     {        
         protected JobType type = JobType.UNSET;
         public JobType getJobType() { return type; }
-        
-        public string appId;
-        public string name;
 
+        public string acfFiles;
+        public string acfDir;
+        public string name;
+        public JobStatus status;
 
         protected string dirSteam;
         abstract public void setSteamDir(string dir);
@@ -43,9 +44,6 @@ namespace steamBackup
         abstract public void setBackupDir(string dir);
         public string getBackupDir() { return dirBackup; }
 
-        public JobStatus status;
-
-        public string acfDir;
 
         abstract public void start(ProgressBar pgsBar);
 
@@ -93,12 +91,15 @@ namespace steamBackup
 
         public string toString()
         {
-            return "appId = " + appId + Environment.NewLine +
-                "name = " + name + Environment.NewLine +
-                "dirSteam = " + dirSteam + Environment.NewLine +
-                "dirBackup = " + dirBackup + Environment.NewLine +
-                "status = " + status + Environment.NewLine +
-                "acfDir = " + acfDir;
+            string str = "";
+            
+            str += "name = " + name + Environment.NewLine;
+            str += "acfFiles = " + acfFiles + Environment.NewLine;
+            str += "dirSteam = " + dirSteam + Environment.NewLine;
+            str += "dirBackup = " + dirBackup + Environment.NewLine;
+            str += "status = " + status + Environment.NewLine;
+
+            return str;
         }
     }
 }

@@ -74,12 +74,12 @@ namespace steamBackup
                                 string acfId = reader.Value.ToString();
                                 reader.Read();
 
-                                foreach (Job item in list)
+                                foreach (Job job in list)
                                 {
-                                    if (item.name.Equals(name))
+                                    if (job.name.Equals(name))
                                     {
-                                        item.appId = acfId;
-                                        item.acfDir = steamDir + "\\steamapps\\";
+                                        job.acfFiles = acfId;
+                                        job.acfDir = steamDir + "\\steamapps\\";
 
                                         break;
                                     }
@@ -95,20 +95,20 @@ namespace steamBackup
             }
 
             TextInfo textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
-            foreach (Job item in list)
-                item.name = textInfo.ToTitleCase(item.name);
+            foreach (Job job in list)
+                job.name = textInfo.ToTitleCase(job.name);
 
             // if we are using v2 of the archiver add 'Source Games.7z'
             if (currentArchiveVer == 2 && File.Exists(backupDir + "\\Source Games.7z"))
             {
-                Job item = new RestoreJob();
+                Job job = new RestoreJob();
 
-                item.setSteamDir(steamDir + "\\");
-                item.setBackupDir(backupDir + "\\Source Games.7z");
-                item.name = Settings.sourceEngineGames;
-                item.status = JobStatus.WAITING;
+                job.setSteamDir(steamDir + "\\");
+                job.setBackupDir(backupDir + "\\Source Games.7z");
+                job.name = Settings.sourceEngineGames;
+                job.status = JobStatus.WAITING;
 
-                list.Insert(0, item);
+                list.Insert(0, job);
             }
         }
 
@@ -116,19 +116,21 @@ namespace steamBackup
         {
             if (currentArchiveVer == 1)
                 addMiscItems();
+
+            sharedStart();
         }
 
         private void addMiscItems()
         {
             // for legacy backups (version 1)
 
-            Job item = new RestoreJob();
+            Job job = new RestoreJob();
 
-            item.setBackupDir(backupDir + "\\");
-            item.name = "steamapps";
-            item.status = JobStatus.WAITING;
+            job.setBackupDir(backupDir + "\\");
+            job.name = "steamapps";
+            job.status = JobStatus.WAITING;
 
-            list.Insert(0, item);
+            list.Insert(0, job);
 
         }
     }

@@ -76,16 +76,6 @@ namespace steamBackup
 
                 streamReader.Close();
             }
-            else
-            {
-                steamDir = "Steam Install Directory";
-                backupDir = "Backup Directory";
-                compresion = 6;
-                threadsBup = 1;
-                threadsRest = 4;
-                checkSteamRun = true;
-                debugMode = false;
-            }
         }
 
         public static void save()

@@ -60,7 +60,7 @@ namespace steamBackup
             sevenZip.Compressing += new EventHandler<ProgressEventArgs>(working);
             sevenZip.FileCompressionStarted += new EventHandler<FileNameEventArgs>(started);
             sevenZip.CompressionFinished += new EventHandler<EventArgs>(finished);
-            
+
             sevenZip.BeginCompressFiles(dirBackup, Utilities.upDirLvl(dirSteam).Length, fileList);
         }
 

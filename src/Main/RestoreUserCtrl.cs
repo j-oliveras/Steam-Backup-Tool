@@ -80,11 +80,11 @@ namespace steamBackup
 
             if (chkList.SelectedItem != null)
             {
-                foreach (Job item in restoreTask.list)
+                foreach (Job job in restoreTask.list)
                 {
-                    if (item.name.Equals(chkList.SelectedItem.ToString()))
+                    if (job.name.Equals(chkList.SelectedItem.ToString()))
                     {
-                        if (string.IsNullOrEmpty(item.appId))
+                        if (string.IsNullOrEmpty(job.acfFiles))
                         {
                             dboxLibList.Enabled = false;
                         }
@@ -93,9 +93,9 @@ namespace steamBackup
                             dboxLibList.Enabled = true;
                         }
 
-                        if (!item.name.Equals(Settings.sourceEngineGames))
+                        if (!job.name.Equals(Settings.sourceEngineGames))
                         {
-                            dboxLibList.SelectedItem = Utilities.upDirLvl(item.getSteamDir());
+                            dboxLibList.SelectedItem = Utilities.upDirLvl(job.getSteamDir());
                         }
                         else
                         {
@@ -108,12 +108,12 @@ namespace steamBackup
 
         private void dboxLibList_SelectedValueChanged(object sender, EventArgs e)
         {
-            foreach (Job item in restoreTask.list)
+            foreach (Job job in restoreTask.list)
             {
-                if (item.name.Equals(chkList.SelectedItem.ToString()))
+                if (job.name.Equals(chkList.SelectedItem.ToString()))
                 {
-                    item.setSteamDir(dboxLibList.SelectedItem.ToString() + "common\\");
-                    item.acfDir = dboxLibList.SelectedItem.ToString();
+                    job.setSteamDir(dboxLibList.SelectedItem.ToString() + "common\\");
+                    job.acfDir = dboxLibList.SelectedItem.ToString();
                 }
             }
         }
