@@ -9,7 +9,6 @@ using System.Diagnostics;
 
 namespace steamBackup
 {
-
     static class Utilities
     {
         // General
@@ -89,6 +88,28 @@ namespace steamBackup
                 return true;
 
             return false;
+        }
+
+        static private string errorList;
+        static public void clearErrorList(){errorList = "";}
+        static public string getErrorList() { return errorList; }
+        
+        static public void addToErrorList(Job job)
+        {
+            // TODO redo this
+
+            if (string.IsNullOrEmpty(errorList))
+            {
+                errorList += "Listed below are the errors for a backup or restore." + Environment.NewLine + Environment.NewLine;
+                errorList += "Please try running the backup process again making sure that there are no programs accessing the files being backed up (e.g. Steam)." + Environment.NewLine + Environment.NewLine;
+                errorList += "To check the integrity of this backup: navigate to the backup location -> Select all files in the 'common' folder -> right click -> 7zip -> Test archive. You should do the same for 'Source Games.7z' also.";
+            }
+
+            errorList += Environment.NewLine + Environment.NewLine + @"//////////////////// Error Time: " + DateTime.Now.ToString("dd/MM/yyyy H:mm.ss") + @" \\\\\\\\\\\\\\\\\\\\" + Environment.NewLine + Environment.NewLine;
+
+            errorList += Environment.NewLine + job.toString();
+
+            File.WriteAllText(Settings.backupDir + "\\Error Log.txt", errorList);
         }
 
     }

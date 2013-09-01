@@ -28,9 +28,8 @@ namespace steamBackup
             sevenZip.FastCompression = false;
         }
 
-        public override void start(ProgressBar pgsBar)
+        public override void start()
         {
-            progressBar = pgsBar;
             
             string[] fileList;
             
@@ -60,8 +59,15 @@ namespace steamBackup
             sevenZip.Compressing += new EventHandler<ProgressEventArgs>(working);
             sevenZip.FileCompressionStarted += new EventHandler<FileNameEventArgs>(started);
             sevenZip.CompressionFinished += new EventHandler<EventArgs>(finished);
-
-            sevenZip.BeginCompressFiles(dirBackup, Utilities.upDirLvl(dirSteam).Length, fileList);
+            
+            try
+            {
+                sevenZip.CompressFiles(dirBackup,Utilities.upDirLvl(dirSteam).Length, fileList);
+            }
+            catch (System.Exception e)
+            {
+                Utilities.addToErrorList(this);
+            }
         }
 
         public override void setSteamDir(string dir)

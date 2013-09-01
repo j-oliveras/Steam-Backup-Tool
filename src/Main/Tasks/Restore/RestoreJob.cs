@@ -25,9 +25,8 @@ namespace steamBackup
             }
         }
 
-        public override void start(ProgressBar pgsBar)
+        public override void start()
         {
-            progressBar = pgsBar;
 
             sevenZip = new SevenZipExtractor(dirBackup);
 
@@ -35,7 +34,14 @@ namespace steamBackup
             sevenZip.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(started);
             sevenZip.ExtractionFinished += new EventHandler<EventArgs>(finished);
 
-            sevenZip.BeginExtractArchive(dirSteam);
+            try
+            {
+                sevenZip.ExtractArchive(dirSteam);
+            }
+            catch (System.Exception e)
+            {
+                Utilities.addToErrorList(this);
+            }
         }
 
         public override void setSteamDir(string dir)

@@ -112,11 +112,16 @@ namespace steamBackup
                     }
 
                     if (isNewer)
+                    {
                         enableJob(job);
+                        chkList.Items.Add(job.name, true);
+                    }
                     else
+                    {
                         disableJob(job);
+                        chkList.Items.Add(job.name, false);
+                    }
 
-                    chkList.Items.Add(job.name);
                     chkList.Refresh();
                 }
             }
@@ -191,7 +196,7 @@ namespace steamBackup
                     }
                     else
                     {
-                        job.acfFiles = null;
+                        job.acfFiles = "";
                     }
 
                     list.Add(job);
@@ -354,6 +359,8 @@ namespace steamBackup
                 writer.WriteEndObject();
                 writer.WriteEndObject();
             }
+
+            
             Directory.CreateDirectory(backupDir);
             File.WriteAllText(configDir, sb.ToString());
             sw.Close();

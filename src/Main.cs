@@ -39,9 +39,9 @@ namespace steamBackup
         bool pauseJob = false;
         int threadDone = 0;
 
-        string errorList = null;
-
         Task task = null;
+
+        Job[] currJobs = new Job[4];
 
         private void main_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -143,8 +143,8 @@ namespace steamBackup
                 MessageBox.Show("Please exit Steam before restoring. To continue, exit Steam and then click the 'Restore' button again. Do Not start Steam until the restore process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else if(
-                File.Exists(tbxBackupDir.Text.ToString() + "\\config.sbt") ||// Valid Archiver Version 2
-                Directory.Exists(tbxBackupDir.Text.ToString() + "\\common\\") &&// Valid Archiver Version 1
+                File.Exists(tbxBackupDir.Text.ToString() + "\\config.sbt") || // Valid Archiver Version 2
+                Directory.Exists(tbxBackupDir.Text.ToString() + "\\common\\") && // Valid Archiver Version 1
                 File.Exists(tbxBackupDir.Text.ToString() + "\\games.7z") &&
                 File.Exists(tbxBackupDir.Text.ToString() + "\\steamapps.7z")
                 )
@@ -174,8 +174,6 @@ namespace steamBackup
         private void start()
         {
             
-            errorList = null;
-
             pgsBarAll.Value = 0;
             pgsBarAll.Maximum = task.jobsToDoCount;
 
@@ -196,6 +194,8 @@ namespace steamBackup
             btnCancel.Visible = true;
             btnPause.Visible = true;
             btnShowLog.Visible = true;
+
+            timer.Start();
 
             startThreads();
         }
@@ -279,7 +279,7 @@ namespace steamBackup
             Label lblJobFile = null;
             if (thread == 0)
             {
-                pgsBar = pgsBar0;
+                pgsBar = pgsBar1;
                 lblJobTitle = lbl0;
                 lblJobFile = lbl0Info;
             }
@@ -308,49 +308,27 @@ namespace steamBackup
                 if (job == null)
                     break;
 
+                currJobs[thread] = job;
                 pgsBar.Value = 0;
                 pgsBarAll.Value = task.jobsDone;
                 lblProgress.Text = task.progressText();
                 job.status = JobStatus.WORKING;
                 updateList();
-
-                job.start(pgsBar);
-
                 lblJobFile.Text = "Finding Files...";
 
-                while (job.status == JobStatus.WORKING || job.status == JobStatus.PAUSED)
-                {
-                    if (cancelJob)
-                        job.status = JobStatus.CANCELED;
-                    else if(pauseJob)
-                        job.status = JobStatus.PAUSED;
-                    else
-                        job.status = JobStatus.WORKING;
+                job.start();
 
-                    string name = job.name;
-                    if (job.name.Length >= 28)
-                        name = job.name.Substring(0, 25) + "...";
-
-                    lblJobTitle.Text = "Instance " + (thread + 1) + ":- (" + job.status.ToString() + ") " + name;
-
-                    if (!string.IsNullOrEmpty(job.getCurFileStr()))
-                    {
-                        lblJobFile.Text = job.getCurFileStr();
-                    }
-                    
-                    Thread.Sleep(1000);
-                }
-
-                if (job.status == JobStatus.FINISHED)
-                {
-                    if(job.getJobType() == JobType.BACKUP)
-                        copyAcfToBackup(job);
-                    else
-                        copyAcfToRestore(job);
-                }
+                if(job.getJobType() == JobType.BACKUP)
+                    copyAcfToBackup(job);
+                else
+                    copyAcfToRestore(job);
                 
                 updateList();
                 lblJobFile.Text = "Finished Job...";
+
+                if(cancelJob)
+                    job.status = JobStatus.CANCELED;
+                currJobs[thread] = null;
             }
 
             pgsBar.Value = 0;
@@ -360,33 +338,57 @@ namespace steamBackup
             jobsFinished();
         }
 
-        private void addToErrorList(Job job, int exitCode)
+        private void timer_Tick(object sender, EventArgs e)
         {
-            // TODO redo this
-            
-            if (string.IsNullOrEmpty(errorList))
+            for (int i = 0; i < 4; i++)
             {
-                errorList += "Listed below are the errors for the backup or restore finished " + DateTime.Now.ToString("dd/MM/yyyy H:mm.ss") + Environment.NewLine + Environment.NewLine;
-                errorList += "Please try running the backup process again making sure that there are no programs accessing the files being backed up (e.g. Steam)." + Environment.NewLine + Environment.NewLine;
-                errorList += "To check the integrity of this backup: navigate to the backup location -> Select all files in the 'common' folder -> right click -> 7zip -> Test archive. You should do the same for 'Source Games.7z' also.";
+                if (currJobs[i] != null)
+                {
+                    updateStats(i, currJobs[i]);
+                }
+            }
+        }
+
+        private void updateStats(int thread, Job job)
+        {
+            ProgressBar pgsBar = null;
+            Label lblJobTitle = null;
+            Label lblJobFile = null;
+
+            if (thread == 0)
+            {
+                pgsBar = pgsBar0;
+                lblJobTitle = lbl0;
+                lblJobFile = lbl0Info;
+            }
+            else if (thread == 1)
+            {
+                pgsBar = pgsBar1;
+                lblJobTitle = lbl1;
+                lblJobFile = lbl1Info;
+            }
+            else if (thread == 2)
+            {
+                pgsBar = pgsBar2;
+                lblJobTitle = lbl2;
+                lblJobFile = lbl2Info;
+            }
+            else if (thread == 3)
+            {
+                pgsBar = pgsBar3;
+                lblJobTitle = lbl3;
+                lblJobFile = lbl3Info;
             }
 
-            errorList += Environment.NewLine + Environment.NewLine + "//////////////////// ERROR CODE: " + exitCode + " \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" + Environment.NewLine + Environment.NewLine;
+            string name = job.name;
+            if (job.name.Length >= 28)
+                name = job.name.Substring(0, 25) + "...";
 
-            if (exitCode == 1)
-                errorList += "Warning (Non fatal error(s)). For example, one or more files were locked by some other application, so they were not compressed.";
-            else if (exitCode == 2)
-                errorList += "Fatal error";
-            else if (exitCode == 7)
-                errorList += "Command line error";
-            else if (exitCode == 8)
-                errorList += "Not enough memory for operation";
-            else if (exitCode == 255)
-                errorList += "User stopped the process";
-            else
-                errorList += "Unknown Error";
+            lblJobTitle.Text = "Instance " + (thread + 1) + ":- (" + job.status.ToString() + ") " + name;
+            pgsBar.Value = job.getPercDone();
 
-            errorList += Environment.NewLine + job.toString();
+            if (!string.IsNullOrEmpty(job.getCurFileStr()))
+                lblJobFile.Text = job.getCurFileStr();
         }
 
         private void copyAcfToBackup(Job job)
@@ -446,6 +448,7 @@ namespace steamBackup
             threadDone++;
             if (task.threadCount == threadDone)
             {
+                timer.Stop();
                 
                 btnBrowseSteam.Enabled = true;
                 btnFindSteam.Enabled = true;
@@ -462,19 +465,19 @@ namespace steamBackup
                 this.Size = new Size(400, 402);
 
 
-                    if (string.IsNullOrEmpty(errorList))
+                    if (string.IsNullOrEmpty(Utilities.getErrorList()))
                     {
                         MessageBox.Show("Jobs finished with " + task.jobsDone + " of " + task.jobsToDoCount + " completed!" + Environment.NewLine + Environment.NewLine +
                             "Steam Backup Tool finished without finding any errors.", "Finished Successfully");
                     }
                     else
                     {
-
-                        File.WriteAllText(tbxBackupDir.Text + "\\Error Log.txt", errorList);
                         MessageBox.Show("WARNING!" + Environment.NewLine + Environment.NewLine +
                             "Jobs finished with " + task.jobsDone + " of " + task.jobsToDoCount + " completed!" + Environment.NewLine + Environment.NewLine +
                             "However, Steam Backup Tool has encountered error, It is recommended that you look at the 'Error Log.txt' file in the backup directory for a full list of errors.", "Errors Found",MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+
+                Utilities.clearErrorList();
                 lblProgress.Text = task.progressText();
                 task = null;
             }
@@ -498,13 +501,25 @@ namespace steamBackup
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-
             if (MessageBox.Show("Do you want to cancel immediately? This could corrupt the games that are currently being worked on." + Environment.NewLine + Environment.NewLine +
                 "Click 'Yes' to stop immediately, or 'No' to cancel once the current jobs have been finished.", "Cancel immediately?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+            {
+                cancelJob = true;
+                pauseJob = false;
+                btnPause.Visible = false;
 
-            cancelJob = true;
-            pauseJob = false;
-            btnPause.Visible = false;
+                for (int i = 0; i < 4; i++)
+                {
+                    if (currJobs[i] != null)
+                        currJobs[i].status = JobStatus.CANCELED;
+                }
+            }
+            else
+            {
+                cancelJob = true;
+                pauseJob = false;
+                btnPause.Visible = false;
+            }
         }
 
         private void btnPause_Click(object sender, EventArgs e)
@@ -513,11 +528,23 @@ namespace steamBackup
             {
                 pauseJob = false;
                 btnPause.Text = "Pause";
+
+                for (int i = 0; i < 4; i++)
+                {
+                    if (currJobs[i] != null)
+                        currJobs[i].status = JobStatus.WORKING;
+                }
             }
             else
             {
                 pauseJob = true;
                 btnPause.Text = "Resume";
+
+                for (int i = 0; i < 4; i++)
+                {
+                    if (currJobs[i] != null)
+                        currJobs[i].status = JobStatus.PAUSED;
+                }
             }
         }
 
@@ -604,6 +631,5 @@ namespace steamBackup
             AboutBox about = new AboutBox();
             about.ShowDialog();
         }
-
     }
 }

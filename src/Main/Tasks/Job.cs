@@ -45,15 +45,16 @@ namespace steamBackup
         public string getBackupDir() { return dirBackup; }
 
 
-        abstract public void start(ProgressBar pgsBar);
+        abstract public void start();
 
-        protected ProgressBar progressBar;
+        protected byte percDone;
+        public byte getPercDone() { return percDone; }
         private string curFileStr;
         public string getCurFileStr() { return curFileStr; }
 
         protected void working(object sender, ProgressEventArgs e)
         {
-            progressBar.Value = e.PercentDone;
+            percDone = e.PercentDone;
         }
 
         protected void started(object sender, FileNameEventArgs e)
@@ -65,7 +66,7 @@ namespace steamBackup
 
             while (status == JobStatus.PAUSED)
             {
-                Thread.Sleep(250);
+                Thread.Sleep(100);
             }
         }
 
