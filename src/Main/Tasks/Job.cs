@@ -62,7 +62,10 @@ namespace steamBackup
             curFileStr = e.FileName;
 
             if (status == JobStatus.CANCELED)
+            {
                 e.Cancel = true;
+                Utilities.addToErrorList(this);
+            }
 
             while (status == JobStatus.PAUSED)
             {
@@ -76,7 +79,10 @@ namespace steamBackup
             curFileStr = splitStr[splitStr.Length - 1];
 
             if (status == JobStatus.CANCELED)
+            {
                 e.Cancel = true;
+                Utilities.addToErrorList(this);
+            }
 
             while (status == JobStatus.PAUSED)
             {

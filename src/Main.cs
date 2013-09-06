@@ -42,6 +42,7 @@ namespace steamBackup
         Task task = null;
 
         Job[] currJobs = new Job[4];
+        Thread[] threadList = new Thread[4];
 
         private void main_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -204,7 +205,12 @@ namespace steamBackup
         {
             if (task.threadCount >= 1)
             {
-                thread0.RunWorkerAsync();
+                threadList[0] = new Thread(() => doWork(0));
+                threadList[0].Priority = ThreadPriority.Lowest;
+                threadList[0].Name = "Job Thread 1";
+                threadList[0].IsBackground = true;
+                threadList[0].Start();
+
                 lbl0.Text = "Instance 1:- ";
                 lbl0Info.Text = "Waiting...";
                 lbl1.Text = "Version: " + versionNum;
@@ -212,7 +218,12 @@ namespace steamBackup
             }
             if (task.threadCount >= 2)
             {
-                thread1.RunWorkerAsync();
+                threadList[1] = new Thread(() => doWork(1));
+                threadList[1].Priority = ThreadPriority.Lowest;
+                threadList[1].Name = "Job Thread 2";
+                threadList[1].IsBackground = true;
+                threadList[1].Start();
+
                 lbl1.Text = "Instance 2:- ";
                 lbl1Info.Text = "Waiting...";
                 lbl2.Text = "Version: " + versionNum;
@@ -220,7 +231,12 @@ namespace steamBackup
             }
             if (task.threadCount >= 3)
             {
-                thread2.RunWorkerAsync();
+                threadList[2] = new Thread(() => doWork(2));
+                threadList[2].Priority = ThreadPriority.Lowest;
+                threadList[2].Name = "Job Thread 3";
+                threadList[2].IsBackground = true;
+                threadList[2].Start();
+
                 lbl2.Text = "Instance 3:- ";
                 lbl2Info.Text = "Waiting...";
                 lbl3.Text = "Version: " + versionNum;
@@ -228,7 +244,12 @@ namespace steamBackup
             }
             if (task.threadCount >= 4)
             {
-                thread3.RunWorkerAsync();
+                threadList[3] = new Thread(() => doWork(3));
+                threadList[3].Priority = ThreadPriority.Lowest;
+                threadList[3].Name = "Job Thread 4";
+                threadList[3].IsBackground = true;
+                threadList[3].Start();
+
                 lbl3.Text = "Instance 4:- ";
                 lbl3Info.Text = "Waiting...";
                 lbl4.Text = "Version: " + versionNum;
@@ -246,26 +267,6 @@ namespace steamBackup
             btnBackup.Visible = true;
             btnRestore.Visible = true;
             btnShowLog.Visible = false;
-        }
-
-        private void thread0_DoWork(object sender, DoWorkEventArgs e)
-        {
-            doWork(0);
-        }
-
-        private void thread1_DoWork(object sender, DoWorkEventArgs e)
-        {
-            doWork(1);
-        }
-
-        private void thread2_DoWork(object sender, DoWorkEventArgs e)
-        {
-            doWork(2);
-        }
-
-        private void thread3_DoWork(object sender, DoWorkEventArgs e)
-        {
-            doWork(3);
         }
 
         private void doWork(int thread)
@@ -393,53 +394,59 @@ namespace steamBackup
 
         private void copyAcfToBackup(Job job)
         {
-            string[] acfId = job.acfFiles.Split('|');
-
-            foreach(string id in acfId)
+            if (!String.IsNullOrEmpty(job.acfFiles))
             {
-                string src = job.acfDir + "\\appmanifest_" + id + ".acf";
-                string dst = tbxBackupDir.Text + "\\acf";
+                string[] acfId = job.acfFiles.Split('|');
 
-                if(!Directory.Exists(dst))
-                    Directory.CreateDirectory(dst);
+                foreach(string id in acfId)
+                {
+                    string src = job.acfDir + "\\appmanifest_" + id + ".acf";
+                    string dst = tbxBackupDir.Text + "\\acf";
 
-                FileInfo fi = new FileInfo(src);
-                StreamReader reader = fi.OpenText();
+                    if (!Directory.Exists(dst))
+                        Directory.CreateDirectory(dst);
 
-                string acf = reader.ReadToEnd().ToString();
-                string gameCommonFolder = Utilities.upDirLvl(job.getSteamDir());
-                acf = acf.Replace(gameCommonFolder, "|DIRECTORY-STD|");
-                acf = acf.Replace(gameCommonFolder.ToLower(), "|DIRECTORY-LOWER|");
-                acf = acf.Replace(gameCommonFolder.ToLower().Replace("\\", "\\\\"), "|DIRECTORY-ESCSLASH-LOWER|");
+                    FileInfo fi = new FileInfo(src);
+                    StreamReader reader = fi.OpenText();
 
-                File.WriteAllText(dst + "\\appmanifest_" + id + ".acf", acf);
-                reader.Close();
+                    string acf = reader.ReadToEnd().ToString();
+                    string gameCommonFolder = Utilities.upDirLvl(job.getSteamDir());
+                    acf = acf.Replace(gameCommonFolder, "|DIRECTORY-STD|");
+                    acf = acf.Replace(gameCommonFolder.ToLower(), "|DIRECTORY-LOWER|");
+                    acf = acf.Replace(gameCommonFolder.ToLower().Replace("\\", "\\\\"), "|DIRECTORY-ESCSLASH-LOWER|");
+
+                    File.WriteAllText(dst + "\\appmanifest_" + id + ".acf", acf);
+                    reader.Close();
+                }
             }
         }
 
         private void copyAcfToRestore(Job job)
         {
-            string[] acfId = job.acfFiles.Split('|');
-
-            foreach (string id in acfId)
+            if (!String.IsNullOrEmpty(job.acfFiles))
             {
-                string src = tbxBackupDir.Text + "\\acf\\appmanifest_" + id + ".acf";
-                string dst = job.acfDir;
+                string[] acfId = job.acfFiles.Split('|');
 
-                if (!Directory.Exists(dst))
-                    Directory.CreateDirectory(dst);
+                foreach (string id in acfId)
+                {
+                    string src = tbxBackupDir.Text + "\\acf\\appmanifest_" + id + ".acf";
+                    string dst = job.acfDir;
 
-                FileInfo fi = new FileInfo(src);
-                StreamReader reader = fi.OpenText();
+                    if (!Directory.Exists(dst))
+                        Directory.CreateDirectory(dst);
 
-                string acf = reader.ReadToEnd().ToString();
-                string gameCommonFolder = job.acfDir + "common\\";
-                acf = acf.Replace("|DIRECTORY-STD|", gameCommonFolder);
-                acf = acf.Replace("|DIRECTORY-LOWER|", gameCommonFolder.ToLower());
-                acf = acf.Replace("|DIRECTORY-ESCSLASH-LOWER|", gameCommonFolder.ToLower().Replace("\\", "\\\\"));
+                    FileInfo fi = new FileInfo(src);
+                    StreamReader reader = fi.OpenText();
 
-                File.WriteAllText(dst + "\\appmanifest_" + id + ".acf", acf);
-                reader.Close();
+                    string acf = reader.ReadToEnd().ToString();
+                    string gameCommonFolder = job.acfDir + "common\\";
+                    acf = acf.Replace("|DIRECTORY-STD|", gameCommonFolder);
+                    acf = acf.Replace("|DIRECTORY-LOWER|", gameCommonFolder.ToLower());
+                    acf = acf.Replace("|DIRECTORY-ESCSLASH-LOWER|", gameCommonFolder.ToLower().Replace("\\", "\\\\"));
+
+                    File.WriteAllText(dst + "\\appmanifest_" + id + ".acf", acf);
+                    reader.Close();
+                }
             }
         }
 

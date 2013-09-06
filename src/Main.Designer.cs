@@ -33,15 +33,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.thread1 = new System.ComponentModel.BackgroundWorker();
-            this.thread2 = new System.ComponentModel.BackgroundWorker();
             this.tbxSteamDir = new System.Windows.Forms.TextBox();
             this.btnBrowseSteam = new System.Windows.Forms.Button();
             this.btnBrowseBackup = new System.Windows.Forms.Button();
             this.tbxBackupDir = new System.Windows.Forms.TextBox();
             this.lbl0 = new System.Windows.Forms.Label();
-            this.thread0 = new System.ComponentModel.BackgroundWorker();
-            this.thread3 = new System.ComponentModel.BackgroundWorker();
             this.pgsBarAll = new System.Windows.Forms.ProgressBar();
             this.lblProgress = new System.Windows.Forms.Label();
             this.lblStarted = new System.Windows.Forms.Label();
@@ -109,14 +105,6 @@
             this.label3.Text = " by [OCN]FiX and [OCN]Du-z";
             this.label3.Click += new System.EventHandler(this.title_Click);
             // 
-            // thread1
-            // 
-            this.thread1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.thread1_DoWork);
-            // 
-            // thread2
-            // 
-            this.thread2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.thread2_DoWork);
-            // 
             // tbxSteamDir
             // 
             this.tbxSteamDir.Location = new System.Drawing.Point(26, 113);
@@ -162,14 +150,6 @@
             this.lbl0.Size = new System.Drawing.Size(23, 13);
             this.lbl0.TabIndex = 13;
             this.lbl0.Text = "lbl0";
-            // 
-            // thread0
-            // 
-            this.thread0.DoWork += new System.ComponentModel.DoWorkEventHandler(this.thread0_DoWork);
-            // 
-            // thread3
-            // 
-            this.thread3.DoWork += new System.ComponentModel.DoWorkEventHandler(this.thread3_DoWork);
             // 
             // pgsBarAll
             // 
@@ -477,13 +457,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.ComponentModel.BackgroundWorker thread1;
-        private System.ComponentModel.BackgroundWorker thread2;
         private System.Windows.Forms.Button btnBrowseSteam;
         private System.Windows.Forms.Button btnBrowseBackup;
         private System.Windows.Forms.Label lbl0;
-        private System.ComponentModel.BackgroundWorker thread0;
-        private System.ComponentModel.BackgroundWorker thread3;
         private System.Windows.Forms.ProgressBar pgsBarAll;
         private System.Windows.Forms.Label lblProgress;
         private System.Windows.Forms.Label lblStarted;
