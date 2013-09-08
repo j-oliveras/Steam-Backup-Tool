@@ -98,22 +98,58 @@ namespace steamBackup
 
         }
 
+        private bool isValidSteamFolder()
+        {
+            if(
+                Directory.Exists(tbxSteamDir.Text.ToString() + "\\steamapps\\common\\") &&
+                File.Exists(tbxSteamDir.Text.ToString() + "\\config\\config.vdf")
+                )
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool isValidBackupFolder()
+        {
+            if(
+                File.Exists(tbxBackupDir.Text.ToString() + "\\config.sbt")
+                )
+            {
+                // Valid Archiver Version 2
+                return true;
+            }
+            else if(
+                Directory.Exists(tbxBackupDir.Text.ToString() + "\\common\\") && 
+                File.Exists(tbxBackupDir.Text.ToString() + "\\games.7z") &&
+                File.Exists(tbxBackupDir.Text.ToString() + "\\steamapps.7z")
+                )
+            {
+                // Valid Archiver Version 1
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         private void btnBackup_Click(object sender, EventArgs e)
         {
-
             Process[] pname = Process.GetProcessesByName("Steam");
             if (pname.Length != 0 && Settings.checkSteamRun)
             {
                 MessageBox.Show("Please exit Steam before backing up. To continue, exit Steam and then click the 'Backup' button again. Do Not start Steam until the backup process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
-            else if (!Directory.Exists(tbxSteamDir.Text.ToString() + "\\steamapps\\common\\") && !Directory.Exists(tbxSteamDir.Text.ToString() + "\\steam\\games\\"))
+            else if (!isValidSteamFolder())
             {
                 MessageBox.Show("'" + tbxSteamDir.Text.ToString() + "' is not a valid Steam installation directory");
             }
             else
             {
-                
-
                 save();
 
                 // Open Backup User Control Window
@@ -132,7 +168,6 @@ namespace steamBackup
 
                 task = backupUserCtrl.getTask();
                 start();
-
             }
         }
 
@@ -141,14 +176,17 @@ namespace steamBackup
             Process[] pname = Process.GetProcessesByName("Steam");
             if (pname.Length != 0 && Settings.checkSteamRun)
             {
-                MessageBox.Show("Please exit Steam before restoring. To continue, exit Steam and then click the 'Restore' button again. Do Not start Steam until the restore process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("Please exit Steam before backing up. To continue, exit Steam and then click the 'Backup' button again. Do Not start Steam until the backup process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
-            else if(
-                File.Exists(tbxBackupDir.Text.ToString() + "\\config.sbt") || // Valid Archiver Version 2
-                Directory.Exists(tbxBackupDir.Text.ToString() + "\\common\\") && // Valid Archiver Version 1
-                File.Exists(tbxBackupDir.Text.ToString() + "\\games.7z") &&
-                File.Exists(tbxBackupDir.Text.ToString() + "\\steamapps.7z")
-                )
+            else if (!isValidSteamFolder())
+            {
+                MessageBox.Show("'" + tbxSteamDir.Text.ToString() + "' is not a valid Steam installation directory");
+            }
+            else if (!isValidBackupFolder())
+            {
+                MessageBox.Show("'" + tbxBackupDir.Text.ToString() + "' is not a valid Steam Backup folder");
+            }
+            else
             {
                 save();
 
@@ -163,13 +201,6 @@ namespace steamBackup
                 start();
 
             }
-            else
-            {
-                // Invalid Archiver Version
-                MessageBox.Show("'" + tbxBackupDir.Text.ToString() + "' is not a valid Steam Backup folder");
-                return;
-            }
-            pname = null;
         }
 
         private void start()
