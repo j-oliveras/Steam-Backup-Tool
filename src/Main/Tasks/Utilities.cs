@@ -41,7 +41,11 @@ namespace steamBackup
 
         public static string[] getLibraries(string steamDir)
         {
-            string libraryLocation = steamDir + "\\steamapps\\";
+            string libraryLocation = "";
+            if(Directory.Exists(steamDir + "\\steamapps\\"))
+                libraryLocation = steamDir + "\\steamapps\\";
+            if (Directory.Exists(steamDir + "\\SteamApps\\"))
+                libraryLocation = steamDir + "\\SteamApps\\";
 
             FileInfo fi = new FileInfo(steamDir + "\\config\\config.vdf");
             StreamReader reader = fi.OpenText();

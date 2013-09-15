@@ -100,10 +100,7 @@ namespace steamBackup
 
         private bool isValidSteamFolder()
         {
-            if(
-                Directory.Exists(tbxSteamDir.Text.ToString() + "\\steamapps\\common\\") &&
-                File.Exists(tbxSteamDir.Text.ToString() + "\\config\\config.vdf")
-                )
+            if(File.Exists(tbxSteamDir.Text.ToString() + "\\config\\config.vdf"))
             {
                 return true;
             }
