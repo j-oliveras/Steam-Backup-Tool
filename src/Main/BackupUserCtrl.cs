@@ -83,15 +83,27 @@ namespace steamBackup
             updCheckBoxList();
         }
 
-        private void btnBupUpd_Click(object sender, EventArgs e)
+        private void btnUpdBup_Click(object sender, EventArgs e)
         {            
             cBoxDelBup.Enabled = false;
             cBoxDelBup.Checked = false;
 
             this.Cursor = Cursors.WaitCursor;
-            backupTask.setEnableUpd(chkList);
+            backupTask.setEnableUpd(chkList, true);
             this.Cursor = Cursors.Arrow;
             
+            updCheck = true;
+        }
+
+        private void btnUpdLib_Click(object sender, EventArgs e)
+        {
+            cBoxDelBup.Enabled = false;
+            cBoxDelBup.Checked = false;
+
+            this.Cursor = Cursors.WaitCursor;
+            backupTask.setEnableUpd(chkList, false);
+            this.Cursor = Cursors.Arrow;
+
             updCheck = true;
         }
 
@@ -254,9 +266,14 @@ namespace steamBackup
             infoBox.Text = "Click to deselect all games for backup. The selection can be modified in the check box list.";
         }
 
-        private void btnBupUpd_MouseHover(object sender, EventArgs e)
+        private void btnUpdBup_MouseHover(object sender, EventArgs e)
         {
-            infoBox.Text = "Click to select all games that have been changed since the last backup. The selection can be modified in the check box list.";
+            infoBox.Text = "Click to select all games that have been changed since the last backup, Excluding games games that have not been backed up yet. The selection can be modified in the check box list.";
+        }
+
+        private void btnUpdLib_MouseHover(object sender, EventArgs e)
+        {
+            infoBox.Text = "Click to select all games that have been changed since the last backup, Including games games that have not been backed up yet. The selection can be modified in the check box list.";
         }
     }
 }

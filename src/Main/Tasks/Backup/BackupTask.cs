@@ -57,7 +57,7 @@ namespace steamBackup
             }
         }
 
-        public void setEnableUpd(CheckedListBox chkList)
+        public void setEnableUpd(CheckedListBox chkList, bool achivedOnly)
         {
             chkList.Items.Clear();
 
@@ -108,7 +108,10 @@ namespace steamBackup
                     }
                     else
                     {
-                        isNewer = true;
+                        if (achivedOnly)
+                            isNewer = false;
+                        else
+                            isNewer = true;
                     }
 
                     if (isNewer)

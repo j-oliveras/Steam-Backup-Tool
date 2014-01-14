@@ -53,7 +53,7 @@
             // chkList
             // 
             this.chkList.FormattingEnabled = true;
-            this.chkList.Location = new System.Drawing.Point(12, 108);
+            this.chkList.Location = new System.Drawing.Point(12, 106);
             this.chkList.Name = "chkList";
             this.chkList.Size = new System.Drawing.Size(260, 454);
             this.chkList.Sorted = true;
@@ -66,9 +66,9 @@
             // btnRestAll
             // 
             this.btnRestAll.AccessibleDescription = "";
-            this.btnRestAll.Location = new System.Drawing.Point(12, 59);
+            this.btnRestAll.Location = new System.Drawing.Point(12, 38);
             this.btnRestAll.Name = "btnRestAll";
-            this.btnRestAll.Size = new System.Drawing.Size(125, 35);
+            this.btnRestAll.Size = new System.Drawing.Size(120, 56);
             this.btnRestAll.TabIndex = 1;
             this.btnRestAll.Text = "Restore All";
             this.btnRestAll.UseVisualStyleBackColor = true;
@@ -79,7 +79,7 @@
             // lblThread
             // 
             this.lblThread.AutoSize = true;
-            this.lblThread.Location = new System.Drawing.Point(318, 369);
+            this.lblThread.Location = new System.Drawing.Point(318, 352);
             this.lblThread.Name = "lblThread";
             this.lblThread.Size = new System.Drawing.Size(110, 26);
             this.lblThread.TabIndex = 37;
@@ -90,7 +90,7 @@
             // tbarThread
             // 
             this.tbarThread.LargeChange = 1;
-            this.tbarThread.Location = new System.Drawing.Point(309, 336);
+            this.tbarThread.Location = new System.Drawing.Point(309, 319);
             this.tbarThread.Maximum = 4;
             this.tbarThread.Minimum = 1;
             this.tbarThread.Name = "tbarThread";
@@ -131,7 +131,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.MediumBlue;
-            this.label1.Location = new System.Drawing.Point(12, 23);
+            this.label1.Location = new System.Drawing.Point(12, 6);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(56, 16);
             this.label1.TabIndex = 42;
@@ -140,7 +140,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 39);
+            this.label2.Location = new System.Drawing.Point(12, 22);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(210, 13);
             this.label2.TabIndex = 43;
@@ -161,7 +161,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(306, 300);
+            this.label3.Location = new System.Drawing.Point(306, 283);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(265, 26);
             this.label3.TabIndex = 46;
@@ -173,7 +173,7 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.MediumBlue;
-            this.label5.Location = new System.Drawing.Point(306, 284);
+            this.label5.Location = new System.Drawing.Point(306, 267);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(56, 16);
             this.label5.TabIndex = 45;
@@ -182,7 +182,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(306, 456);
+            this.label9.Location = new System.Drawing.Point(306, 439);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(183, 13);
             this.label9.TabIndex = 52;
@@ -193,7 +193,7 @@
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label10.ForeColor = System.Drawing.Color.MediumBlue;
-            this.label10.Location = new System.Drawing.Point(306, 440);
+            this.label10.Location = new System.Drawing.Point(306, 423);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(56, 16);
             this.label10.TabIndex = 51;
@@ -201,9 +201,9 @@
             // 
             // btnRestNone
             // 
-            this.btnRestNone.Location = new System.Drawing.Point(147, 60);
+            this.btnRestNone.Location = new System.Drawing.Point(152, 38);
             this.btnRestNone.Name = "btnRestNone";
-            this.btnRestNone.Size = new System.Drawing.Size(125, 35);
+            this.btnRestNone.Size = new System.Drawing.Size(120, 56);
             this.btnRestNone.TabIndex = 2;
             this.btnRestNone.Text = "Restore None";
             this.btnRestNone.UseVisualStyleBackColor = true;
@@ -214,7 +214,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(306, 39);
+            this.label4.Location = new System.Drawing.Point(306, 22);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(282, 130);
             this.label4.TabIndex = 54;
@@ -225,7 +225,7 @@
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.MediumBlue;
-            this.label6.Location = new System.Drawing.Point(306, 23);
+            this.label6.Location = new System.Drawing.Point(306, 6);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(56, 16);
             this.label6.TabIndex = 53;
@@ -236,7 +236,7 @@
             this.dboxLibList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.dboxLibList.Enabled = false;
             this.dboxLibList.FormattingEnabled = true;
-            this.dboxLibList.Location = new System.Drawing.Point(309, 208);
+            this.dboxLibList.Location = new System.Drawing.Point(309, 191);
             this.dboxLibList.Name = "dboxLibList";
             this.dboxLibList.Size = new System.Drawing.Size(250, 21);
             this.dboxLibList.TabIndex = 55;
@@ -250,7 +250,7 @@
             this.lblRefreshList.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblRefreshList.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblRefreshList.ForeColor = System.Drawing.Color.DarkRed;
-            this.lblRefreshList.Location = new System.Drawing.Point(309, 179);
+            this.lblRefreshList.Location = new System.Drawing.Point(309, 162);
             this.lblRefreshList.Name = "lblRefreshList";
             this.lblRefreshList.Size = new System.Drawing.Size(84, 15);
             this.lblRefreshList.TabIndex = 56;
