@@ -223,57 +223,116 @@ namespace steamBackup
 
         private void controls_MouseLeave(object sender, EventArgs e)
         {
-            infoBox.Text = "Hover your mouse over the controls to get further information.";
+            var sb = new StringBuilder();
+            sb.Append(@"{\rtf1\ansi ");
+            sb.Append(@"Hover your mouse over the controls to get further information.");
+            sb.Append(@" }");
+
+            infoBox.Rtf = sb.ToString();
         }
 
         private void btnStartBup_MouseHover(object sender, EventArgs e)
         {
-            infoBox.Text = "Starts the backup procedure with the above parameters";
+            var sb = new StringBuilder();
+            sb.Append(@"{\rtf1\ansi ");
+            sb.Append(@"Starts the backup procedure with the above parameters");
+            sb.Append(@" }");
+
+            infoBox.Rtf = sb.ToString();
         }
 
         private void btnCancelBup_MouseHover(object sender, EventArgs e)
         {
-            infoBox.Text = "Cancels the backup procedure and navigates back to the main menu.";
+            var sb = new StringBuilder();
+            sb.Append(@"{\rtf1\ansi ");
+            sb.Append(@"Cancels the backup procedure and navigates back to the main menu.");
+            sb.Append(@" }");
+
+            infoBox.Rtf = sb.ToString();
         }
 
         private void cBoxDelBup_MouseHover(object sender, EventArgs e)
         {
-            infoBox.Text = "This will delete EVERYTHING in the 'Backup Directory'. Make sure that there are no valuable files in there!";
+            var sb = new StringBuilder();
+            sb.Append(@"{\rtf1\ansi ");
+            sb.Append(@"This will delete \b EVERYTHING \b0 in the 'Backup Directory'. Make sure that there are no valuable files in there!");
+            sb.Append(@" }");
+
+            infoBox.Rtf = sb.ToString();
         }
 
         private void lblComp_MouseHover(object sender, EventArgs e)
         {
-            infoBox.Text = "This will change how small the backup files are. Higher compression levels will use more ram, take longer but will result in far better compression.";
+            var sb = new StringBuilder();
+            sb.Append(@"{\rtf1\ansi ");
+            sb.Append(@"This will change how small the backup files are. Higher compression levels will use more ram and take longer but will result in far better compression.");
+            sb.Append(@" }");
+
+            infoBox.Rtf = sb.ToString();
         }
 
         private void lblThread_MouseHover(object sender, EventArgs e)
         {
-            infoBox.Text = "This will change how many threads are used. Each instance creates two threads. Recommended to use core_count/2 for best performance. Dramatically increases ram usage when also using high compression rates.";
+            var sb = new StringBuilder();
+            sb.Append(@"{\rtf1\ansi ");
+            sb.Append(@"This will change how many threads are used. Each instance creates two threads. Recommended to use core_count/2 for best performance. Dramatically increases ram usage when also using high compression rates.");
+            sb.Append(@" }");
+
+            infoBox.Rtf = sb.ToString();
         }
 
         private void chkList_MouseHover(object sender, EventArgs e)
         {
-            infoBox.Text = "Customise your selection of games to backup. Older games that utilize Valve's Source Engine share resources between each other. For this reason they cannot be separated and have to be backed up together.";
+            var sb = new StringBuilder();
+            sb.Append(@"{\rtf1\ansi ");
+            sb.Append(@"Customise your selection of games to backup. Older games that utilize Valve's Source Engine share resources between each other. For this reason they cannot be separated and have to be backed up together.");
+            sb.Append(@" }");
+
+            infoBox.Rtf = sb.ToString();
         }
 
         private void btnBupAll_MouseHover(object sender, EventArgs e)
         {
-            infoBox.Text = "Click to select all games for backup. The selection can be modified in the check box list.";
+            var sb = new StringBuilder();
+            sb.Append(@"{\rtf1\ansi ");
+            sb.Append(@"Click to select all games for backup.");
+            sb.Append(@"\line The selection can be modified in the check box list.");
+            sb.Append(@" }");
+
+            infoBox.Rtf = sb.ToString();
         }
 
         private void btnBupNone_MouseHover(object sender, EventArgs e)
         {
-            infoBox.Text = "Click to deselect all games for backup. The selection can be modified in the check box list.";
+            var sb = new StringBuilder();
+            sb.Append(@"{\rtf1\ansi ");
+            sb.Append(@"Click to deselect all games for backup.");
+            sb.Append(@" The selection can be modified in the check box list.");
+            sb.Append(@" }");
+
+            infoBox.Rtf = sb.ToString();
         }
 
         private void btnUpdBup_MouseHover(object sender, EventArgs e)
         {
-            infoBox.Text = "Click to select all games that have been changed since the last backup, Excluding games games that have not been backed up yet. The selection can be modified in the check box list.";
+            var sb = new StringBuilder();
+            sb.Append(@"{\rtf1\ansi ");
+            sb.Append(@"Click to select all games that have been changed since the last backup, \b Excluding \b0 games games that have not been backed up yet.");
+            sb.Append(@" The selection can be modified in the check box list.");
+            sb.Append(@" }");
+
+            infoBox.Rtf = sb.ToString();
         }
 
         private void btnUpdLib_MouseHover(object sender, EventArgs e)
         {
-            infoBox.Text = "Click to select all games that have been changed since the last backup, Including games games that have not been backed up yet. The selection can be modified in the check box list.";
+            var sb = new StringBuilder();
+            sb.Append(@"{\rtf1\ansi ");
+            sb.Append(@"Click to select all games that have been changed since the last backup, \b Including \b0 games games that have not been backed up yet.");
+            sb.Append(@" The selection can be modified in the check box list.");
+            sb.Append(@" }");
+            
+            infoBox.Rtf = sb.ToString();
         }
     }
 }
