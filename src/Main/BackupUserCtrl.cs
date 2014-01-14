@@ -275,7 +275,8 @@ namespace steamBackup
         {
             var sb = new StringBuilder();
             sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"This will change how many threads are used. Each instance creates two threads. Recommended to use core_count/2 for best performance. Dramatically increases ram usage when also using high compression rates.");
+            sb.Append(@"This will change how many threads are used, Each instance creates two threads. It is recommended that you set the slider to 'core_count/2' for best performance.");
+            sb.Append(@" Dramatically increases ram usage when also using high compression rates.");
             sb.Append(@" }");
 
             infoBox.Rtf = sb.ToString();
@@ -295,8 +296,8 @@ namespace steamBackup
         {
             var sb = new StringBuilder();
             sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Click to select all games for backup.");
-            sb.Append(@"\line The selection can be modified in the check box list.");
+            sb.Append(@"Click to \b select \b0 all games for backup.");
+            sb.Append(@" The selection can be modified in the check box list.");
             sb.Append(@" }");
 
             infoBox.Rtf = sb.ToString();
@@ -306,7 +307,7 @@ namespace steamBackup
         {
             var sb = new StringBuilder();
             sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Click to deselect all games for backup.");
+            sb.Append(@"Click to \b deselect \b0 all games for backup.");
             sb.Append(@" The selection can be modified in the check box list.");
             sb.Append(@" }");
 
@@ -317,7 +318,7 @@ namespace steamBackup
         {
             var sb = new StringBuilder();
             sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Click to select all games that have been changed since the last backup, \b Excluding \b0 games games that have not been backed up yet.");
+            sb.Append(@"Click to select all games that have been changed since the last backup, \b Excluding \b0 games that have not been backed up yet.");
             sb.Append(@" The selection can be modified in the check box list.");
             sb.Append(@" }");
 
@@ -328,7 +329,7 @@ namespace steamBackup
         {
             var sb = new StringBuilder();
             sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Click to select all games that have been changed since the last backup, \b Including \b0 games games that have not been backed up yet.");
+            sb.Append(@"Click to select all games that have been changed since the last backup, \b Including \b0 games that have not been backed up yet.");
             sb.Append(@" The selection can be modified in the check box list.");
             sb.Append(@" }");
             
