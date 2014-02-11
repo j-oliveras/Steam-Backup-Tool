@@ -86,5 +86,10 @@ namespace steamBackup
             sevenZip.CompressionLevel = level;
         }
 
+        public void setCompressionMethod(CompressionMethod method)
+        {
+            sevenZip.CompressionMethod = method;
+        }
+
     }
 }

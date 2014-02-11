@@ -35,7 +35,7 @@ namespace steamBackup
 
         public int threadCount = 0;
 
-        abstract public int ramUsage();
+        abstract public int ramUsage(bool useLzma2);
         abstract public void scan();
         abstract public void setup();
 

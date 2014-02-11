@@ -53,6 +53,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.btnBupNone = new System.Windows.Forms.Button();
             this.btnUpdLib = new System.Windows.Forms.Button();
+            this.cBoxLzma2 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.tbarComp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbarThread)).BeginInit();
             this.SuspendLayout();
@@ -329,11 +330,25 @@
             this.btnUpdLib.MouseLeave += new System.EventHandler(this.controls_MouseLeave);
             this.btnUpdLib.MouseHover += new System.EventHandler(this.btnUpdLib_MouseHover);
             // 
+            // cBoxLzma2
+            // 
+            this.cBoxLzma2.AutoSize = true;
+            this.cBoxLzma2.Location = new System.Drawing.Point(438, 190);
+            this.cBoxLzma2.Name = "cBoxLzma2";
+            this.cBoxLzma2.Size = new System.Drawing.Size(123, 17);
+            this.cBoxLzma2.TabIndex = 54;
+            this.cBoxLzma2.Text = "LZMA2 compression";
+            this.cBoxLzma2.UseVisualStyleBackColor = true;
+            this.cBoxLzma2.CheckStateChanged += new System.EventHandler(this.cBoxLzma2_CheckStateChanged);
+            this.cBoxLzma2.MouseLeave += new System.EventHandler(this.controls_MouseLeave);
+            this.cBoxLzma2.MouseHover += new System.EventHandler(this.cBoxLzma2_MouseHover);
+            // 
             // BackupUserCtrl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(590, 646);
+            this.Controls.Add(this.cBoxLzma2);
             this.Controls.Add(this.btnUpdLib);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label10);
@@ -399,6 +414,7 @@
         private System.Windows.Forms.Button btnBupNone;
         private System.Windows.Forms.CheckedListBox chkList;
         private System.Windows.Forms.Button btnUpdLib;
+        private System.Windows.Forms.CheckBox cBoxLzma2;
 
     }
 }

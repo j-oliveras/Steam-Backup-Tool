@@ -244,7 +244,7 @@ namespace steamBackup
                 lbl1.Text = "Version: " + versionNum;
                 this.Size = new Size(400, 482);
             }
-            if (task.threadCount >= 2)
+            if (task.threadCount >= 2 && !Settings.useLzma2)
             {
                 threadList[1] = new Thread(() => doWork(1));
                 threadList[1].Priority = ThreadPriority.Lowest;
@@ -257,7 +257,7 @@ namespace steamBackup
                 lbl2.Text = "Version: " + versionNum;
                 this.Size = new Size(400, 562);
             }
-            if (task.threadCount >= 3)
+            if (task.threadCount >= 3 && !Settings.useLzma2)
             {
                 threadList[2] = new Thread(() => doWork(2));
                 threadList[2].Priority = ThreadPriority.Lowest;
@@ -270,7 +270,7 @@ namespace steamBackup
                 lbl3.Text = "Version: " + versionNum;
                 this.Size = new Size(400, 642);
             }
-            if (task.threadCount >= 4)
+            if (task.threadCount >= 4 && !Settings.useLzma2)
             {
                 threadList[3] = new Thread(() => doWork(3));
                 threadList[3].Priority = ThreadPriority.Lowest;

@@ -16,6 +16,7 @@ namespace steamBackup
         public bool deleteAll = false;
 
         protected CompressionLevel compLevel;
+        protected CompressionMethod compMethod;
         public CompressionLevel getCompLevel(){return compLevel;}
 
         public BackupTask()
@@ -23,26 +24,65 @@ namespace steamBackup
             type = TaskType.BACKUP;
         }
         
-        public override int ramUsage()
+        public override int ramUsage(bool useLzma2)
         {
             int ramPerThread = 0;
+            int cpuCount = Environment.ProcessorCount;
+            int cpuCountEven = cpuCount;
 
-            if ((int)compLevel == 5)
-                ramPerThread = 709;
-            else if ((int)compLevel == 4)
-                ramPerThread = 376;
-            else if ((int)compLevel == 3)
-                ramPerThread = 192;
-            else if ((int)compLevel == 2)
-                ramPerThread = 19;
-            else if ((int)compLevel == 1)
-                ramPerThread = 6;
-            else if ((int)compLevel == 0)
-                ramPerThread = 1;
-            else
-                return -1;
+            if (cpuCount > 0 && cpuCount%2 != 0)
+                cpuCountEven--;
 
-            return (threadCount) * ramPerThread;
+            switch ((int)compLevel)
+            {
+                case 5:
+                    if (!useLzma2 || (useLzma2 && cpuCountEven == 2))
+                        ramPerThread = 709;
+                    else
+                    {
+                        ramPerThread = (int) Math.Ceiling(cpuCountEven*553f);
+                    }
+                    break;
+                case 4:
+                    if (!useLzma2)
+                        ramPerThread = 376;
+                    else
+                    {
+                        ramPerThread = (int)Math.Ceiling(cpuCountEven * 292f);
+                    }
+                    break;
+                case 3:
+                    if (!useLzma2)
+                        ramPerThread = 192;
+                    else
+                    {
+                        ramPerThread = (int) Math.Ceiling(cpuCountEven*148f);
+                    }
+                    break;
+                case 2: 
+                    if (!useLzma2)
+                        ramPerThread = 19;
+                    else
+                    {
+                        ramPerThread = (int) Math.Ceiling(cpuCount*16f);
+                    }
+                    break;
+                case 1:
+                    if (!useLzma2)
+                        ramPerThread = 6;
+                    else
+                    {
+                        ramPerThread = (int) Math.Ceiling(cpuCount*4.66f);
+                    }
+                    break;
+                case 0:
+                    ramPerThread = 1;
+                    break;
+                default:
+                    return -1;
+            }
+
+            return (useLzma2 ? 1 : (threadCount)) * ramPerThread;
         }
 
         internal void setCompLevel(CompressionLevel compressionLevel)
@@ -54,6 +94,17 @@ namespace steamBackup
                 BackupJob bJob = (BackupJob)job;
 
                 bJob.setCompression(compressionLevel);
+            }
+        }
+
+        internal void setCompMethod(CompressionMethod compressionMethod)
+        {
+            compMethod = compressionMethod;
+
+            foreach (Job job in list)
+            {
+                BackupJob bJob = (BackupJob) job;
+                bJob.setCompressionMethod(compMethod);
             }
         }
 

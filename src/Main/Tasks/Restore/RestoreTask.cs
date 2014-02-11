@@ -16,9 +16,9 @@ namespace steamBackup
             type = TaskType.RESTORE;
         }
         
-        public override int ramUsage()
+        public override int ramUsage(bool useLzma2)
         {
-            return threadCount * 40;
+            return (useLzma2 ? 1 : threadCount) * 40;
         }
 
         public override void scan()

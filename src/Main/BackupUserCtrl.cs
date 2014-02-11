@@ -40,6 +40,8 @@ namespace steamBackup
             backupTask.setCompLevel((CompressionLevel)Settings.compresion);
             compresionText();
 
+            cBoxLzma2.Checked = Settings.useLzma2;
+
             ramUsage();
         }
 
@@ -47,6 +49,7 @@ namespace steamBackup
         {
             Settings.compresion = (int)backupTask.getCompLevel();
             Settings.threadsBup = backupTask.threadCount;
+            Settings.useLzma2 = cBoxLzma2.Checked;
             Settings.save();
         }
 
@@ -173,7 +176,7 @@ namespace steamBackup
 
         private void ramUsage()
         {
-            int ram = backupTask.ramUsage();
+            int ram = backupTask.ramUsage(cBoxLzma2.Checked);
 
             lblRamBackup.Text = "Max Ram Usage: " + ram.ToString() + "MB";
 
@@ -334,6 +337,31 @@ namespace steamBackup
             sb.Append(@" }");
             
             infoBox.Rtf = sb.ToString();
+        }
+
+        private void cBoxLzma2_MouseHover(object sender, EventArgs e)
+        {
+            var sb = new StringBuilder();
+            sb.Append(@"{\rtf1\ansi ");
+            sb.Append(@"This will use multithreaded compression and reduce concurrent compression instances to 1. Uses \b all \b0 cpu cores for compression.");
+            sb.Append(@" The compressed archives have similar sizes compared to LZMA compression.");
+            sb.Append(@" }");
+
+            infoBox.Rtf = sb.ToString();
+        }
+
+        private void cBoxLzma2_CheckStateChanged(object sender, EventArgs e)
+        {
+            if (cBoxLzma2.Checked)
+            {
+                backupTask.setCompMethod(CompressionMethod.Lzma2);
+            }
+            else
+            {
+                backupTask.setCompMethod(CompressionMethod.Lzma);
+            }
+
+            ramUsage();
         }
     }
 }
