@@ -294,6 +294,8 @@ namespace steamBackup
                             {
                                 i++;
                                 string str = lineData[i].Trim('\"').Replace("\\\\", "\\");
+                                if (!Path.IsPathRooted(str))
+                                    str = Path.Combine(lib, "common", str);
                                 if (filterAcfDir(str))
                                     dir = Utilities.getFileSystemCasing(str);
                             }
@@ -301,6 +303,8 @@ namespace steamBackup
                             {
                                 i++;
                                 string str = lineData[i].Trim('\"');
+                                if (!Path.IsPathRooted(str))
+                                    str = Path.Combine(lib, "common", str);
                                 if (filterAcfDir(str))
                                     dir = Utilities.getFileSystemCasing(str);
                             }
