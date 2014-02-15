@@ -46,16 +46,10 @@ namespace steamBackup
 
         private void main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            save();
-
-            Process[] processes = Process.GetProcessesByName("7za_cmd");
-            foreach (Process process in processes)
-            {
-                process.Kill();
-            }
-            processes = null;
+            save(); // save Main form settings then close
         }
 
+        // Save Main form settings
         private void save()
         {
             Settings.backupDir = tbxBackupDir.Text;
@@ -69,6 +63,7 @@ namespace steamBackup
 
             CheckForIllegalCrossThreadCalls = false;
 
+            // Load Main form settings
             Settings.load();
             tbxSteamDir.Text = Settings.steamDir;
             tbxBackupDir.Text = Settings.backupDir;
@@ -98,6 +93,7 @@ namespace steamBackup
 
         }
 
+        // Check to see if a steam install directory is valid
         private bool isValidSteamFolder()
         {
             if(File.Exists(tbxSteamDir.Text.ToString() + "\\config\\config.vdf"))
@@ -110,6 +106,7 @@ namespace steamBackup
             }
         }
 
+        // Check to see if a backup directory is valid
         private bool isValidBackupFolder()
         {
             if(
@@ -156,6 +153,7 @@ namespace steamBackup
                 if (backupUserCtrl.canceled)
                     return;
 
+                // create folders if needed
                 if (!Directory.Exists(tbxBackupDir.Text.ToString()))
                     Directory.CreateDirectory(tbxBackupDir.Text.ToString());
                 if (!Directory.Exists(tbxBackupDir.Text.ToString() + "\\common"))
@@ -202,7 +200,7 @@ namespace steamBackup
 
         private void start()
         {
-            
+            // set UI to starting values
             pgsBarAll.Value = 0;
             pgsBarAll.Maximum = task.jobsToDoCount;
 
@@ -226,11 +224,13 @@ namespace steamBackup
 
             timer.Start();
 
+            // Launch task threads
             startThreads();
         }
 
         private void startThreads()
         {
+            // setup the UI for each thread that is running
             if (task.threadCount >= 1)
             {
                 threadList[0] = new Thread(() => doWork(0));
@@ -287,6 +287,7 @@ namespace steamBackup
 
         private void btnCancelBackup_Click(object sender, EventArgs e)
         {
+            // set UI to canceled values
             btnBrowseSteam.Enabled = true;
             btnFindSteam.Enabled = true;
             btnBrowseBackup.Enabled = true;
@@ -300,8 +301,6 @@ namespace steamBackup
         private void doWork(int thread)
         {
             Thread.Sleep(1000 * thread);
-
-            System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.BelowNormal;
 
             ProgressBar pgsBar = null;
             Label lblJobTitle = null;
@@ -367,6 +366,7 @@ namespace steamBackup
             jobsFinished();
         }
 
+        // Used to update the UI at each tick
         private void timer_Tick(object sender, EventArgs e)
         {
             for (int i = 0; i < 4; i++)
@@ -378,6 +378,7 @@ namespace steamBackup
             }
         }
 
+        // updates the UI
         private void updateStats(int thread, Job job)
         {
             ProgressBar pgsBar = null;
@@ -420,6 +421,7 @@ namespace steamBackup
                 lblJobFile.Text = job.getCurFileStr();
         }
 
+        // Copies ACF files from the steam install to Backup
         private void copyAcfToBackup(Job job)
         {
             if (!String.IsNullOrEmpty(job.acfFiles))
@@ -449,6 +451,7 @@ namespace steamBackup
             }
         }
 
+        // Copies ACF files from the Backup to steam install
         private void copyAcfToRestore(Job job)
         {
             if (!String.IsNullOrEmpty(job.acfFiles))
@@ -478,6 +481,7 @@ namespace steamBackup
             }
         }
 
+        // Runs after each job is done.
         private void jobsFinished()
         {
             threadDone++;
@@ -583,6 +587,7 @@ namespace steamBackup
             }
         }
 
+        // Uses steam reg keys to determin why steam is installed 
         private void btnFindSteam_Click(object sender, EventArgs e)
         {
             RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\Valve\\Steam", false);

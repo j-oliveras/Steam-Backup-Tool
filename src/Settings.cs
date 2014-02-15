@@ -22,6 +22,7 @@ namespace steamBackup
 
         public static string sourceEngineGames = " Old Source Engine Games";
 
+        // Load Settings
         public static void load()
         {
             if (File.Exists(settingsDir + "\\settings.cfg"))
@@ -78,6 +79,7 @@ namespace steamBackup
             }
         }
 
+        // Save Settings
         public static void save()
         {
             
