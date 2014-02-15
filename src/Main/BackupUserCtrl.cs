@@ -355,10 +355,14 @@ namespace steamBackup
             if (cBoxLzma2.Checked)
             {
                 backupTask.setCompMethod(CompressionMethod.Lzma2);
+
+                tbarThread.Enabled = false;
             }
             else
             {
                 backupTask.setCompMethod(CompressionMethod.Lzma);
+
+                tbarThread.Enabled = true;
             }
 
             ramUsage();
