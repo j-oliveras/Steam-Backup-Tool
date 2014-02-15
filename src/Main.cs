@@ -485,7 +485,7 @@ namespace steamBackup
         private void jobsFinished()
         {
             threadDone++;
-            if (task.threadCount == threadDone)
+            if ((task.threadCount == threadDone && !Settings.useLzma2) || Settings.useLzma2)
             {
                 timer.Stop();
                 

@@ -5,6 +5,7 @@ using System.Text;
 using SevenZip;
 using System.IO;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace steamBackup
 {
@@ -54,6 +55,11 @@ namespace steamBackup
             else
             {
                 fileList = Directory.GetFiles(dirSteam, "*.*", SearchOption.AllDirectories);
+            }
+
+            if (sevenZip.CompressionMethod == CompressionMethod.Lzma2 && Utilities.getSevenZipRelease() > 64)
+            {
+                sevenZip.CustomParameters.Add("mt", Settings.lzma2Threads.ToString(CultureInfo.InvariantCulture));
             }
 
             sevenZip.Compressing += new EventHandler<ProgressEventArgs>(working);

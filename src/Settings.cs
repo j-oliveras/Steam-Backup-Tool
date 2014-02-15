@@ -20,6 +20,7 @@ namespace steamBackup
         public static bool checkSteamRun = true;
         public static bool debugMode = false;
         public static bool useLzma2 = false;
+        public static int lzma2Threads = Environment.ProcessorCount;
 
         public static string sourceEngineGames = " Old Source Engine Games";
 
@@ -77,6 +78,11 @@ namespace steamBackup
                                 reader.Read();
                                 useLzma2 = bool.Parse(reader.Value.ToString());
                             }
+                            else if (reader.Value.ToString() == "lzma2Threads")
+                            {
+                                reader.Read();
+                                lzma2Threads = int.Parse(reader.Value.ToString());
+                            }
                         }
                     }
                 }
@@ -114,6 +120,8 @@ namespace steamBackup
               writer.WriteValue(debugMode);
               writer.WritePropertyName("useLzma2");
               writer.WriteValue(useLzma2);
+              writer.WritePropertyName("lzma2Threads");
+              writer.WriteValue(lzma2Threads);
 
               writer.WriteEndObject();
             }

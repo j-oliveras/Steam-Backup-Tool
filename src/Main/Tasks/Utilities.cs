@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace steamBackup
 {
@@ -114,6 +115,12 @@ namespace steamBackup
             errorList += Environment.NewLine + job.toString();
 
             File.WriteAllText(Settings.backupDir + "\\Error Log.txt", errorList);
+        }
+
+        public static int getSevenZipRelease()
+        {
+            Version sevenZipVersion = Assembly.GetAssembly(typeof (SevenZip.SevenZipCompressor)).GetName().Version;
+            return sevenZipVersion.Minor;
         }
 
     }

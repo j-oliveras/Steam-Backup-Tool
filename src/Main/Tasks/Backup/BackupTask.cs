@@ -27,10 +27,17 @@ namespace steamBackup
         public override int ramUsage(bool useLzma2)
         {
             int ramPerThread = 0;
-            int cpuCount = Environment.ProcessorCount;
+            bool modifiedSevenZip = Utilities.getSevenZipRelease() > 64;
+
+            int cpuCount;
+            if (modifiedSevenZip && useLzma2)
+                cpuCount = threadCount;
+            else 
+                cpuCount = Environment.ProcessorCount;
+
             int cpuCountEven = cpuCount;
 
-            if (cpuCount > 0 && cpuCount%2 != 0)
+            if (cpuCount > 1 && cpuCount%2 != 0)
                 cpuCountEven--;
 
             switch ((int)compLevel)

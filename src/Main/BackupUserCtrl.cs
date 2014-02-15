@@ -32,15 +32,26 @@ namespace steamBackup
             backupTask.scan();
             updCheckBoxList();
 
-            tbarThread.Value = Settings.threadsBup;
-            backupTask.threadCount = Settings.threadsBup;
+            if (Settings.useLzma2 && Utilities.getSevenZipRelease() > 64)
+            {
+                tbarThread.Maximum = Environment.ProcessorCount;
+                tbarThread.Value = Settings.lzma2Threads;
+                backupTask.threadCount = Settings.lzma2Threads;
+            }
+            else
+            {
+                tbarThread.Maximum = 4;
+                tbarThread.Value = Settings.threadsBup;
+                backupTask.threadCount = Settings.threadsBup;
+            }
+
+            cBoxLzma2.Checked = Settings.useLzma2;
+
             threadText();
 
             tbarComp.Value = Settings.compresion;
             backupTask.setCompLevel((CompressionLevel)Settings.compresion);
             compresionText();
-
-            cBoxLzma2.Checked = Settings.useLzma2;
 
             ramUsage();
         }
@@ -48,8 +59,12 @@ namespace steamBackup
         private void BackupUserCtrl_FormClosing(object sender, FormClosingEventArgs e)
         {
             Settings.compresion = (int)backupTask.getCompLevel();
-            Settings.threadsBup = backupTask.threadCount;
             Settings.useLzma2 = cBoxLzma2.Checked;
+
+            if (Settings.useLzma2)
+                Settings.lzma2Threads = tbarThread.Value;
+            else
+                Settings.threadsBup = tbarThread.Value;
             Settings.save();
         }
 
@@ -144,7 +159,10 @@ namespace steamBackup
 
         private void threadText()
         {
-            lblThread.Text = "Number Of Instances:\r\n" + tbarThread.Value.ToString();
+            if (cBoxLzma2.Checked && Utilities.getSevenZipRelease() > 64)
+                lblThread.Text = "Number Of Threads: \r\n" + tbarThread.Value.ToString();
+            else
+                lblThread.Text = "Number Of Instances:\r\n" + tbarThread.Value.ToString();
         }
 
         private void tbarComp_Scroll(object sender, EventArgs e)
@@ -343,7 +361,11 @@ namespace steamBackup
         {
             var sb = new StringBuilder();
             sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"This will use multithreaded compression and reduce concurrent compression instances to 1. Uses \b all \b0 cpu cores for compression.");
+            sb.Append(@"This will use multithreaded compression and reduce concurrent compression instances to 1.");
+
+            if (Utilities.getSevenZipRelease() <= 64)
+                sb.Append(@" Uses \b all \b0 cpu cores for compression.");
+
             sb.Append(@" The compressed archives have similar sizes compared to LZMA compression.");
             sb.Append(@" }");
 
@@ -352,17 +374,34 @@ namespace steamBackup
 
         private void cBoxLzma2_CheckStateChanged(object sender, EventArgs e)
         {
+            int sevenZipRelease = Utilities.getSevenZipRelease();
             if (cBoxLzma2.Checked)
             {
                 backupTask.setCompMethod(CompressionMethod.Lzma2);
 
-                tbarThread.Enabled = false;
+                if (sevenZipRelease > 64)
+                {
+                    tbarThread.Maximum = Environment.ProcessorCount;
+                    tbarThread.Value = Settings.lzma2Threads;
+                    backupTask.threadCount = Settings.lzma2Threads;
+                    threadText();
+                }
+                else
+                    tbarThread.Enabled = false;
             }
             else
             {
                 backupTask.setCompMethod(CompressionMethod.Lzma);
 
-                tbarThread.Enabled = true;
+                if (sevenZipRelease > 64)
+                {
+                    tbarThread.Maximum = 4;
+                    tbarThread.Value = Settings.threadsBup;
+                    backupTask.threadCount = Settings.threadsBup;
+                    threadText();
+                }
+                else
+                    tbarThread.Enabled = true;
             }
 
             ramUsage();
