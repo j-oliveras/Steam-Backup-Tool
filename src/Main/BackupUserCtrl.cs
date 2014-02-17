@@ -295,10 +295,24 @@ namespace steamBackup
         private void lblThread_MouseHover(object sender, EventArgs e)
         {
             var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"This will change how many threads are used, Each instance creates two threads. It is recommended that you set the slider to 'core_count/2' for best performance.");
-            sb.Append(@" Dramatically increases ram usage when also using high compression rates.");
-            sb.Append(@" }");
+            
+            if (cBoxLzma2.Checked && Utilities.getSevenZipRelease() > 64)
+            {
+                sb.Append(@"{\rtf1\ansi ");
+                sb.Append(@"This will change how many threads are used. It is recommended that you set the slider to \b 'core_count' \b0 for best performance.");
+                sb.Append(@" Dramatically increases ram usage when also using high compression rates.");
+                sb.Append(@" }");
+            }
+            else
+            {
+                sb.Append(@"{\rtf1\ansi ");
+                sb.Append(@"This will change how many instances of 7zip are used, Each instance creates two threads. It is recommended that you set the slider to \b 'core_count/2' \b0 for best performance.");
+                sb.Append(@" Dramatically increases ram usage when also using high compression rates.");
+                sb.Append(@" }");
+            }
+            
+            
+            
 
             infoBox.Rtf = sb.ToString();
         }
@@ -385,6 +399,8 @@ namespace steamBackup
                     tbarThread.Value = Settings.lzma2Threads;
                     backupTask.threadCount = Settings.lzma2Threads;
                     threadText();
+
+                    tbarThreadLbl.Text = "Choose the number of instances to run.\nRecommended: One instance for every CPU core.";
                 }
                 else
                     tbarThread.Enabled = false;
@@ -399,6 +415,8 @@ namespace steamBackup
                     tbarThread.Value = Settings.threadsBup;
                     backupTask.threadCount = Settings.threadsBup;
                     threadText();
+
+                    tbarThreadLbl.Text = "Choose the number of instances to run.\nRecommended: One instance for every two CPU cores.";
                 }
                 else
                     tbarThread.Enabled = true;

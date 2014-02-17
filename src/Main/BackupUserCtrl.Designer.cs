@@ -43,7 +43,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.infoBox = new System.Windows.Forms.RichTextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.tbarThreadLbl = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -223,15 +223,15 @@
             this.infoBox.TabIndex = 44;
             this.infoBox.Text = "Hover your mouse over the controls to get further information.";
             // 
-            // label3
+            // tbarThreadLbl
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(306, 22);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(269, 26);
-            this.label3.TabIndex = 46;
-            this.label3.Text = "Choose the number of instances to run.\r\nRecommended: One instance for every two C" +
-    "PU cores.";
+            this.tbarThreadLbl.AutoSize = true;
+            this.tbarThreadLbl.Location = new System.Drawing.Point(306, 22);
+            this.tbarThreadLbl.Name = "tbarThreadLbl";
+            this.tbarThreadLbl.Size = new System.Drawing.Size(269, 26);
+            this.tbarThreadLbl.TabIndex = 46;
+            this.tbarThreadLbl.Text = "Choose the number of instances to run.\r\nRecommended: One instance for every two C" +
+                "PU cores.";
             // 
             // label5
             // 
@@ -252,7 +252,7 @@
             this.label4.Size = new System.Drawing.Size(275, 26);
             this.label4.TabIndex = 48;
             this.label4.Text = "Choose the level of compression  to use.\r\nNote: Use a lower compression level for" +
-    " older computers.";
+                " older computers.";
             // 
             // label6
             // 
@@ -356,7 +356,7 @@
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.tbarThreadLbl);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.infoBox);
             this.Controls.Add(this.label2);
@@ -403,7 +403,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.RichTextBox infoBox;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label tbarThreadLbl;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label6;
