@@ -20,7 +20,6 @@ namespace steamBackup
         public BackupTask backupTask = new BackupTask();
         
         public bool canceled = true;
-        bool updCheck = false;
 
         private void BackupUserCtrl_Load(object sender, EventArgs e)
         {
@@ -85,36 +84,48 @@ namespace steamBackup
 
         private void btnBupAll_Click(object sender, EventArgs e)
         {
+            disableButtons(false);
+
             cBoxDelBup.Enabled = true;
             cBoxDelBup.Checked = false;
 
             backupTask.setEnableAll();
             updCheckBoxList();
+
+            disableButtons(true);
         }
 
         private void btnBupNone_Click(object sender, EventArgs e)
         {
+            disableButtons(false);
+
             cBoxDelBup.Enabled = true;
             cBoxDelBup.Checked = false;
 
             backupTask.setEnableNone();
             updCheckBoxList();
+
+            disableButtons(true);
         }
 
         private void btnUpdBup_Click(object sender, EventArgs e)
-        {            
+        {
+            disableButtons(false);
+  
             cBoxDelBup.Enabled = false;
             cBoxDelBup.Checked = false;
 
             this.Cursor = Cursors.WaitCursor;
             backupTask.setEnableUpd(chkList, true);
             this.Cursor = Cursors.Arrow;
-            
-            updCheck = true;
+
+            disableButtons(true);
         }
 
         private void btnUpdLib_Click(object sender, EventArgs e)
         {
+            disableButtons(false);
+
             cBoxDelBup.Enabled = false;
             cBoxDelBup.Checked = false;
 
@@ -122,7 +133,15 @@ namespace steamBackup
             backupTask.setEnableUpd(chkList, false);
             this.Cursor = Cursors.Arrow;
 
-            updCheck = true;
+            disableButtons(true);
+        }
+
+        private void disableButtons(bool disableBool)
+        {
+            btnBupAll.Enabled = disableBool;
+            btnBupNone.Enabled = disableBool;
+            btnUpdBup.Enabled = disableBool;
+            btnUpdLib.Enabled = disableBool;
         }
 
         private void btnStartBup_Click(object sender, EventArgs e)
