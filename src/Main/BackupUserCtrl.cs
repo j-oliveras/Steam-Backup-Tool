@@ -390,7 +390,6 @@ namespace steamBackup
             var sb = new StringBuilder();
             sb.Append(@"{\rtf1\ansi ");
             sb.Append(@"This will use multithreaded compression and reduce concurrent compression instances to 1.");
-            sb.Append(@" Uses \b all \b0 cpu cores for compression.");
             sb.Append(@" The compressed archives have similar sizes compared to LZMA compression.");
             sb.Append(@" }");
 
