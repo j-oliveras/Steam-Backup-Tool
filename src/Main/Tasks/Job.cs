@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-using SevenZip;
 using System.Threading;
 
 namespace steamBackup
@@ -70,23 +66,6 @@ namespace steamBackup
             while (status == JobStatus.PAUSED)
             {
                 Thread.Sleep(100);
-            }
-        }
-
-        protected void started(object sender, FileInfoEventArgs e)
-        {
-            string[] splitStr = e.FileInfo.FileName.Split('\\');
-            curFileStr = splitStr[splitStr.Length - 1];
-
-            if (status == JobStatus.CANCELED)
-            {
-                e.Cancel = true;
-                Utilities.addToErrorList(this);
-            }
-
-            while (status == JobStatus.PAUSED)
-            {
-                Thread.Sleep(250);
             }
         }
 

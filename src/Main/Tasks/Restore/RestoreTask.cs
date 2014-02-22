@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-using System.IO;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 
 namespace steamBackup

@@ -1,33 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SevenZip;
 using System.IO;
-using System.Windows.Forms;
-using System.Globalization;
 
 namespace steamBackup
 {
     class BackupJob : Job
     {
-        private SevenZipCompressor sevenZip = null;
         private SevenZipWrapper wrapper = null;
-
+        private bool compressionLzma2 = false;
+        private int compLevel = 5;
         public BackupJob()
         {
             type = JobType.BACKUP;
+        }
 
-            sevenZip = new SevenZipCompressor();
-            
-            sevenZip.ArchiveFormat = OutArchiveFormat.SevenZip;
-            sevenZip.CompressionMethod = CompressionMethod.Lzma;
-            sevenZip.CompressionMode = CompressionMode.Create;
-
-            sevenZip.IncludeEmptyDirectories = true;
-            sevenZip.DirectoryStructure = true;
-            sevenZip.PreserveDirectoryRoot = true;
-            sevenZip.FastCompression = false;
+        ~BackupJob()
+        {
+            if (wrapper != null)
+            {
+                wrapper.Dispose(false);
+                wrapper = null;
+            }
         }
 
         public override void start()
@@ -60,43 +53,34 @@ namespace steamBackup
 
             try
             {
-                if (sevenZip.CompressionMethod == CompressionMethod.Lzma2)
-                {
-                    wrapper = new SevenZipWrapper(@"rsc\7z.dll", dirBackup);
-                    wrapper.Compressing += new EventHandler<ProgressEventArgs>(working);
-                    wrapper.FileCompressionStarted += new EventHandler<FileNameEventArgs>(started);
-                    wrapper.CompressionFinished += new EventHandler<EventArgs>(finished);
+                wrapper = new SevenZipWrapper(@"rsc\7z.dll", dirBackup, false);
+                wrapper.Compressing += new EventHandler<ProgressEventArgs>(working);
+                wrapper.FileCompressionStarted += new EventHandler<FileNameEventArgs>(started);
+                wrapper.CompressionFinished += new EventHandler<EventArgs>(finished);
+                if (compressionLzma2)
                     wrapper.UseLzma2Compression = true;
-                    int compLevel = (int) sevenZip.CompressionLevel;
-                    switch (compLevel)
-                    {
-                        case 2:
-                            compLevel = 3;
-                            break;
-                        case 3:
-                            compLevel = 5;
-                            break;
-                        case 4:
-                            compLevel = 7;
-                            break;
-                        case 5:
-                            compLevel = 9;
-                            break;
-                    }
-                    wrapper.CompressionLevel = compLevel;
-                    wrapper.UseMultithreading = true;
-                    wrapper.MultithreadingNumThreads = Settings.lzma2Threads;
-                    wrapper.CompressFiles(Utilities.upDirLvl(dirSteam), fileList);
-                }
-                else
+                switch (compLevel)
                 {
-                    sevenZip.Compressing += new EventHandler<ProgressEventArgs>(working);
-                    sevenZip.FileCompressionStarted += new EventHandler<FileNameEventArgs>(started);
-                    sevenZip.CompressionFinished += new EventHandler<EventArgs>(finished);
-                    sevenZip.CompressFiles(dirBackup, Utilities.upDirLvl(dirSteam).Length, fileList);
-                }  
+                    case 2:
+                        compLevel = 3;
+                        break;
+                    case 3:
+                        compLevel = 5;
+                        break;
+                    case 4:
+                        compLevel = 7;
+                        break;
+                    case 5:
+                        compLevel = 9;
+                        break;
+                }
+                wrapper.CompressionLevel = compLevel;
+                wrapper.UseMultithreading = true;
+                wrapper.MultithreadingNumThreads = Settings.lzma2Threads;
+                wrapper.CompressFiles(Utilities.upDirLvl(dirSteam), fileList);
+                wrapper.Dispose(false);
             }
-            catch (System.Exception e)
+            catch (System.Exception)
             {
                 Utilities.addToErrorList(this);
             }
@@ -113,14 +97,14 @@ namespace steamBackup
             //sevenZip.TempFolderPath = dir + ".tmp";
         }
 
-        public void setCompression(CompressionLevel level)
+        public void setCompression(int level)
         {
-            sevenZip.CompressionLevel = level;
+            compLevel = level;
         }
 
-        public void setCompressionMethod(CompressionMethod method)
+        public void setLzma2Compression(bool lzma2Compression)
         {
-            sevenZip.CompressionMethod = method;
+            compressionLzma2 = lzma2Compression;
         }
 
     }

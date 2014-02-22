@@ -12,21 +12,14 @@
  * aka James Warner and Brian Duhs
  */
 
+using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Text;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
-using Microsoft.Win32;
-using System.Globalization;
-using Newtonsoft.Json;
-using System.Reflection;
-using SevenZip;
 
 
 namespace steamBackup
@@ -70,8 +63,6 @@ namespace steamBackup
 
             lblStarted.Text = null;
             lbl0.Text = "Version: " + versionNum;
-
-            SevenZipExtractor.SetLibraryPath(Directory.GetCurrentDirectory() + @"\rsc\7z.dll");
         }
 
         private void btnBrowseSteam_Click(object sender, EventArgs e)

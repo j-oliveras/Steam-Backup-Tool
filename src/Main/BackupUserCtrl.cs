@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
-using SevenZip;
 
 namespace steamBackup
 {
@@ -31,7 +26,7 @@ namespace steamBackup
             backupTask.scan();
             updCheckBoxList();
 
-            if (Settings.useLzma2 && Utilities.getSevenZipRelease() > 64)
+            if (Settings.useLzma2)
             {
                 tbarThread.Maximum = Environment.ProcessorCount;
                 tbarThread.Value = Settings.lzma2Threads;
@@ -49,7 +44,7 @@ namespace steamBackup
             threadText();
 
             tbarComp.Value = Settings.compresion;
-            backupTask.setCompLevel((CompressionLevel)Settings.compresion);
+            backupTask.setCompLevel(Settings.compresion);
             compresionText();
 
             ramUsage();
@@ -178,7 +173,7 @@ namespace steamBackup
 
         private void threadText()
         {
-            if (cBoxLzma2.Checked && Utilities.getSevenZipRelease() > 64)
+            if (cBoxLzma2.Checked)
                 lblThread.Text = "Number Of Threads: \r\n" + tbarThread.Value.ToString();
             else
                 lblThread.Text = "Number Of Instances:\r\n" + tbarThread.Value.ToString();
@@ -186,7 +181,7 @@ namespace steamBackup
 
         private void tbarComp_Scroll(object sender, EventArgs e)
         {
-            backupTask.setCompLevel((CompressionLevel)tbarComp.Value);
+            backupTask.setCompLevel(tbarComp.Value);
             
             compresionText();
 
@@ -315,7 +310,7 @@ namespace steamBackup
         {
             var sb = new StringBuilder();
             
-            if (cBoxLzma2.Checked && Utilities.getSevenZipRelease() > 64)
+            if (cBoxLzma2.Checked)
             {
                 sb.Append(@"{\rtf1\ansi ");
                 sb.Append(@"This will change how many threads are used. It is recommended that you set the slider to \b 'core_count' \b0 for best performance.");
@@ -395,10 +390,7 @@ namespace steamBackup
             var sb = new StringBuilder();
             sb.Append(@"{\rtf1\ansi ");
             sb.Append(@"This will use multithreaded compression and reduce concurrent compression instances to 1.");
-
-            if (Utilities.getSevenZipRelease() <= 64)
-                sb.Append(@" Uses \b all \b0 cpu cores for compression.");
-
+            sb.Append(@" Uses \b all \b0 cpu cores for compression.");
             sb.Append(@" The compressed archives have similar sizes compared to LZMA compression.");
             sb.Append(@" }");
 
@@ -407,38 +399,27 @@ namespace steamBackup
 
         private void cBoxLzma2_CheckStateChanged(object sender, EventArgs e)
         {
-            int sevenZipRelease = Utilities.getSevenZipRelease();
             if (cBoxLzma2.Checked)
             {
-                backupTask.setCompMethod(CompressionMethod.Lzma2);
+                backupTask.setCompMethod(true);
 
-                if (sevenZipRelease > 64)
-                {
-                    tbarThread.Maximum = Environment.ProcessorCount;
-                    tbarThread.Value = Settings.lzma2Threads;
-                    backupTask.threadCount = Settings.lzma2Threads;
-                    threadText();
+                tbarThread.Maximum = Environment.ProcessorCount;
+                tbarThread.Value = Settings.lzma2Threads;
+                backupTask.threadCount = Settings.lzma2Threads;
+                threadText();
 
-                    tbarThreadLbl.Text = "Choose the number of instances to run.\nRecommended: One instance for every CPU core.";
-                }
-                else
-                    tbarThread.Enabled = false;
+                tbarThreadLbl.Text = "Choose the number of instances to run.\nRecommended: One instance for every CPU core.";
             }
             else
             {
-                backupTask.setCompMethod(CompressionMethod.Lzma);
+                backupTask.setCompMethod(false);
 
-                if (sevenZipRelease > 64)
-                {
-                    tbarThread.Maximum = 4;
-                    tbarThread.Value = Settings.threadsBup;
-                    backupTask.threadCount = Settings.threadsBup;
-                    threadText();
+                tbarThread.Maximum = 4;
+                tbarThread.Value = Settings.threadsBup;
+                backupTask.threadCount = Settings.threadsBup;
+                threadText();
 
-                    tbarThreadLbl.Text = "Choose the number of instances to run.\nRecommended: One instance for every two CPU cores.";
-                }
-                else
-                    tbarThread.Enabled = true;
+                tbarThreadLbl.Text = "Choose the number of instances to run.\nRecommended: One instance for every two CPU cores.";
             }
 
             ramUsage();

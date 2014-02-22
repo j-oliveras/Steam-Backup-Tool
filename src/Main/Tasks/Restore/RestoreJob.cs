@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SevenZip;
-using System.Windows.Forms;
 
 namespace steamBackup
 {
     class RestoreJob : Job
     {
-        private SevenZipExtractor sevenZip = null;
+        private SevenZipWrapper wrapper = null;
 
         public RestoreJob()
         {            
@@ -18,27 +13,28 @@ namespace steamBackup
 
         ~RestoreJob()
         {
-            if (sevenZip != null)
+            if (wrapper != null)
             {
-                sevenZip.Dispose();
-                sevenZip = null;
+                wrapper.Dispose(true);
+                wrapper = null;
             }
         }
 
         public override void start()
         {
 
-            sevenZip = new SevenZipExtractor(dirBackup);
+            wrapper = new SevenZipWrapper(@"rsc\7z.dll", dirBackup, true);
 
-            sevenZip.Extracting += new EventHandler<ProgressEventArgs>(working);
-            sevenZip.FileExtractionStarted += new EventHandler<FileInfoEventArgs>(started);
-            sevenZip.ExtractionFinished += new EventHandler<EventArgs>(finished);
+            wrapper.Extracting += new EventHandler<ProgressEventArgs>(working);
+            wrapper.FileExtractionStarted += new EventHandler<FileNameEventArgs>(started);
+            wrapper.ExtractionFinished += new EventHandler<EventArgs>(finished);
 
             try
             {
-                sevenZip.ExtractArchive(dirSteam);
+                wrapper.DecompressFileArchive(dirSteam);
+                wrapper.Dispose(true);
             }
-            catch (System.Exception e)
+            catch (System.Exception)
             {
                 Utilities.addToErrorList(this);
             }

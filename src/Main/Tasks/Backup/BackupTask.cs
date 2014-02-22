@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using System.Threading;
 using System.Globalization;
 using System.Diagnostics;
-using SevenZip;
 
 namespace steamBackup
 {
@@ -15,9 +14,9 @@ namespace steamBackup
     {
         public bool deleteAll = false;
 
-        protected CompressionLevel compLevel;
-        protected CompressionMethod compMethod;
-        public CompressionLevel getCompLevel(){return compLevel;}
+        protected int compLevel;
+        protected bool useLzma2Compression;
+        public int getCompLevel(){return compLevel;}
 
         public BackupTask()
         {
@@ -27,10 +26,9 @@ namespace steamBackup
         public override int ramUsage(bool useLzma2)
         {
             int ramPerThread = 0;
-            bool modifiedSevenZip = Utilities.getSevenZipRelease() > 64;
 
             int cpuCount;
-            if (modifiedSevenZip && useLzma2)
+            if (useLzma2)
                 cpuCount = threadCount;
             else 
                 cpuCount = Environment.ProcessorCount;
@@ -92,7 +90,7 @@ namespace steamBackup
             return (useLzma2 ? 1 : (threadCount)) * ramPerThread;
         }
 
-        internal void setCompLevel(CompressionLevel compressionLevel)
+        internal void setCompLevel(int compressionLevel)
         {
             compLevel = compressionLevel;
 
@@ -104,14 +102,14 @@ namespace steamBackup
             }
         }
 
-        internal void setCompMethod(CompressionMethod compressionMethod)
+        internal void setCompMethod(bool useLzma2)
         {
-            compMethod = compressionMethod;
+            useLzma2Compression = useLzma2;
 
             foreach (Job job in list)
             {
                 BackupJob bJob = (BackupJob) job;
-                bJob.setCompressionMethod(compMethod);
+                bJob.setLzma2Compression(useLzma2Compression);
             }
         }
 
