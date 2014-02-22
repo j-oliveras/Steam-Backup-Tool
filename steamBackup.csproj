@@ -119,7 +119,7 @@
     </Content>
     <Content Include="rsc\flamew.ico" />
     <Content Include="rsc\flamew.png" />
-    <Content Include="SevenZip++Lib.dll">
+    <Content Include="rsc\SevenZip++Lib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

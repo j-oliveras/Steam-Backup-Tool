@@ -13,47 +13,47 @@
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         delegate void FileNameCallback([MarshalAs(UnmanagedType.LPWStr)]string filter);
 
-        [DllImport("SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr InitCompressLibrary(string libraryPath, string archiveName,
                                                  [MarshalAs(UnmanagedType.FunctionPtr)] ProgressCallback pCallback,
                                                  [MarshalAs(UnmanagedType.FunctionPtr)] FileNameCallback fnCallback);
 
-        [DllImport("SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr InitDecompressLibrary(string libraryPath, string archiveName,
                                                  [MarshalAs(UnmanagedType.FunctionPtr)] ProgressCallback pCallback,
                                                  [MarshalAs(UnmanagedType.FunctionPtr)] FileNameCallback fnCallback);
 
-        [DllImport("SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern void DestroyCompressLibrary(IntPtr handle);
 
-        [DllImport("SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern void DestroyDecompressLibrary(IntPtr handle);
 
-        [DllImport("SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern void SetCompressionLevel(IntPtr handle, int compressionLevel);
 
-        [DllImport("SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern void SetUseMt(IntPtr handle, bool useMt);
 
-        [DllImport("SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern void SetMtNumCores(IntPtr handle, int mtNumCores);
 
-        [DllImport("SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern void SetUseSolid(IntPtr handle, bool useSolid);
 
-        [DllImport("SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern void SetUseLzma2(IntPtr handle, bool useLzma2);
 
-        [DllImport("SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern void CancelCompression(IntPtr handle);
 
-        [DllImport("SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern void CompressFileList(IntPtr handle, string pathPrefix, string[] filePaths, int count);
 
-        [DllImport("SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern void CancelDecompression(IntPtr handle);
 
-        [DllImport("SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern void DecompressArchive(IntPtr handle, string targetPath);
 
         private bool _useMt;
