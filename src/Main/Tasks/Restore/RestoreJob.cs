@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Windows.Forms;
 
 namespace steamBackup
 {
@@ -22,15 +24,18 @@ namespace steamBackup
 
         public override void start()
         {
-
-            wrapper = new SevenZipWrapper(@"rsc\7z.dll", dirBackup, true);
-
-            wrapper.Extracting += new EventHandler<ProgressEventArgs>(working);
-            wrapper.FileExtractionStarted += new EventHandler<FileNameEventArgs>(started);
-            wrapper.ExtractionFinished += new EventHandler<EventArgs>(finished);
-
             try
             {
+                string libPath = Path.GetDirectoryName(Application.ExecutablePath);
+                if (libPath != null)
+                {
+                    libPath = Path.Combine(libPath, "rsc", "7z.dll");
+                    wrapper = new SevenZipWrapper(libPath, dirBackup, true);
+                }
+
+                wrapper.Extracting += new EventHandler<ProgressEventArgs>(working);
+                wrapper.FileExtractionStarted += new EventHandler<FileNameEventArgs>(started);
+                wrapper.ExtractionFinished += new EventHandler<EventArgs>(finished);
                 wrapper.DecompressFileArchive(dirSteam);
                 wrapper.Dispose(true);
             }

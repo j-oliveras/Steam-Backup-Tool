@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 namespace steamBackup
 {
@@ -53,7 +54,12 @@ namespace steamBackup
 
             try
             {
-                wrapper = new SevenZipWrapper(@"rsc\7z.dll", dirBackup, false);
+                string libPath = Path.GetDirectoryName(Application.ExecutablePath);
+                if (libPath != null)
+                {
+                    libPath = Path.Combine(libPath, "rsc", "7z.dll");
+                    wrapper = new SevenZipWrapper(libPath, dirBackup, false);
+                }
                 wrapper.Compressing += new EventHandler<ProgressEventArgs>(working);
                 wrapper.FileCompressionStarted += new EventHandler<FileNameEventArgs>(started);
                 wrapper.CompressionFinished += new EventHandler<EventArgs>(finished);
