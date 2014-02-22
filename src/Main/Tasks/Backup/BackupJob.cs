@@ -64,25 +64,32 @@ namespace steamBackup
                 wrapper.FileCompressionStarted += new EventHandler<FileNameEventArgs>(started);
                 wrapper.CompressionFinished += new EventHandler<EventArgs>(finished);
                 if (compressionLzma2)
+                {
                     wrapper.UseLzma2Compression = true;
+                    wrapper.MultithreadingNumThreads = Settings.lzma2Threads;
+                }
+                int compressionLevel;
                 switch (compLevel)
                 {
                     case 2:
-                        compLevel = 3;
+                        compressionLevel = 3;
                         break;
                     case 3:
-                        compLevel = 5;
+                        compressionLevel = 5;
                         break;
                     case 4:
-                        compLevel = 7;
+                        compressionLevel = 7;
                         break;
                     case 5:
-                        compLevel = 9;
+                        compressionLevel = 9;
+                        break;
+                    default:
+                        compressionLevel = compLevel;
                         break;
                 }
-                wrapper.CompressionLevel = compLevel;
+                wrapper.CompressionLevel = compressionLevel;
                 wrapper.UseMultithreading = true;
-                wrapper.MultithreadingNumThreads = Settings.lzma2Threads;
+                
                 wrapper.CompressFiles(Utilities.upDirLvl(dirSteam), fileList);
                 wrapper.Dispose(false);
             }
