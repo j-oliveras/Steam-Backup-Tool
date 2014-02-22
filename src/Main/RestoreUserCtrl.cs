@@ -78,22 +78,15 @@ namespace steamBackup
                 {
                     if (job.name.Equals(chkList.SelectedItem.ToString()))
                     {
-                        if (string.IsNullOrEmpty(job.acfFiles))
+                        if (string.IsNullOrEmpty(job.acfFiles) || job.name.Equals(Settings.sourceEngineGames))
                         {
                             dboxLibList.Enabled = false;
-                        }
-                        else
-                        {
-                            dboxLibList.Enabled = true;
-                        }
-
-                        if (!job.name.Equals(Settings.sourceEngineGames))
-                        {
                             dboxLibList.SelectedItem = Utilities.upDirLvl(job.getSteamDir());
                         }
                         else
                         {
-                            dboxLibList.SelectedItem = null;
+                            dboxLibList.Enabled = true;
+                            dboxLibList.SelectedItem = Utilities.upDirLvl(job.getSteamDir());
                         }
                     }
                 }
@@ -223,7 +216,7 @@ namespace steamBackup
         {
             var sb = new StringBuilder();
             sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"This will change how many threads are used. Doesn't use much ram and can only utilises one core per instance");
+            sb.Append(@"This will change how many threads are used. Doesn't use much ram and can only utilizes one core per instance");
             sb.Append(@" }");
 
             infoBox.Rtf = sb.ToString();
@@ -233,7 +226,8 @@ namespace steamBackup
         {
             var sb = new StringBuilder();
             sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Customise your selection of games to restore. Older games that utilize Valve's Source Engine share resources between each other. For this reason they cannot be separated and have to be restored up together.");
+            sb.Append(@"Customise your selection of games to restore.");
+            sb.Append(@" \b NOTE: \b0 Older games that utilize Valve's Source Engine share resources between each other, However Valve has patched this out. Make sure you have the latest version of these old steam games, this tool will not be able to backup or restore them otherwise.");
             sb.Append(@" }");
 
             infoBox.Rtf = sb.ToString();

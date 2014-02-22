@@ -31,7 +31,7 @@ namespace steamBackup
 
 
                 job.name = name;
-                job.setSteamDir(steamDir + "\\steamapps\\common\\");
+                job.setSteamDir(steamDir + "\\" + Utilities.getSteamAppsFolder(steamDir) + "\\common\\");
                 job.setBackupDir(backupDir + "\\common\\" + job.name + ".7z");
                 job.status = JobStatus.WAITING;
 
@@ -76,7 +76,7 @@ namespace steamBackup
                                     if (job.name.Equals(name))
                                     {
                                         job.acfFiles = acfId;
-                                        job.acfDir = steamDir + "\\steamapps\\";
+                                        job.acfDir = steamDir + "\\" + Utilities.getSteamAppsFolder(steamDir) + "\\";
 
                                         break;
                                     }
@@ -87,6 +87,8 @@ namespace steamBackup
                         }
                     }
                 }
+
+            // ToDo: why did i use a go to!
             Finish:
                 streamReader.Close();
             }
@@ -95,18 +97,18 @@ namespace steamBackup
             foreach (Job job in list)
                 job.name = textInfo.ToTitleCase(job.name);
 
-            // if we are using v2 of the archiver add 'Source Games.7z'
-            if (currentArchiveVer == 2 && File.Exists(backupDir + "\\Source Games.7z"))
-            {
-                Job job = new RestoreJob();
+            //// if we are using v2 of the archiver add 'Source Games.7z'
+            //if (currentArchiveVer == 2 && File.Exists(backupDir + "\\Source Games.7z"))
+            //{
+            //    Job job = new RestoreJob();
 
-                job.setSteamDir(steamDir + "\\");
-                job.setBackupDir(backupDir + "\\Source Games.7z");
-                job.name = Settings.sourceEngineGames;
-                job.status = JobStatus.WAITING;
+            //    job.setSteamDir(steamDir + "\\");
+            //    job.setBackupDir(backupDir + "\\Source Games.7z");
+            //    job.name = Settings.sourceEngineGames;
+            //    job.status = JobStatus.WAITING;
 
-                list.Insert(0, job);
-            }
+            //    list.Insert(0, job);
+            //}
         }
 
         public override void setup()

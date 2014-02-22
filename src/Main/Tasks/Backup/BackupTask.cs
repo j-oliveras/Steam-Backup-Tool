@@ -190,7 +190,7 @@ namespace steamBackup
         {
             // Find all of the backed up items and a it to the job list
             
-            scanMisc();
+            //scanMisc();
             scanCommonFolders();
         }
 
@@ -205,19 +205,19 @@ namespace steamBackup
             sharedStart();
         }
 
-        private void scanMisc()
-        {
-            // Add misc backup
+        //private void scanMisc()
+        //{
+        //    // Add misc backup
 
-            Job job = new BackupJob();
+        //    Job job = new BackupJob();
 
-            job.name = Settings.sourceEngineGames;
-            job.setSteamDir(steamDir + "\\steamapps\\");
-            job.setBackupDir(backupDir + "\\Source Games.7z");
-            job.status = JobStatus.WAITING;
+        //    job.name = Settings.sourceEngineGames;
+        //    job.setSteamDir(steamDir + "\\" + Utilities.getSteamAppsFolder(steamDir) + "\\");
+        //    job.setBackupDir(backupDir + "\\Source Games.7z");
+        //    job.status = JobStatus.WAITING;
 
-            list.Add(job);
-        }
+        //    list.Add(job);
+        //}
 
         private void scanCommonFolders()
         {

@@ -335,7 +335,8 @@ namespace steamBackup
         {
             var sb = new StringBuilder();
             sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Customise your selection of games to backup. Older games that utilize Valve's Source Engine share resources between each other. For this reason they cannot be separated and have to be backed up together.");
+            sb.Append(@"Customize your selection of games to backup.");
+            sb.Append(@" \b NOTE: \b0 Older games that utilize Valve's Source Engine share resources between each other, However Valve has patched this out. Make sure you have the latest version of these old steam games, this tool will not be able to backup or restore them otherwise.");
             sb.Append(@" }");
 
             infoBox.Rtf = sb.ToString();
@@ -389,7 +390,7 @@ namespace steamBackup
         {
             var sb = new StringBuilder();
             sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"This will use multithreaded compression and reduce concurrent compression instances to 1.");
+            sb.Append(@"This will use multi threaded compression and reduce concurrent compression instances to 1.");
             sb.Append(@" The compressed archives have similar sizes compared to LZMA compression.");
             sb.Append(@" }");
 

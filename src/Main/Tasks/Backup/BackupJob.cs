@@ -39,7 +39,9 @@ namespace steamBackup
                 string[] folderList = Directory.GetDirectories(dirSteam, "*", SearchOption.TopDirectoryOnly);
                 foreach (string folder in folderList)
                 {
-                    if (!folder.Contains(@"\steamapps\common") && !folder.Contains(@"\steamapps\downloading") && !folder.Contains(@"\steamapps\temp"))
+                    if (!folder.Contains(@"\" + Utilities.getSteamAppsFolder(dirSteam) + @"\common") &&
+                        !folder.Contains(@"\" + Utilities.getSteamAppsFolder(dirSteam) + @"\downloading") &&
+                        !folder.Contains(@"\" + Utilities.getSteamAppsFolder(dirSteam) + @"\temp"))
                     {
                         fileListBuilder.AddRange(Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories));
                     }

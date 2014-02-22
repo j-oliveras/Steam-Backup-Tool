@@ -35,13 +35,32 @@ namespace steamBackup
             else throw new ArgumentException("Absolute path needed, not relative");
         }
 
+        public static bool folderExists(string dir, string folder)
+        {
+            string[] folderList = Directory.GetDirectories(dir);
+
+            foreach(string folderToTest in folderList)
+            {
+                if (folderToTest.Equals(dir + @"\" + folder))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static string getSteamAppsFolder(string steamDir)
+        {
+            if (folderExists(steamDir , "steamapps"))
+                return "steamapps";
+            else if (folderExists(steamDir, "SteamApps"))
+                return "SteamApps";
+            else
+                return "ERROR";
+        }
+
         public static string[] getLibraries(string steamDir)
         {
-            string libraryLocation = "";
-            if(Directory.Exists(steamDir + "\\steamapps\\"))
-                libraryLocation = steamDir + "\\steamapps\\";
-            if (Directory.Exists(steamDir + "\\SteamApps\\"))
-                libraryLocation = steamDir + "\\SteamApps\\";
+            string libraryLocation = steamDir + "\\" + getSteamAppsFolder(steamDir) + "\\";
 
             FileInfo fi = new FileInfo(steamDir + "\\config\\config.vdf");
             StreamReader reader = fi.OpenText();
