@@ -113,10 +113,8 @@ namespace steamBackup
             }
         }
 
-        public void setEnableUpd(CheckedListBox chkList, bool achivedOnly)
+        public void setEnableUpd(bool achivedOnly)
         {
-            chkList.Items.Clear();
-
             Stopwatch sw = new Stopwatch();
             sw.Start();
             
@@ -127,13 +125,6 @@ namespace steamBackup
                 if (job.name.Equals(Settings.sourceEngineGames))
                 {
                     enableJob(job);
-
-                    bool enabled = false;
-                    if (job.status == JobStatus.WAITING)
-                        enabled = true;
-
-                    chkList.Items.Add(job.name, enabled);
-                    chkList.Refresh();
                 }
                 else
                 {
@@ -173,15 +164,11 @@ namespace steamBackup
                     if (isNewer)
                     {
                         enableJob(job);
-                        chkList.Items.Add(job.name, true);
                     }
                     else
                     {
                         disableJob(job);
-                        chkList.Items.Add(job.name, false);
                     }
-
-                    chkList.Refresh();
                 }
             }
         }

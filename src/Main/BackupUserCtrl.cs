@@ -24,6 +24,11 @@ namespace steamBackup
 
             backupTask.list.Clear();
             backupTask.scan();
+
+            // use databinding instead of direct access to the control
+            chkList.DataSource = backupTask.list;
+            chkList.DisplayMember = "name";
+
             updCheckBoxList();
 
             if (Settings.useLzma2)
@@ -65,15 +70,18 @@ namespace steamBackup
         private void updCheckBoxList()
         {
             chkList.BeginUpdate();
-            chkList.Items.Clear();
-            foreach (Job job in backupTask.list)
-            {
-                bool enabled = false;
-                if (job.status == JobStatus.WAITING)
-                    enabled = true;
 
-                chkList.Items.Add(job.name, enabled);
+            // disable ItemCheck event temporarily
+            chkList.ItemCheck -= chkList_ItemCheck;
+            foreach (Job item in backupTask.list)
+            {
+                int index = chkList.Items.IndexOf(item);
+                bool enabled = item.status == JobStatus.WAITING;
+                chkList.SetItemChecked(index, enabled);
             }
+            // reenable ItemCheck event
+            chkList.ItemCheck += chkList_ItemCheck;
+
             chkList.EndUpdate();
         }
 
@@ -111,7 +119,8 @@ namespace steamBackup
             cBoxDelBup.Checked = false;
 
             this.Cursor = Cursors.WaitCursor;
-            backupTask.setEnableUpd(chkList, true);
+            backupTask.setEnableUpd(true);
+            updCheckBoxList();
             this.Cursor = Cursors.Arrow;
 
             disableButtons(true);
@@ -125,7 +134,8 @@ namespace steamBackup
             cBoxDelBup.Checked = false;
 
             this.Cursor = Cursors.WaitCursor;
-            backupTask.setEnableUpd(chkList, false);
+            backupTask.setEnableUpd(false);
+            updCheckBoxList();
             this.Cursor = Cursors.Arrow;
 
             disableButtons(true);
@@ -137,6 +147,7 @@ namespace steamBackup
             btnBupNone.Enabled = disableBool;
             btnUpdBup.Enabled = disableBool;
             btnUpdLib.Enabled = disableBool;
+            chkList.Enabled = disableBool;
         }
 
         private void btnStartBup_Click(object sender, EventArgs e)
@@ -222,21 +233,17 @@ namespace steamBackup
 
         private void chkList_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            foreach (Job job in backupTask.list)
+            Job job = (Job)chkList.Items[e.Index];
+            
+            if (job != null)
             {
-                CheckedListBox chkList = (CheckedListBox)sender;
-
-                if (chkList.Items[e.Index].ToString().Equals(job.name))
+                if (e.NewValue == CheckState.Checked)
                 {
-                    if (e.NewValue == CheckState.Checked)
-                    {
-                        backupTask.enableJob(job);
-                    }
-                    else
-                    {
-                        backupTask.disableJob(job);
-                    }
-                    break;
+                    backupTask.enableJob(job);
+                }
+                else
+                {
+                    backupTask.disableJob(job);
                 }
             }
         }

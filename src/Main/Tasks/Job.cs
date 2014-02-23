@@ -29,7 +29,7 @@ namespace steamBackup
 
         public string acfFiles;
         public string acfDir;
-        public string name;
+        public string name { get; set; }
         public JobStatus status;
 
         protected string dirSteam;
