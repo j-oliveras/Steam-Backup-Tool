@@ -75,6 +75,7 @@
     </Compile>
     <Compile Include="src\Main\Tasks\Backup\BackupJob.cs" />
     <Compile Include="src\Main\Tasks\Backup\BackupTask.cs" />
+    <Compile Include="src\Main\Tasks\ConfigFile.cs" />
     <Compile Include="src\Main\Tasks\Restore\RestoreJob.cs" />
     <Compile Include="src\Main\Tasks\Restore\RestoreTask.cs" />
     <Compile Include="src\Settings.cs" />

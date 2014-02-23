@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace steamBackup
 {
@@ -42,55 +43,38 @@ namespace steamBackup
             string configDir = backupDir + "\\config.sbt";
             if (File.Exists(configDir))
             {
-                StreamReader streamReader = new StreamReader(configDir);
-                JsonTextReader reader = new JsonTextReader(new StringReader(streamReader.ReadToEnd()));
-
-                while (reader.Read())
+                using (StreamReader streamReader = new StreamReader(configDir))
                 {
-                    if (reader.Value != null)
+                    ConfigFile cfgFile = new ConfigFile();
+
+                    try
                     {
-                        if (reader.TokenType.ToString() == "PropertyName" && reader.Value.ToString() == "Archiver Version")
+                        cfgFile = JsonConvert.DeserializeObject<ConfigFile>(streamReader.ReadToEnd());
+                    }
+                    catch (Exception)
+                    {
+                        cfgFile = new ConfigFile();
+                    }
+                    finally
+                    {
+                        if (!string.IsNullOrEmpty(cfgFile.ArchiverVersion))
+                            currentArchiveVer = Convert.ToInt32(cfgFile.ArchiverVersion);
+
+                        foreach (KeyValuePair<string, string> acfId in cfgFile.AcfIds)
                         {
-                            reader.Read();
-                            currentArchiveVer = Convert.ToInt32(reader.Value.ToString());
-                        }
-                        else if (reader.TokenType.ToString() == "PropertyName" && reader.Value.ToString() == "ACF IDs")
-                        {
-                            reader.Read();
-                            do
+                            string name = acfId.Key;
+                            string Ids = acfId.Value;
+
+                            Job foundJob = list.Find(job => job.name.Equals(name));
+
+                            if (foundJob != null)
                             {
-                                while (reader.TokenType.ToString() != "PropertyName")
-                                {
-                                    if (reader.TokenType.ToString() == "EndObject")
-                                        goto Finish;
-                                    reader.Read();
-                                }
-
-                                string name = reader.Value.ToString();
-                                reader.Read();
-                                string acfId = reader.Value.ToString();
-                                reader.Read();
-
-                                foreach (Job job in list)
-                                {
-                                    if (job.name.Equals(name))
-                                    {
-                                        job.acfFiles = acfId;
-                                        job.acfDir = steamDir + "\\" + Utilities.getSteamAppsFolder(steamDir) + "\\";
-
-                                        break;
-                                    }
-                                }
-
-
-                            } while (reader.TokenType.ToString() != "EndObject");
+                                foundJob.acfFiles = Ids;
+                                foundJob.acfDir = steamDir + "\\" + Utilities.getSteamAppsFolder(steamDir) + "\\";
+                            }
                         }
                     }
                 }
-
-            // ToDo: why did i use a go to!
-            Finish:
-                streamReader.Close();
             }
 
             TextInfo textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
