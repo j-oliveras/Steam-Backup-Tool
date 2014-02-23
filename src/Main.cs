@@ -56,6 +56,15 @@ namespace steamBackup
 
             CheckForIllegalCrossThreadCalls = false;
 
+            if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Windows) + @"\system32\msvcr120.dll"))
+            {
+                // Visual C++ Redistributable Packages for Visual Studio 2013 not installed
+
+                MessageBox.Show("Visual C++ Redistributable Packages for Visual Studio 2013 is not installed. Please install this package before using this tool.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                Utilities.TryOpenUrl(@"http://www.microsoft.com/en-us/download/details.aspx?id=40784");
+            }
+
             // Load Main form settings
             Settings.load();
             tbxSteamDir.Text = Settings.steamDir;
