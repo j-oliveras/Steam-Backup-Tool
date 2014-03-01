@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
+using steamBackup.Properties;
 
 namespace steamBackup
 {
@@ -15,6 +15,8 @@ namespace steamBackup
         public BackupTask backupTask = new BackupTask();
         
         public bool canceled = true;
+
+        private static readonly string[] compressionStrings = { "Copy", "Fastest", "Fast", "Normal", "Maximum", "Ultra", "N/A" };
 
         private void BackupUserCtrl_Load(object sender, EventArgs e)
         {
@@ -57,7 +59,7 @@ namespace steamBackup
 
         private void BackupUserCtrl_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Settings.compresion = (int)backupTask.getCompLevel();
+            Settings.compresion = backupTask.getCompLevel();
             Settings.useLzma2 = cBoxLzma2.Checked;
 
             if (Settings.useLzma2)
@@ -118,10 +120,10 @@ namespace steamBackup
             cBoxDelBup.Enabled = false;
             cBoxDelBup.Checked = false;
 
-            this.Cursor = Cursors.WaitCursor;
+            Cursor = Cursors.WaitCursor;
             backupTask.setEnableUpd(true);
             updCheckBoxList();
-            this.Cursor = Cursors.Arrow;
+            Cursor = Cursors.Arrow;
 
             disableButtons(true);
         }
@@ -133,10 +135,10 @@ namespace steamBackup
             cBoxDelBup.Enabled = false;
             cBoxDelBup.Checked = false;
 
-            this.Cursor = Cursors.WaitCursor;
+            Cursor = Cursors.WaitCursor;
             backupTask.setEnableUpd(false);
             updCheckBoxList();
-            this.Cursor = Cursors.Arrow;
+            Cursor = Cursors.Arrow;
 
             disableButtons(true);
         }
@@ -154,7 +156,7 @@ namespace steamBackup
         {
             if (Utilities.isSteamRunning())
             {
-                MessageBox.Show("Please exit Steam before backing up. To continue, exit Steam and then click the 'Backup' button again. Do Not start Steam until the backup process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(Resources.BackupSteamRunningText, Resources.SteamRunningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else
             {
@@ -162,7 +164,7 @@ namespace steamBackup
 
                 backupTask.setup();
 
-                this.Close();
+                Close();
             }
         }
 
@@ -170,7 +172,7 @@ namespace steamBackup
         {
             canceled = true;
             
-            this.Close();
+            Close();
         }
 
         private void tbarThread_Scroll(object sender, EventArgs e)
@@ -185,9 +187,9 @@ namespace steamBackup
         private void threadText()
         {
             if (cBoxLzma2.Checked)
-                lblThread.Text = "Number Of Threads: \r\n" + tbarThread.Value.ToString();
+                lblThread.Text = Resources.ThreadLblThreadsText + tbarThread.Value;
             else
-                lblThread.Text = "Number Of Instances:\r\n" + tbarThread.Value.ToString();
+                lblThread.Text = Resources.ThreadLblInstancesText + tbarThread.Value;
         }
 
         private void tbarComp_Scroll(object sender, EventArgs e)
@@ -201,27 +203,19 @@ namespace steamBackup
 
         private void compresionText()
         {
-            if ((int)backupTask.getCompLevel() == 5)
-                lblComp.Text = "Compression Level:" + Environment.NewLine + "Ultra";
-            else if ((int)backupTask.getCompLevel() == 4)
-                lblComp.Text = "Compression Level:" + Environment.NewLine + "Maximum";
-            else if ((int)backupTask.getCompLevel() == 3)
-                lblComp.Text = "Compression Level:" + Environment.NewLine + "Normal";
-            else if ((int)backupTask.getCompLevel() == 2)
-                lblComp.Text = "Compression Level:" + Environment.NewLine + "Fast";
-            else if ((int)backupTask.getCompLevel() == 1)
-                lblComp.Text = "Compression Level:" + Environment.NewLine + "Fastest";
-            else if ((int)backupTask.getCompLevel() == 0)
-                lblComp.Text = "Compression Level:" + Environment.NewLine + "Copy";
+            int compLevel = backupTask.getCompLevel();
+
+            if (compLevel <= 5 && compLevel >= 0)
+                lblComp.Text = Resources.CompressionLevelText + compressionStrings[compLevel];
             else
-                lblComp.Text = "Compression Level:" + Environment.NewLine + "N/A";
+                lblComp.Text = Resources.CompressionLevelText + compressionStrings[6];
         }
 
         private void ramUsage()
         {
             int ram = backupTask.ramUsage(cBoxLzma2.Checked);
 
-            lblRamBackup.Text = "Max Ram Usage: " + ram.ToString() + "MB";
+            lblRamBackup.Text = string.Format(Resources.MaxRamUsageText, ram);
 
             if (ram >= 1500)
                 lblRamBackup.ForeColor = Color.Red;
@@ -234,17 +228,15 @@ namespace steamBackup
         private void chkList_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             Job job = (Job)chkList.Items[e.Index];
-            
-            if (job != null)
+            if (job == null) return;
+
+            if (e.NewValue == CheckState.Checked)
             {
-                if (e.NewValue == CheckState.Checked)
-                {
-                    backupTask.enableJob(job);
-                }
-                else
-                {
-                    backupTask.disableJob(job);
-                }
+                backupTask.enableJob(job);
+            }
+            else
+            {
+                backupTask.disableJob(job);
             }
         }
 
@@ -263,147 +255,73 @@ namespace steamBackup
             return backupTask;
         }
 
+        #region Info text handling
+
         private void controls_MouseLeave(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Hover your mouse over the controls to get further information.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.ControlsDefaultTooltip;
         }
 
         private void btnStartBup_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Starts the backup procedure with the above parameters");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.BackupStartButtonTooltip;
         }
 
         private void btnCancelBup_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Cancels the backup procedure and navigates back to the main menu.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.BackupCancelButtonTooltip;
         }
 
         private void cBoxDelBup_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"This will delete \b EVERYTHING \b0 in the 'Backup Directory'. Make sure that there are no valuable files in there!");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.DelBackupCheckBoxTooltip;
         }
 
         private void lblComp_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"This will change how small the backup files are. Higher compression levels will use more ram and take longer but will result in far better compression.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.CompressionTooltip;
         }
 
         private void lblThread_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            
-            if (cBoxLzma2.Checked)
-            {
-                sb.Append(@"{\rtf1\ansi ");
-                sb.Append(@"This will change how many threads are used. It is recommended that you set the slider to \b 'core_count' \b0 for best performance.");
-                sb.Append(@" Dramatically increases ram usage when also using high compression rates.");
-                sb.Append(@" }");
-            }
-            else
-            {
-                sb.Append(@"{\rtf1\ansi ");
-                sb.Append(@"This will change how many instances of 7zip are used, Each instance creates two threads. It is recommended that you set the slider to \b 'core_count/2' \b0 for best performance.");
-                sb.Append(@" Dramatically increases ram usage when also using high compression rates.");
-                sb.Append(@" }");
-            }
-            
-            
-            
-
-            infoBox.Rtf = sb.ToString();
+            if (cBoxLzma2.Checked) 
+                infoBox.Rtf = Resources.ThreadsLzma2Tooltip;
+            else 
+                infoBox.Rtf = Resources.ThreadsLzmaTooltip;
         }
 
         private void chkList_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Customize your selection of games to backup.");
-            sb.Append(@" \b NOTE: \b0 Older games that utilize Valve's Source Engine share resources between each other, However Valve has patched this out. Make sure you have the latest version of these old steam games, this tool will not be able to backup or restore them otherwise.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.BackupCheckListTooltip;
         }
 
         private void btnBupAll_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Click to \b select \b0 all games for backup.");
-            sb.Append(@" The selection can be modified in the check box list.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.BackupAllButtonTooltip;
         }
 
         private void btnBupNone_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Click to \b deselect \b0 all games for backup.");
-            sb.Append(@" The selection can be modified in the check box list.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.BackupNoneButtonTooltip;
         }
 
         private void btnUpdBup_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Click to select all games that have been changed since the last backup, \b Excluding \b0 games that have not been backed up yet.");
-            sb.Append(@" The selection can be modified in the check box list.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.UpdateBackupButtonTooltip;
         }
 
         private void btnUpdLib_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Click to select all games that have been changed since the last backup, \b Including \b0 games that have not been backed up yet.");
-            sb.Append(@" The selection can be modified in the check box list.");
-            sb.Append(@" }");
-            
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.UpdateLibButtonTooltip;
         }
 
         private void cBoxLzma2_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"This will use multi threaded compression and reduce concurrent compression instances to 1.");
-            sb.Append(@" The compressed archives have similar sizes compared to LZMA compression.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.Lzma2CheckboxTooltip;
         }
 
+        #endregion
+        
         private void cBoxLzma2_CheckStateChanged(object sender, EventArgs e)
         {
             if (cBoxLzma2.Checked)
@@ -415,7 +333,7 @@ namespace steamBackup
                 backupTask.threadCount = Settings.lzma2Threads;
                 threadText();
 
-                tbarThreadLbl.Text = "Choose the number of instances to run.\nRecommended: One instance for every CPU core.";
+                tbarThreadLbl.Text = Resources.ThreadsCountTooltip;
             }
             else
             {
@@ -426,7 +344,7 @@ namespace steamBackup
                 backupTask.threadCount = Settings.threadsBup;
                 threadText();
 
-                tbarThreadLbl.Text = "Choose the number of instances to run.\nRecommended: One instance for every two CPU cores.";
+                tbarThreadLbl.Text = Resources.InstancesCountTooltip;
             }
 
             ramUsage();

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using steamBackup.Properties;
 
 namespace steamBackup
 {
@@ -119,14 +120,10 @@ namespace steamBackup
 
             if (string.IsNullOrEmpty(errorList))
             {
-                errorList += "Listed below are the errors for a backup or restore." + Environment.NewLine + Environment.NewLine;
-                errorList += "Please try running the backup process again making sure that there are no programs accessing the files being backed up (e.g. Steam)." + Environment.NewLine + Environment.NewLine;
-                errorList += "To check the integrity of this backup: navigate to the backup location -> Select all files in the 'common' folder -> right click -> 7zip -> Test archive. You should do the same for 'Source Games.7z' also.";
+                errorList = Resources.ErrorListHeader;
             }
 
-            errorList += Environment.NewLine + Environment.NewLine + @"//////////////////// Error Time: " + DateTime.Now.ToString("dd/MM/yyyy H:mm.ss") + @" \\\\\\\\\\\\\\\\\\\\" + Environment.NewLine + Environment.NewLine;
-
-            errorList += Environment.NewLine + job.toString();
+            errorList += string.Format(Resources.JobError, DateTime.Now.ToString("dd/MM/yyyy H:mm.ss"), job.toString());
 
             File.WriteAllText(Settings.backupDir + "\\Error Log.txt", errorList);
         }

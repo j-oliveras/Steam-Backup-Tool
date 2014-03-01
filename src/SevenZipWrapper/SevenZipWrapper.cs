@@ -4,7 +4,6 @@
     using System.IO;
     using System.Runtime.InteropServices;
 
-
     public class SevenZipWrapper : IDisposable
     {
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -198,9 +197,6 @@
             Dispose();
         }
 
-        /// <summary>
-        /// Führt anwendungsspezifische Aufgaben durch, die mit der Freigabe, der Zurückgabe oder dem Zurücksetzen von nicht verwalteten Ressourcen zusammenhängen.
-        /// </summary>
         public void Dispose()
         {
             

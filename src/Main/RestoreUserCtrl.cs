@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Text;
 using System.Windows.Forms;
+using steamBackup.Properties;
 
 namespace steamBackup
 {
@@ -99,7 +99,7 @@ namespace steamBackup
             if (chkList.SelectedItem == null) return;
 
             Job job = (Job) chkList.SelectedItem;
-            job.setSteamDir(dboxLibList.SelectedItem.ToString() + "common\\");
+            job.setSteamDir(dboxLibList.SelectedItem + "common\\");
             job.acfDir = dboxLibList.SelectedItem.ToString();
         }
 
@@ -125,7 +125,7 @@ namespace steamBackup
         {
             if (Utilities.isSteamRunning())
             {
-                MessageBox.Show("Please exit Steam before restoring. To continue, exit Steam and then click the 'Start Restore' button again. Do Not start Steam until the restore process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(Resources.RestoreSteamRunningText, Resources.SteamRunningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else
             {
@@ -133,7 +133,7 @@ namespace steamBackup
 
                 restoreTask.setup();
 
-                this.Close();
+                Close();
             }
         }
 
@@ -158,7 +158,7 @@ namespace steamBackup
         {
             canceled = true;
             
-            this.Close();
+            Close();
         }
 
         private void tbarThread_Scroll(object sender, EventArgs e)
@@ -168,7 +168,7 @@ namespace steamBackup
 
         private void threadText() 
         {
-            lblThread.Text = "Number Of Instances:\r\n" + tbarThread.Value.ToString();
+            lblThread.Text = Resources.ThreadLblInstancesText + tbarThread.Value;
         }
 
         public Task getTask()
@@ -178,83 +178,42 @@ namespace steamBackup
 
         private void controls_MouseLeave(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Hover your mouse over the controls to get further information.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.ControlsDefaultTooltip;
         }
 
         private void btnStartRest_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Starts the restore procedure with the above parameters. \b This will overwrite any currently installed Steam games with the back up files. \b0");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.RestoreStartButtonTooltip;
         }
 
         private void btnCancelRest_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Cancels the restore procedure and navigates back to the main menu.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.RestoreCancelButtonTooltip;
         }
 
         private void lblThread_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"This will change how many threads are used. Doesn't use much ram and can only utilizes one core per instance");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.RestoreThreadsTooltip;
         }
 
         private void chkList_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Customise your selection of games to restore.");
-            sb.Append(@" \b NOTE: \b0 Older games that utilize Valve's Source Engine share resources between each other, However Valve has patched this out. Make sure you have the latest version of these old steam games, this tool will not be able to backup or restore them otherwise.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.RestoreCheckListTooltip;
         }
 
         private void btnRestAll_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Click to \b deselect \b0 all games in the list. The selection can be modified in the check box list.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.RestoreAllButtonTooltip;
         }
 
         private void btnRestNone_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Click to \b select \b0 all games in the list. The selection can be modified in the check box list.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.RestoreNoneButtonTooltip;
         }
 
         private void lblRefreshList_MouseHover(object sender, EventArgs e)
         {
-            var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            sb.Append(@"Allows for some games to be restored to a alternative library.");
-            sb.Append(@" }");
-
-            infoBox.Rtf = sb.ToString();
+            infoBox.Rtf = Resources.RestoreRefreshListLabelTooltip;
         }
         
     }
