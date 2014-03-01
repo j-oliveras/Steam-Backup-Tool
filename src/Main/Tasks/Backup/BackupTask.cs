@@ -353,42 +353,34 @@ namespace steamBackup
                 writer.WriteValue(archiveVer);
                 writer.WritePropertyName("ACF IDs");
                 writer.WriteStartObject();
+
+                ConfigFile cfgFile = new ConfigFile();
                 // Add already archived apps back into the list if they are not being backed up again (so we don't get any orphaned acf files).
                 if (File.Exists(configDir))
                 {
                     writer.WriteWhitespace(Environment.NewLine);
                     writer.WriteComment("From older backups");
-                    StreamReader streamReader = new StreamReader(configDir);
-                    JsonTextReader reader = new JsonTextReader(new StringReader(streamReader.ReadToEnd()));
 
-                    while (reader.Read())
+                    using (StreamReader streamReader = new StreamReader(configDir))
                     {
-                        if (reader.Value != null)
+                        try
                         {
-                            if (reader.TokenType.ToString() == "PropertyName" && reader.Value.ToString() == "ACF IDs")
+                            cfgFile = JsonConvert.DeserializeObject<ConfigFile>(streamReader.ReadToEnd());
+                        }
+                        catch (Exception)
+                        {
+                            cfgFile = new ConfigFile();
+                        }
+                        finally
+                        {
+                            foreach (KeyValuePair<string, string> acfId in cfgFile.AcfIds)
                             {
-                                reader.Read();
-                                do
-                                {
-                                    while (reader.TokenType.ToString() != "PropertyName")
-                                    {
-                                        if (reader.TokenType.ToString() == "EndObject")
-                                            goto Finish;
-                                        reader.Read();
-                                    }
-
-                                    writer.WritePropertyName(reader.Value.ToString());
-                                    reader.Read();
-                                    writer.WriteValue(reader.Value.ToString());
-                                    reader.Read();
-                                } while (reader.TokenType.ToString() != "EndObject");
+                                writer.WritePropertyName(acfId.Key);
+                                writer.WriteValue(acfId.Value);
                             }
                         }
                     }
-                Finish:
-                    streamReader.Close();
                 }
-
 
                 // Add new apps to the list
                 writer.WriteWhitespace(Environment.NewLine);
@@ -400,7 +392,7 @@ namespace steamBackup
                         string[] nameSplit = job.getSteamDir().Split('\\');
                         string name = nameSplit[nameSplit.Length - 1];
 
-                        if (!sb.ToString().Contains(name))
+                        if (!cfgFile.AcfIds.ContainsKey(name))
                         {
                             writer.WritePropertyName(name);
                             writer.WriteValue(job.acfFiles);
