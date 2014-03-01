@@ -67,6 +67,10 @@
             this.lbl2Info = new System.Windows.Forms.Label();
             this.lbl3Info = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
+            this.lbl0SpeedEta = new System.Windows.Forms.Label();
+            this.lbl1SpeedEta = new System.Windows.Forms.Label();
+            this.lbl2SpeedEta = new System.Windows.Forms.Label();
+            this.lbl3SpeedEta = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -403,6 +407,46 @@
             this.timer.Interval = 1000;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
+            // lbl0SpeedEta
+            // 
+            this.lbl0SpeedEta.AutoSize = true;
+            this.lbl0SpeedEta.BackColor = System.Drawing.Color.Transparent;
+            this.lbl0SpeedEta.Location = new System.Drawing.Point(12, 411);
+            this.lbl0SpeedEta.Name = "lbl0SpeedEta";
+            this.lbl0SpeedEta.Size = new System.Drawing.Size(70, 13);
+            this.lbl0SpeedEta.TabIndex = 50;
+            this.lbl0SpeedEta.Text = "lbl0SpeedEta";
+            // 
+            // lbl1SpeedEta
+            // 
+            this.lbl1SpeedEta.AutoSize = true;
+            this.lbl1SpeedEta.BackColor = System.Drawing.Color.Transparent;
+            this.lbl1SpeedEta.Location = new System.Drawing.Point(12, 492);
+            this.lbl1SpeedEta.Name = "lbl1SpeedEta";
+            this.lbl1SpeedEta.Size = new System.Drawing.Size(70, 13);
+            this.lbl1SpeedEta.TabIndex = 51;
+            this.lbl1SpeedEta.Text = "lbl1SpeedEta";
+            // 
+            // lbl2SpeedEta
+            // 
+            this.lbl2SpeedEta.AutoSize = true;
+            this.lbl2SpeedEta.BackColor = System.Drawing.Color.Transparent;
+            this.lbl2SpeedEta.Location = new System.Drawing.Point(12, 571);
+            this.lbl2SpeedEta.Name = "lbl2SpeedEta";
+            this.lbl2SpeedEta.Size = new System.Drawing.Size(70, 13);
+            this.lbl2SpeedEta.TabIndex = 52;
+            this.lbl2SpeedEta.Text = "lbl2SpeedEta";
+            // 
+            // lbl3SpeedEta
+            // 
+            this.lbl3SpeedEta.AutoSize = true;
+            this.lbl3SpeedEta.BackColor = System.Drawing.Color.Transparent;
+            this.lbl3SpeedEta.Location = new System.Drawing.Point(12, 651);
+            this.lbl3SpeedEta.Name = "lbl3SpeedEta";
+            this.lbl3SpeedEta.Size = new System.Drawing.Size(70, 13);
+            this.lbl3SpeedEta.TabIndex = 53;
+            this.lbl3SpeedEta.Text = "lbl3SpeedEta";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -410,6 +454,10 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(390, 370);
+            this.Controls.Add(this.lbl3SpeedEta);
+            this.Controls.Add(this.lbl2SpeedEta);
+            this.Controls.Add(this.lbl1SpeedEta);
+            this.Controls.Add(this.lbl0SpeedEta);
             this.Controls.Add(this.lbl3Info);
             this.Controls.Add(this.lbl2Info);
             this.Controls.Add(this.lbl1Info);
@@ -491,6 +539,10 @@
         private System.Windows.Forms.Label lbl2Info;
         private System.Windows.Forms.Label lbl3Info;
         private System.Windows.Forms.Timer timer;
+        private System.Windows.Forms.Label lbl0SpeedEta;
+        private System.Windows.Forms.Label lbl1SpeedEta;
+        private System.Windows.Forms.Label lbl2SpeedEta;
+        private System.Windows.Forms.Label lbl3SpeedEta;
     }
 }
 

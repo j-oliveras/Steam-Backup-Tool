@@ -10,17 +10,27 @@
         delegate void ProgressCallback(int value);
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        delegate void FileNameCallback([MarshalAs(UnmanagedType.LPWStr)]string filter);
+        delegate void FileNameCallback([MarshalAs(UnmanagedType.LPWStr)]string fileName);
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        delegate void TotalSizeCallback(UInt64 value);
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        delegate void ProcessedSizeCallback(UInt64 value);
 
         [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr InitCompressLibrary(string libraryPath, string archiveName,
                                                  [MarshalAs(UnmanagedType.FunctionPtr)] ProgressCallback pCallback,
-                                                 [MarshalAs(UnmanagedType.FunctionPtr)] FileNameCallback fnCallback);
+                                                 [MarshalAs(UnmanagedType.FunctionPtr)] FileNameCallback fnCallback,
+                                                 [MarshalAs(UnmanagedType.FunctionPtr)] TotalSizeCallback tsCallback,
+                                                 [MarshalAs(UnmanagedType.FunctionPtr)] ProcessedSizeCallback psCallback);
 
         [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr InitDecompressLibrary(string libraryPath, string archiveName,
                                                  [MarshalAs(UnmanagedType.FunctionPtr)] ProgressCallback pCallback,
-                                                 [MarshalAs(UnmanagedType.FunctionPtr)] FileNameCallback fnCallback);
+                                                 [MarshalAs(UnmanagedType.FunctionPtr)] FileNameCallback fnCallback,
+                                                 [MarshalAs(UnmanagedType.FunctionPtr)] TotalSizeCallback tsCallback,
+                                                 [MarshalAs(UnmanagedType.FunctionPtr)] ProcessedSizeCallback psCallback);
 
         [DllImport(@"rsc\SevenZip++Lib.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern void DestroyCompressLibrary(IntPtr handle);
@@ -72,9 +82,13 @@
         private IntPtr _libHandle;
 
         private int _progress;
+        private ulong _totalSize;
+        private ulong _processedSize;
 
         private ProgressCallback _progressCallback;
         private FileNameCallback _fileNameCallback;
+        private TotalSizeCallback _totalSizeCallback;
+        private ProcessedSizeCallback _processedSizeCallback;
 
         public bool UseMultithreading
         {
@@ -126,6 +140,18 @@
             }
         }
 
+        public UInt64 TotalSize
+        {
+            get { return _totalSize; }
+            set { _totalSize = value; }
+        }
+
+        public UInt64 ProcessedSize
+        {
+            get { return _processedSize; }
+            set { _processedSize = value; }
+        }
+
         public SevenZipWrapper(string libraryPath, string archiveName, bool decompressor)
         {
             if (decompressor)
@@ -149,8 +175,16 @@
                         Extracting(this, new ProgressEventArgs((byte)_progress, (byte)(100 - _progress)));
                     }
                 };
+                _totalSizeCallback = value =>
+                {
+                    _totalSize = value;
+                };
+                _processedSizeCallback = value =>
+                {
+                    _processedSize = value;
+                };
 
-                _libHandle = InitDecompressLibrary(libraryPath, archiveName, _progressCallback, _fileNameCallback);
+                _libHandle = InitDecompressLibrary(libraryPath, archiveName, _progressCallback, _fileNameCallback, _totalSizeCallback, _processedSizeCallback);
             }
             else
             {
@@ -173,8 +207,16 @@
                         Compressing(this, new ProgressEventArgs((byte) _progress, (byte) (100 - _progress)));
                     }
                 };
+                _totalSizeCallback = value =>
+                {
+                    _totalSize = value;
+                };
+                _processedSizeCallback = value =>
+                {
+                    _processedSize = value;
+                };
 
-                _libHandle = InitCompressLibrary(libraryPath, archiveName, _progressCallback, _fileNameCallback);
+                _libHandle = InitCompressLibrary(libraryPath, archiveName, _progressCallback, _fileNameCallback, _totalSizeCallback, _processedSizeCallback);
             }
         }
 
@@ -183,6 +225,8 @@
         {
             _fileNameCallback = null;
             _progressCallback = null;
+            _processedSizeCallback = null;
+            _totalSizeCallback = null;
         }
 
         public void Dispose(bool decompressor)
@@ -191,8 +235,12 @@
                 DestroyDecompressLibrary(_libHandle);
             else
                 DestroyCompressLibrary(_libHandle);
+
             _fileNameCallback = null;
             _progressCallback = null;
+            _processedSizeCallback = null;
+            _totalSizeCallback = null;
+
             _libHandle = new IntPtr();
             Dispose();
         }

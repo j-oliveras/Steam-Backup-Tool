@@ -87,5 +87,7 @@ namespace steamBackup
 
             return str;
         }
+
+        public abstract string getSpeedEta();
     }
 }

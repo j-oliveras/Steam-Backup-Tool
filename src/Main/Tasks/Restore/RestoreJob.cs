@@ -8,6 +8,8 @@ namespace steamBackup
     {
         private SevenZipWrapper wrapper = null;
 
+        private DateTime compStarted;
+
         public RestoreJob()
         {            
             type = JobType.RESTORE;
@@ -24,6 +26,7 @@ namespace steamBackup
 
         public override void start()
         {
+            compStarted = DateTime.Now;
             try
             {
                 string libPath = Path.GetDirectoryName(Application.ExecutablePath);
@@ -43,6 +46,52 @@ namespace steamBackup
             {
                 Utilities.addToErrorList(this);
             }
+        }
+
+        public override string getSpeedEta()
+        {
+            if (wrapper != null)
+            {
+                UInt64 processedSize;
+                UInt64 totalSize;
+                lock (wrapper)
+                {
+                    totalSize = wrapper.TotalSize;
+                    processedSize = wrapper.ProcessedSize;
+                }
+
+                if (totalSize <= 0)
+                    totalSize = 1;
+                if (processedSize <= 0)
+                    processedSize = 1;
+
+                UInt64 sizeRemaining = totalSize - processedSize;
+
+                TimeSpan processingTime = DateTime.Now.Subtract(compStarted);
+                DateTime processingDateTime = new DateTime().AddSeconds(processingTime.TotalSeconds);
+
+                double processingSeconds = processingTime.TotalSeconds;
+                double bytesPerSec;
+
+                if (processingSeconds > 0)
+                    bytesPerSec = processedSize / processingTime.TotalSeconds;
+                else
+                    bytesPerSec = processedSize;
+
+                double remainingSeconds = sizeRemaining / bytesPerSec;
+                DateTime remainingTime = new DateTime().AddSeconds(remainingSeconds);
+
+                string etaResult = string.Format("Time: {0}, ETA: {1}",
+                                                 processingDateTime.ToString("HH:mm:ss"),
+                                                 remainingTime.ToString("HH:mm:ss"));
+                string speedResult;
+                if (bytesPerSec < 10485760f /* 10 MB/s */)
+                    speedResult = string.Format("Speed: {0:###0} KB/s, {1}", bytesPerSec / 1024f, etaResult);
+                else
+                    speedResult = string.Format("Speed: {0:###0} MB/s, {1}", bytesPerSec / 1048576f, etaResult);
+                return speedResult;
+            }
+            return string.Empty;
         }
 
         public override void setSteamDir(string dir)

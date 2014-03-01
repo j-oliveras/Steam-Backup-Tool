@@ -232,6 +232,7 @@ namespace steamBackup
 
                 lbl0.Text = "Instance 1:- ";
                 lbl0Info.Text = "Waiting...";
+                lbl0SpeedEta.Text = string.Empty;
                 lbl1.Text = "Version: " + versionNum;
                 this.Size = new Size(400, 482);
             }
@@ -245,6 +246,7 @@ namespace steamBackup
 
                 lbl1.Text = "Instance 2:- ";
                 lbl1Info.Text = "Waiting...";
+                lbl1SpeedEta.Text = string.Empty;
                 lbl2.Text = "Version: " + versionNum;
                 this.Size = new Size(400, 562);
             }
@@ -258,6 +260,7 @@ namespace steamBackup
 
                 lbl2.Text = "Instance 3:- ";
                 lbl2Info.Text = "Waiting...";
+                lbl2SpeedEta.Text = string.Empty;
                 lbl3.Text = "Version: " + versionNum;
                 this.Size = new Size(400, 642);
             }
@@ -271,6 +274,7 @@ namespace steamBackup
 
                 lbl3.Text = "Instance 4:- ";
                 lbl3Info.Text = "Waiting...";
+                lbl3SpeedEta.Text = string.Empty;
                 lbl4.Text = "Version: " + versionNum;
                 this.Size = new Size(400, 722);
             }
@@ -296,29 +300,34 @@ namespace steamBackup
             ProgressBar pgsBar = null;
             Label lblJobTitle = null;
             Label lblJobFile = null;
-            if (thread == 0)
+            Label lblJobSpeedEta = null;
+
+            switch (thread)
             {
-                pgsBar = pgsBar1;
-                lblJobTitle = lbl0;
-                lblJobFile = lbl0Info;
-            }
-            else if (thread == 1)
-            {
-                pgsBar = pgsBar1;
-                lblJobTitle = lbl1;
-                lblJobFile = lbl1Info;
-            }
-            else if (thread == 2)
-            {
-                pgsBar = pgsBar2;
-                lblJobTitle = lbl2;
-                lblJobFile = lbl2Info;
-            }
-            else if (thread == 3)
-            {
-                pgsBar = pgsBar3;
-                lblJobTitle = lbl3;
-                lblJobFile = lbl3Info;
+                case 0:
+                    pgsBar = pgsBar1;
+                    lblJobTitle = lbl0;
+                    lblJobFile = lbl0Info;
+                    lblJobSpeedEta = lbl0SpeedEta;
+                    break;
+                case 1:
+                    pgsBar = pgsBar1;
+                    lblJobTitle = lbl1;
+                    lblJobFile = lbl1Info;
+                    lblJobSpeedEta = lbl1SpeedEta;
+                    break;
+                case 2:
+                    pgsBar = pgsBar2;
+                    lblJobTitle = lbl2;
+                    lblJobFile = lbl2Info;
+                    lblJobSpeedEta = lbl2SpeedEta;
+                    break;
+                case 3:
+                    pgsBar = pgsBar3;
+                    lblJobTitle = lbl3;
+                    lblJobFile = lbl3Info;
+                    lblJobSpeedEta = lbl3SpeedEta;
+                    break;
             }
 
             while (task.jobsAnalysed < task.jobCount && !cancelJob)
@@ -334,6 +343,7 @@ namespace steamBackup
                 job.status = JobStatus.WORKING;
                 updateList();
                 lblJobFile.Text = "Finding Files...";
+                lblJobSpeedEta.Text = string.Empty;
 
                 job.start();
 
@@ -354,6 +364,7 @@ namespace steamBackup
             
             lblJobTitle.Text = "Instance " + (thread + 1) + ":- Finished";
             lblJobFile.Text = "No Jobs Remaining...";
+            lblJobSpeedEta.Text = string.Empty;
             jobsFinished();
         }
 
@@ -375,30 +386,34 @@ namespace steamBackup
             ProgressBar pgsBar = null;
             Label lblJobTitle = null;
             Label lblJobFile = null;
+            Label lblJobSpeedEta = null;
 
-            if (thread == 0)
+            switch (thread)
             {
-                pgsBar = pgsBar0;
-                lblJobTitle = lbl0;
-                lblJobFile = lbl0Info;
-            }
-            else if (thread == 1)
-            {
-                pgsBar = pgsBar1;
-                lblJobTitle = lbl1;
-                lblJobFile = lbl1Info;
-            }
-            else if (thread == 2)
-            {
-                pgsBar = pgsBar2;
-                lblJobTitle = lbl2;
-                lblJobFile = lbl2Info;
-            }
-            else if (thread == 3)
-            {
-                pgsBar = pgsBar3;
-                lblJobTitle = lbl3;
-                lblJobFile = lbl3Info;
+                case 0:
+                    pgsBar = pgsBar0;
+                    lblJobTitle = lbl0;
+                    lblJobFile = lbl0Info;
+                    lblJobSpeedEta = lbl0SpeedEta;
+                    break;
+                case 1:
+                    pgsBar = pgsBar1;
+                    lblJobTitle = lbl1;
+                    lblJobFile = lbl1Info;
+                    lblJobSpeedEta = lbl1SpeedEta;
+                    break;
+                case 2:
+                    pgsBar = pgsBar2;
+                    lblJobTitle = lbl2;
+                    lblJobFile = lbl2Info;
+                    lblJobSpeedEta = lbl2SpeedEta;
+                    break;
+                case 3:
+                    pgsBar = pgsBar3;
+                    lblJobTitle = lbl3;
+                    lblJobFile = lbl3Info;
+                    lblJobSpeedEta = lbl3SpeedEta;
+                    break;
             }
 
             string name = job.name;
@@ -407,6 +422,7 @@ namespace steamBackup
 
             lblJobTitle.Text = "Instance " + (thread + 1) + ":- (" + job.status.ToString() + ") " + name;
             pgsBar.Value = job.getPercDone();
+            lblJobSpeedEta.Text = job.getSpeedEta();
 
             if (!string.IsNullOrEmpty(job.getCurFileStr()))
                 lblJobFile.Text = job.getCurFileStr();
