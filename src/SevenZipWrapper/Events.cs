@@ -1,7 +1,8 @@
-﻿namespace steamBackup
-{
-    using System;
+﻿using System;
+using steamBackup.Properties;
 
+namespace steamBackup
+{
     /// <summary>
     /// The definition of the interface which supports the cancellation of a process.
     /// </summary>
@@ -27,10 +28,9 @@
         /// <exception cref="System.ArgumentOutOfRangeException"/>
         public PercentDoneEventArgs(byte percentDone)
         {
-            if (percentDone > 100 || percentDone < 0)
+            if (percentDone > 100)
             {
-                throw new ArgumentOutOfRangeException("percentDone",
-                                                      "The percent of finished work must be between 0 and 100.");
+                throw new ArgumentOutOfRangeException("percentDone", Resources.PercentRangeError);
             }
             _percentDone = percentDone;
         }

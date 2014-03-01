@@ -30,10 +30,11 @@ namespace steamBackup
                 }
                 catch (Exception ex)
                 {
-                    Trace.TraceError(ex.Message); throw new ArgumentException("Invalid path");
+                    Trace.TraceError(ex.Message); 
+                    throw new ArgumentException(Resources.InvalidPathExceptionText);
                 }
             }
-            else throw new ArgumentException("Absolute path needed, not relative");
+            else throw new ArgumentException(Resources.AbsolutePathExceptionText);
         }
 
         public static bool folderExists(string dir, string folder)

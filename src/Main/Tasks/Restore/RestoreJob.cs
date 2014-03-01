@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using steamBackup.Properties;
 
 namespace steamBackup
 {
@@ -81,14 +82,14 @@ namespace steamBackup
                 double remainingSeconds = sizeRemaining / bytesPerSec;
                 DateTime remainingTime = new DateTime().AddSeconds(remainingSeconds);
 
-                string etaResult = string.Format("Time: {0}, ETA: {1}",
+                string etaResult = string.Format(Resources.EtaFormatStr,
                                                  processingDateTime.ToString("HH:mm:ss"),
                                                  remainingTime.ToString("HH:mm:ss"));
                 string speedResult;
                 if (bytesPerSec < 10485760f /* 10 MB/s */)
-                    speedResult = string.Format("Speed: {0:###0} KB/s, {1}", bytesPerSec / 1024f, etaResult);
+                    speedResult = string.Format(Resources.SpeedKBFormatStr, bytesPerSec / 1024f, etaResult);
                 else
-                    speedResult = string.Format("Speed: {0:###0} MB/s, {1}", bytesPerSec / 1048576f, etaResult);
+                    speedResult = string.Format(Resources.SpeedMBFormatStr, bytesPerSec / 1048576f, etaResult);
                 return speedResult;
             }
             return string.Empty;

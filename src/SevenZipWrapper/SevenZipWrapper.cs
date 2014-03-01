@@ -82,8 +82,6 @@
         private IntPtr _libHandle;
 
         private int _progress;
-        private ulong _totalSize;
-        private ulong _processedSize;
 
         private ProgressCallback _progressCallback;
         private FileNameCallback _fileNameCallback;
@@ -140,17 +138,9 @@
             }
         }
 
-        public UInt64 TotalSize
-        {
-            get { return _totalSize; }
-            set { _totalSize = value; }
-        }
+        public ulong TotalSize { get; set; }
 
-        public UInt64 ProcessedSize
-        {
-            get { return _processedSize; }
-            set { _processedSize = value; }
-        }
+        public ulong ProcessedSize { get; set; }
 
         public SevenZipWrapper(string libraryPath, string archiveName, bool decompressor)
         {
@@ -177,11 +167,11 @@
                 };
                 _totalSizeCallback = value =>
                 {
-                    _totalSize = value;
+                    TotalSize = value;
                 };
                 _processedSizeCallback = value =>
                 {
-                    _processedSize = value;
+                    ProcessedSize = value;
                 };
 
                 _libHandle = InitDecompressLibrary(libraryPath, archiveName, _progressCallback, _fileNameCallback, _totalSizeCallback, _processedSizeCallback);
@@ -209,11 +199,11 @@
                 };
                 _totalSizeCallback = value =>
                 {
-                    _totalSize = value;
+                    TotalSize = value;
                 };
                 _processedSizeCallback = value =>
                 {
-                    _processedSize = value;
+                    ProcessedSize = value;
                 };
 
                 _libHandle = InitCompressLibrary(libraryPath, archiveName, _progressCallback, _fileNameCallback, _totalSizeCallback, _processedSizeCallback);

@@ -61,6 +61,15 @@ namespace steamBackup.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Absolute path needed, not relative.
+        /// </summary>
+        internal static string AbsolutePathExceptionText {
+            get {
+                return ResourceManager.GetString("AbsolutePathExceptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {\rtf1\ansi Click to \b select \b0 all games for backup.  The selection can be modified in the check box list. }.
         /// </summary>
         internal static string BackupAllButtonTooltip {
@@ -88,6 +97,15 @@ namespace steamBackup.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Backup Directory.
+        /// </summary>
+        internal static string BackupDir {
+            get {
+                return ResourceManager.GetString("BackupDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {\rtf1\ansi Click to \b deselect \b0 all games for backup.  The selection can be modified in the check box list. }.
         /// </summary>
         internal static string BackupNoneButtonTooltip {
@@ -111,6 +129,25 @@ namespace steamBackup.Properties {
         internal static string BackupSteamRunningText {
             get {
                 return ResourceManager.GetString("BackupSteamRunningText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to cancel immediately? This could corrupt the games that are currently being worked on.
+        ///Click &apos;Yes&apos; to stop immediately, or &apos;No&apos; to cancel once the current jobs have been finished..
+        /// </summary>
+        internal static string CancelQueryText {
+            get {
+                return ResourceManager.GetString("CancelQueryText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel immediately?.
+        /// </summary>
+        internal static string CancelQueryTitle {
+            get {
+                return ResourceManager.GetString("CancelQueryTitle", resourceCulture);
             }
         }
         
@@ -165,12 +202,117 @@ namespace steamBackup.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Time: {0}, ETA: {1}.
+        /// </summary>
+        internal static string EtaFormatStr {
+            get {
+                return ResourceManager.GetString("EtaFormatStr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finding Files....
+        /// </summary>
+        internal static string FindingFilesText {
+            get {
+                return ResourceManager.GetString("FindingFilesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finished Job....
+        /// </summary>
+        internal static string FinishedJobText {
+            get {
+                return ResourceManager.GetString("FinishedJobText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jobs finished with {0} of {1} completed!
+        ///
+        ///Steam Backup Tool finished without finding any errors..
+        /// </summary>
+        internal static string FinishedText {
+            get {
+                return ResourceManager.GetString("FinishedText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finished Successfully.
+        /// </summary>
+        internal static string FinishedTitle {
+            get {
+                return ResourceManager.GetString("FinishedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WARNING!
+        ///
+        ///Jobs finished with {0} of {1} completed!
+        ///
+        ///However, Steam Backup Tool has encountered error, It is recommended that you look at the &apos;Error Log.txt&apos; file in the backup directory for a full list of errors..
+        /// </summary>
+        internal static string FinishedWithErrorsText {
+            get {
+                return ResourceManager.GetString("FinishedWithErrorsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Errors Found.
+        /// </summary>
+        internal static string FinishedWithErrorsTitle {
+            get {
+                return ResourceManager.GetString("FinishedWithErrorsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instance {0}:- Finished.
+        /// </summary>
+        internal static string InstanceFinishedText {
+            get {
+                return ResourceManager.GetString("InstanceFinishedText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instance {0}:- .
+        /// </summary>
+        internal static string InstanceNumText {
+            get {
+                return ResourceManager.GetString("InstanceNumText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instance {0}:- ({1}) {2}.
+        /// </summary>
+        internal static string InstanceProcessing {
+            get {
+                return ResourceManager.GetString("InstanceProcessing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose the number of instances to run.
         ///Recommended: One instance for every two CPU cores..
         /// </summary>
         internal static string InstancesCountTooltip {
             get {
                 return ResourceManager.GetString("InstancesCountTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid path.
+        /// </summary>
+        internal static string InvalidPathExceptionText {
+            get {
+                return ResourceManager.GetString("InvalidPathExceptionText", resourceCulture);
             }
         }
         
@@ -189,6 +331,33 @@ namespace steamBackup.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide Job List.
+        /// </summary>
+        internal static string JobListHideText {
+            get {
+                return ResourceManager.GetString("JobListHideText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Job List.
+        /// </summary>
+        internal static string JobListShowText {
+            get {
+                return ResourceManager.GetString("JobListShowText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Job Thread {0}.
+        /// </summary>
+        internal static string JobThreadText {
+            get {
+                return ResourceManager.GetString("JobThreadText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {\rtf1\ansi This will use multi threaded compression and reduce concurrent compression instances to 1.  The compressed archives have similar sizes compared to LZMA compression. }.
         /// </summary>
         internal static string Lzma2CheckboxTooltip {
@@ -203,6 +372,71 @@ namespace steamBackup.Properties {
         internal static string MaxRamUsageText {
             get {
                 return ResourceManager.GetString("MaxRamUsageText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Jobs Remaining....
+        /// </summary>
+        internal static string NoJobsText {
+            get {
+                return ResourceManager.GetString("NoJobsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid Steam Backup folder.
+        /// </summary>
+        internal static string NotValidSteamBackupDirectory {
+            get {
+                return ResourceManager.GetString("NotValidSteamBackupDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid Steam installation directory.
+        /// </summary>
+        internal static string NotValidSteamDirectory {
+            get {
+                return ResourceManager.GetString("NotValidSteamDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause.
+        /// </summary>
+        internal static string PauseText {
+            get {
+                return ResourceManager.GetString("PauseText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The percent of finished work must be between 0 and 100..
+        /// </summary>
+        internal static string PercentRangeError {
+            get {
+                return ResourceManager.GetString("PercentRangeError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Started: {0}.
+        /// </summary>
+        internal static string ProcessingStarted {
+            get {
+                return ResourceManager.GetString("ProcessingStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jobs started: {0} of {1}
+        ///Jobs skipped: {2} of {3}
+        ///Jobs total: {4} of {5}.
+        /// </summary>
+        internal static string ProgressFormatStr {
+            get {
+                return ResourceManager.GetString("ProgressFormatStr", resourceCulture);
             }
         }
         
@@ -279,6 +513,53 @@ namespace steamBackup.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resume.
+        /// </summary>
+        internal static string ResumeText {
+            get {
+                return ResourceManager.GetString("ResumeText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed: {0:###0} KB/s, {1}.
+        /// </summary>
+        internal static string SpeedKBFormatStr {
+            get {
+                return ResourceManager.GetString("SpeedKBFormatStr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed: {0:###0} MB/s, {1}.
+        /// </summary>
+        internal static string SpeedMBFormatStr {
+            get {
+                return ResourceManager.GetString("SpeedMBFormatStr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, But I could not find where steam has been installed.
+        ///
+        ///Please browse for it manually..
+        /// </summary>
+        internal static string SteamFolderNotFound {
+            get {
+                return ResourceManager.GetString("SteamFolderNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steam Install Directory.
+        /// </summary>
+        internal static string SteamInstallDir {
+            get {
+                return ResourceManager.GetString("SteamInstallDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Steam Is Running.
         /// </summary>
         internal static string SteamRunningTitle {
@@ -350,6 +631,24 @@ namespace steamBackup.Properties {
         internal static string UpdateLibButtonTooltip {
             get {
                 return ResourceManager.GetString("UpdateLibButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version: {0}.
+        /// </summary>
+        internal static string VersionStr {
+            get {
+                return ResourceManager.GetString("VersionStr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting....
+        /// </summary>
+        internal static string WaitingText {
+            get {
+                return ResourceManager.GetString("WaitingText", resourceCulture);
             }
         }
     }

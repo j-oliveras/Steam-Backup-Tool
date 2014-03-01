@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using steamBackup.Properties;
 
 namespace steamBackup
 {
@@ -58,9 +58,7 @@ namespace steamBackup
 
         public string progressText()
         {
-            return "Jobs started: " + jobsDone + " of " + jobsToDoCount + Environment.NewLine +
-                    "Jobs skipped: " + jobsSkiped + " of " + jobsToSkipCount + Environment.NewLine +
-                    "Jobs total: " + jobsAnalysed + " of " + jobCount;
+            return string.Format(Resources.ProgressFormatStr, jobsDone, jobsToDoCount, jobsSkiped, jobsToSkipCount, jobsAnalysed, jobCount);
         }
 
         public Job getNextJob()

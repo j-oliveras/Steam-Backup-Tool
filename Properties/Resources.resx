@@ -224,4 +224,111 @@ Recommended: One Thread for every CPU core.</value>
   <data name="UpdateLibButtonTooltip" xml:space="preserve">
     <value>{\rtf1\ansi Click to select all games that have been changed since the last backup, \b Including \b0 games that have not been backed up yet. The selection can be modified in the check box list. }</value>
   </data>
+  <data name="VersionStr" xml:space="preserve">
+    <value>Version: {0}</value>
+  </data>
+  <data name="NotValidSteamDirectory" xml:space="preserve">
+    <value>'{0}' is not a valid Steam installation directory</value>
+  </data>
+  <data name="NotValidSteamBackupDirectory" xml:space="preserve">
+    <value>'{0}' is not a valid Steam Backup folder</value>
+  </data>
+  <data name="ProcessingStarted" xml:space="preserve">
+    <value>Started: {0}</value>
+  </data>
+  <data name="JobThreadText" xml:space="preserve">
+    <value>Job Thread {0}</value>
+  </data>
+  <data name="InstanceNumText" xml:space="preserve">
+    <value>Instance {0}:- </value>
+  </data>
+  <data name="WaitingText" xml:space="preserve">
+    <value>Waiting...</value>
+  </data>
+  <data name="FindingFilesText" xml:space="preserve">
+    <value>Finding Files...</value>
+  </data>
+  <data name="FinishedJobText" xml:space="preserve">
+    <value>Finished Job...</value>
+  </data>
+  <data name="NoJobsText" xml:space="preserve">
+    <value>No Jobs Remaining...</value>
+  </data>
+  <data name="InstanceFinishedText" xml:space="preserve">
+    <value>Instance {0}:- Finished</value>
+  </data>
+  <data name="InstanceProcessing" xml:space="preserve">
+    <value>Instance {0}:- ({1}) {2}</value>
+  </data>
+  <data name="FinishedText" xml:space="preserve">
+    <value>Jobs finished with {0} of {1} completed!
+
+Steam Backup Tool finished without finding any errors.</value>
+  </data>
+  <data name="FinishedTitle" xml:space="preserve">
+    <value>Finished Successfully</value>
+  </data>
+  <data name="FinishedWithErrorsText" xml:space="preserve">
+    <value>WARNING!
+
+Jobs finished with {0} of {1} completed!
+
+However, Steam Backup Tool has encountered error, It is recommended that you look at the 'Error Log.txt' file in the backup directory for a full list of errors.</value>
+  </data>
+  <data name="FinishedWithErrorsTitle" xml:space="preserve">
+    <value>Errors Found</value>
+  </data>
+  <data name="SteamInstallDir" xml:space="preserve">
+    <value>Steam Install Directory</value>
+  </data>
+  <data name="BackupDir" xml:space="preserve">
+    <value>Backup Directory</value>
+  </data>
+  <data name="CancelQueryText" xml:space="preserve">
+    <value>Do you want to cancel immediately? This could corrupt the games that are currently being worked on.
+Click 'Yes' to stop immediately, or 'No' to cancel once the current jobs have been finished.</value>
+  </data>
+  <data name="CancelQueryTitle" xml:space="preserve">
+    <value>Cancel immediately?</value>
+  </data>
+  <data name="PauseText" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="ResumeText" xml:space="preserve">
+    <value>Resume</value>
+  </data>
+  <data name="SteamFolderNotFound" xml:space="preserve">
+    <value>Sorry, But I could not find where steam has been installed.
+
+Please browse for it manually.</value>
+  </data>
+  <data name="JobListHideText" xml:space="preserve">
+    <value>Hide Job List</value>
+  </data>
+  <data name="JobListShowText" xml:space="preserve">
+    <value>Show Job List</value>
+  </data>
+  <data name="PercentRangeError" xml:space="preserve">
+    <value>The percent of finished work must be between 0 and 100.</value>
+  </data>
+  <data name="EtaFormatStr" xml:space="preserve">
+    <value>Time: {0}, ETA: {1}</value>
+  </data>
+  <data name="SpeedKBFormatStr" xml:space="preserve">
+    <value>Speed: {0:###0} KB/s, {1}</value>
+  </data>
+  <data name="SpeedMBFormatStr" xml:space="preserve">
+    <value>Speed: {0:###0} MB/s, {1}</value>
+  </data>
+  <data name="ProgressFormatStr" xml:space="preserve">
+    <value>Jobs started: {0} of {1}
+Jobs skipped: {2} of {3}
+Jobs total: {4} of {5}</value>
+  </data>
+  <data name="InvalidPathExceptionText" xml:space="preserve">
+    <value>Invalid path</value>
+  </data>
+  <data name="AbsolutePathExceptionText" xml:space="preserve">
+    <value>Absolute path needed, not relative</value>
+  </data>
 </root>

@@ -20,7 +20,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
-
+using steamBackup.Properties;
 
 namespace steamBackup
 {
@@ -62,7 +62,7 @@ namespace steamBackup
             tbxBackupDir.Text = Settings.backupDir;
 
             lblStarted.Text = null;
-            lbl0.Text = "Version: " + versionNum;
+            lbl0.Text = string.Format(Resources.VersionStr, versionNum);
         }
 
         private void btnBrowseSteam_Click(object sender, EventArgs e)
@@ -87,7 +87,7 @@ namespace steamBackup
         // Check to see if a steam install directory is valid
         private bool isValidSteamFolder()
         {
-            if(File.Exists(tbxSteamDir.Text.ToString() + "\\config\\config.vdf"))
+            if(File.Exists(tbxSteamDir.Text + "\\config\\config.vdf"))
             {
                 return true;
             }
@@ -100,18 +100,15 @@ namespace steamBackup
         // Check to see if a backup directory is valid
         private bool isValidBackupFolder()
         {
-            if(
-                File.Exists(tbxBackupDir.Text.ToString() + "\\config.sbt")
-                )
+            if(File.Exists(tbxBackupDir.Text + "\\config.sbt"))
             {
                 // Valid Archiver Version 2
                 return true;
             }
-            else if(
-                Directory.Exists(tbxBackupDir.Text.ToString() + "\\common\\") && 
-                File.Exists(tbxBackupDir.Text.ToString() + "\\games.7z") &&
-                File.Exists(tbxBackupDir.Text.ToString() + "\\steamapps.7z")
-                )
+
+            if(Directory.Exists(tbxBackupDir.Text + "\\common\\") && 
+               File.Exists(tbxBackupDir.Text + "\\games.7z") &&
+               File.Exists(tbxBackupDir.Text + "\\steamapps.7z"))
             {
                 // Valid Archiver Version 1
                 return true;
@@ -127,11 +124,11 @@ namespace steamBackup
             Process[] pname = Process.GetProcessesByName("Steam");
             if (pname.Length != 0 && Settings.checkSteamRun)
             {
-                MessageBox.Show("Please exit Steam before backing up. To continue, exit Steam and then click the 'Backup' button again. Do Not start Steam until the backup process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(Resources.BackupSteamRunningText, Resources.SteamRunningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else if (!isValidSteamFolder())
             {
-                MessageBox.Show("'" + tbxSteamDir.Text.ToString() + "' is not a valid Steam installation directory");
+                MessageBox.Show(string.Format(Resources.NotValidSteamDirectory, tbxSteamDir.Text));
             }
             else
             {
@@ -145,12 +142,12 @@ namespace steamBackup
                     return;
 
                 // create folders if needed
-                if (!Directory.Exists(tbxBackupDir.Text.ToString()))
-                    Directory.CreateDirectory(tbxBackupDir.Text.ToString());
-                if (!Directory.Exists(tbxBackupDir.Text.ToString() + "\\common"))
-                    Directory.CreateDirectory(tbxBackupDir.Text.ToString() + "\\common");
-                if (!Directory.Exists(tbxBackupDir.Text.ToString() + "\\acf"))
-                    Directory.CreateDirectory(tbxBackupDir.Text.ToString() + "\\acf");
+                if (!Directory.Exists(tbxBackupDir.Text))
+                    Directory.CreateDirectory(tbxBackupDir.Text);
+                if (!Directory.Exists(tbxBackupDir.Text + "\\common"))
+                    Directory.CreateDirectory(tbxBackupDir.Text + "\\common");
+                if (!Directory.Exists(tbxBackupDir.Text + "\\acf"))
+                    Directory.CreateDirectory(tbxBackupDir.Text + "\\acf");
 
                 task = backupUserCtrl.getTask();
                 start();
@@ -162,15 +159,15 @@ namespace steamBackup
             Process[] pname = Process.GetProcessesByName("Steam");
             if (pname.Length != 0 && Settings.checkSteamRun)
             {
-                MessageBox.Show("Please exit Steam before backing up. To continue, exit Steam and then click the 'Backup' button again. Do Not start Steam until the backup process is finished.", "Steam Is Running", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(Resources.RestoreSteamRunningText, Resources.SteamRunningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else if (!isValidSteamFolder())
             {
-                MessageBox.Show("'" + tbxSteamDir.Text.ToString() + "' is not a valid Steam installation directory");
+                MessageBox.Show(string.Format(Resources.NotValidSteamDirectory, tbxSteamDir.Text));
             }
             else if (!isValidBackupFolder())
             {
-                MessageBox.Show("'" + tbxBackupDir.Text.ToString() + "' is not a valid Steam Backup folder");
+                MessageBox.Show(string.Format(Resources.NotValidSteamBackupDirectory, tbxBackupDir.Text));
             }
             else
             {
@@ -204,7 +201,7 @@ namespace steamBackup
             tbxSteamDir.Enabled = false;
             tbxBackupDir.Enabled = false;
 
-            lblStarted.Text = "Started: " + DateTime.Now.ToString("H:mm.ss dd/MM/yyyy");
+            lblStarted.Text = string.Format(Resources.ProcessingStarted, DateTime.Now.ToString("H:mm.ss dd/MM/yyyy"));
             cancelJob = false;
             pauseJob = false;
             threadDone = 0;
@@ -224,73 +221,68 @@ namespace steamBackup
             // setup the UI for each thread that is running
             if (task.threadCount >= 1)
             {
-                threadList[0] = new Thread(() => doWork(0));
-                threadList[0].Priority = ThreadPriority.Lowest;
-                threadList[0].Name = "Job Thread 1";
-                threadList[0].IsBackground = true;
+                threadList[0] = new Thread(() => doWork(0))
+                {
+                    Priority = ThreadPriority.Lowest,
+                    Name = string.Format(Resources.JobThreadText, 1),
+                    IsBackground = true
+                };
                 threadList[0].Start();
 
-                lbl0.Text = "Instance 1:- ";
-                lbl0Info.Text = "Waiting...";
+                lbl0.Text = string.Format(Resources.InstanceNumText, 1);
+                lbl0Info.Text = Resources.WaitingText;
                 lbl0SpeedEta.Text = string.Empty;
-                lbl1.Text = "Version: " + versionNum;
                 this.Size = new Size(400, 482);
+                lbl1.Text = string.Format(Resources.VersionStr, versionNum);
             }
             if (task.threadCount >= 2 && !Settings.useLzma2)
             {
-                threadList[1] = new Thread(() => doWork(1));
-                threadList[1].Priority = ThreadPriority.Lowest;
-                threadList[1].Name = "Job Thread 2";
-                threadList[1].IsBackground = true;
+                threadList[1] = new Thread(() => doWork(1))
+                {
+                    Priority = ThreadPriority.Lowest,
+                    Name = string.Format(Resources.JobThreadText, 2),
+                    IsBackground = true
+                };
                 threadList[1].Start();
 
-                lbl1.Text = "Instance 2:- ";
-                lbl1Info.Text = "Waiting...";
+                lbl1.Text = string.Format(Resources.InstanceNumText, 2);
+                lbl1Info.Text = Resources.WaitingText;
                 lbl1SpeedEta.Text = string.Empty;
-                lbl2.Text = "Version: " + versionNum;
                 this.Size = new Size(400, 562);
+                lbl2.Text = string.Format(Resources.VersionStr, versionNum);
             }
             if (task.threadCount >= 3 && !Settings.useLzma2)
             {
-                threadList[2] = new Thread(() => doWork(2));
-                threadList[2].Priority = ThreadPriority.Lowest;
-                threadList[2].Name = "Job Thread 3";
-                threadList[2].IsBackground = true;
+                threadList[2] = new Thread(() => doWork(2))
+                {
+                    Priority = ThreadPriority.Lowest,
+                    Name = string.Format(Resources.JobThreadText, 3),
+                    IsBackground = true
+                };
                 threadList[2].Start();
 
-                lbl2.Text = "Instance 3:- ";
-                lbl2Info.Text = "Waiting...";
+                lbl2.Text = string.Format(Resources.InstanceNumText, 3);
+                lbl2Info.Text = Resources.WaitingText;
                 lbl2SpeedEta.Text = string.Empty;
-                lbl3.Text = "Version: " + versionNum;
                 this.Size = new Size(400, 642);
+                lbl3.Text = string.Format(Resources.VersionStr, versionNum);
             }
             if (task.threadCount >= 4 && !Settings.useLzma2)
             {
-                threadList[3] = new Thread(() => doWork(3));
-                threadList[3].Priority = ThreadPriority.Lowest;
-                threadList[3].Name = "Job Thread 4";
-                threadList[3].IsBackground = true;
+                threadList[3] = new Thread(() => doWork(3))
+                {
+                    Priority = ThreadPriority.Lowest,
+                    Name = string.Format(Resources.JobThreadText, 4),
+                    IsBackground = true
+                };
                 threadList[3].Start();
 
-                lbl3.Text = "Instance 4:- ";
-                lbl3Info.Text = "Waiting...";
+                lbl3.Text = string.Format(Resources.InstanceNumText, 4);
+                lbl3Info.Text = Resources.WaitingText;
                 lbl3SpeedEta.Text = string.Empty;
-                lbl4.Text = "Version: " + versionNum;
                 this.Size = new Size(400, 722);
+                lbl4.Text = string.Format(Resources.VersionStr, versionNum);
             }
-        }
-
-        private void btnCancelBackup_Click(object sender, EventArgs e)
-        {
-            // set UI to canceled values
-            btnBrowseSteam.Enabled = true;
-            btnFindSteam.Enabled = true;
-            btnBrowseBackup.Enabled = true;
-            tbxSteamDir.Enabled = true;
-            tbxBackupDir.Enabled = true;
-            btnBackup.Visible = true;
-            btnRestore.Visible = true;
-            btnShowLog.Visible = false;
         }
 
         private void doWork(int thread)
@@ -305,7 +297,7 @@ namespace steamBackup
             switch (thread)
             {
                 case 0:
-                    pgsBar = pgsBar1;
+                    pgsBar = pgsBar0;
                     lblJobTitle = lbl0;
                     lblJobFile = lbl0Info;
                     lblJobSpeedEta = lbl0SpeedEta;
@@ -342,7 +334,7 @@ namespace steamBackup
                 lblProgress.Text = task.progressText();
                 job.status = JobStatus.WORKING;
                 updateList();
-                lblJobFile.Text = "Finding Files...";
+                lblJobFile.Text = Resources.FindingFilesText;
                 lblJobSpeedEta.Text = string.Empty;
 
                 job.start();
@@ -353,7 +345,7 @@ namespace steamBackup
                     copyAcfToRestore(job);
                 
                 updateList();
-                lblJobFile.Text = "Finished Job...";
+                lblJobFile.Text = Resources.FinishedJobText;
 
                 if(cancelJob)
                     job.status = JobStatus.CANCELED;
@@ -362,8 +354,8 @@ namespace steamBackup
 
             pgsBar.Value = 0;
             
-            lblJobTitle.Text = "Instance " + (thread + 1) + ":- Finished";
-            lblJobFile.Text = "No Jobs Remaining...";
+            lblJobTitle.Text = string.Format(Resources.InstanceFinishedText, (thread + 1));
+            lblJobFile.Text = Resources.NoJobsText;
             lblJobSpeedEta.Text = string.Empty;
             jobsFinished();
         }
@@ -420,7 +412,7 @@ namespace steamBackup
             if (job.name.Length >= 28)
                 name = job.name.Substring(0, 25) + "...";
 
-            lblJobTitle.Text = "Instance " + (thread + 1) + ":- (" + job.status.ToString() + ") " + name;
+            lblJobTitle.Text = string.Format(Resources.InstanceProcessing, (thread + 1), job.status, name);
             pgsBar.Value = job.getPercDone();
             lblJobSpeedEta.Text = job.getSpeedEta();
 
@@ -446,7 +438,7 @@ namespace steamBackup
                     FileInfo fi = new FileInfo(src);
                     StreamReader reader = fi.OpenText();
 
-                    string acf = reader.ReadToEnd().ToString();
+                    string acf = reader.ReadToEnd();
                     string gameCommonFolder = Utilities.upDirLvl(job.getSteamDir());
                     acf = acf.Replace(gameCommonFolder, "|DIRECTORY-STD|");
                     acf = acf.Replace(gameCommonFolder.ToLower(), "|DIRECTORY-LOWER|");
@@ -476,7 +468,7 @@ namespace steamBackup
                     FileInfo fi = new FileInfo(src);
                     StreamReader reader = fi.OpenText();
 
-                    string acf = reader.ReadToEnd().ToString();
+                    string acf = reader.ReadToEnd();
                     string gameCommonFolder = job.acfDir + "common\\";
                     acf = acf.Replace("|DIRECTORY-STD|", gameCommonFolder);
                     acf = acf.Replace("|DIRECTORY-LOWER|", gameCommonFolder.ToLower());
@@ -505,22 +497,19 @@ namespace steamBackup
                 btnRestore.Visible = true;
                 btnCancel.Visible = false;
                 btnPause.Visible = false;
-                btnPause.Text = "Pause";
+                btnPause.Text = Resources.PauseText;
                 btnShowLog.Visible = false;
-                lbl0.Text = "Version: " + versionNum;
                 this.Size = new Size(400, 402);
+                lbl0.Text = string.Format(Resources.VersionStr, versionNum);
 
 
                     if (string.IsNullOrEmpty(Utilities.getErrorList()))
                     {
-                        MessageBox.Show("Jobs finished with " + task.jobsDone + " of " + task.jobsToDoCount + " completed!" + Environment.NewLine + Environment.NewLine +
-                            "Steam Backup Tool finished without finding any errors.", "Finished Successfully");
+                        MessageBox.Show(string.Format(Resources.FinishedText, task.jobsDone, task.jobsToDoCount), Resources.FinishedTitle);
                     }
                     else
                     {
-                        MessageBox.Show("WARNING!" + Environment.NewLine + Environment.NewLine +
-                            "Jobs finished with " + task.jobsDone + " of " + task.jobsToDoCount + " completed!" + Environment.NewLine + Environment.NewLine +
-                            "However, Steam Backup Tool has encountered error, It is recommended that you look at the 'Error Log.txt' file in the backup directory for a full list of errors.", "Errors Found",MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(string.Format(Resources.FinishedWithErrorsText, task.jobsDone, task.jobsToDoCount), Resources.FinishedWithErrorsTitle,MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
                 Utilities.clearErrorList();
@@ -535,20 +524,19 @@ namespace steamBackup
 
         private void tbxSteamDir_Enter(object sender, EventArgs e)
         {
-            if (tbxSteamDir.Text == "Steam Install Directory")
+            if (tbxSteamDir.Text == Resources.SteamInstallDir)
                 tbxSteamDir.Text = "";
         }
 
         private void tbxBackupDir_Enter(object sender, EventArgs e)
         {
-            if (tbxBackupDir.Text == "Backup Directory")
+            if (tbxBackupDir.Text == Resources.BackupDir)
                 tbxBackupDir.Text = "";
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Do you want to cancel immediately? This could corrupt the games that are currently being worked on." + Environment.NewLine + Environment.NewLine +
-                "Click 'Yes' to stop immediately, or 'No' to cancel once the current jobs have been finished.", "Cancel immediately?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+            if (MessageBox.Show(Resources.CancelQueryText, Resources.CancelQueryTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
             {
                 cancelJob = true;
                 pauseJob = false;
@@ -573,7 +561,7 @@ namespace steamBackup
             if (pauseJob)
             {
                 pauseJob = false;
-                btnPause.Text = "Pause";
+                btnPause.Text = Resources.PauseText;
 
                 for (int i = 0; i < 4; i++)
                 {
@@ -584,7 +572,7 @@ namespace steamBackup
             else
             {
                 pauseJob = true;
-                btnPause.Text = "Resume";
+                btnPause.Text = Resources.ResumeText;
 
                 for (int i = 0; i < 4; i++)
                 {
@@ -614,7 +602,7 @@ namespace steamBackup
                 }
                 catch (NullReferenceException)
                 {
-                    MessageBox.Show("Sorry, But I could not find where steam has been installed." + Environment.NewLine + Environment.NewLine + "Please browse for it manually.");
+                    MessageBox.Show(Resources.SteamFolderNotFound);
                 }
             }
 
@@ -624,15 +612,15 @@ namespace steamBackup
         {
             if (Size.Width == 400)
             {
-                btnShowLog.Text = "Hide Job List";
                 this.Size = new Size(Size.Width + 600, Size.Height);
                 listView.Size = new Size(listView.Size.Width, this.Size.Height - 50);
+                btnShowLog.Text = Resources.JobListHideText;
                 updateList();
             }
             else
             {
-                btnShowLog.Text = "Show Job List";
                 this.Size = new Size(400, Size.Height);
+                btnShowLog.Text = Resources.JobListShowText;
             }
 
         }
@@ -642,32 +630,42 @@ namespace steamBackup
             if (Size.Width != 400)
             {
                 listView.Items.Clear();
-                ListViewItem listItem = new ListViewItem();
                 int i = 0;
 
                 listView.BeginUpdate();
                 foreach (Job job in task.list)
                 {
                     i++;
-                    listItem = listView.Items.Add(i.ToString());
+                    ListViewItem listItem = listView.Items.Add(i.ToString());
                     listItem.SubItems.Add(job.name);
                     listItem.SubItems.Add("");
                     listItem.SubItems.Add(job.status.ToString());
                     listItem.SubItems.Add("");
                     listItem.SubItems.Add(job.acfFiles);
 
-                    if (job.status == JobStatus.WAITING || job.status == JobStatus.PAUSED)
-                        listItem.ForeColor = Color.Green;
-                    else if (job.status == JobStatus.WORKING)
-                        listItem.ForeColor = Color.BlueViolet;
-                    else if (job.status == JobStatus.SKIPED)
-                        listItem.ForeColor = Color.DarkOrange;
-                    else if (job.status == JobStatus.CANCELED || job.status == JobStatus.ERROR)
-                        listItem.ForeColor = Color.Red;
-                    else if (job.status == JobStatus.FINISHED)
-                        listItem.ForeColor = Color.DarkBlue;
-                    else
-                        listItem.ForeColor = Color.Black;
+                    switch (job.status)
+                    {
+                        case JobStatus.PAUSED:
+                        case JobStatus.WAITING:
+                            listItem.ForeColor = Color.Green;
+                            break;
+                        case JobStatus.WORKING:
+                            listItem.ForeColor = Color.BlueViolet;
+                            break;
+                        case JobStatus.SKIPED:
+                            listItem.ForeColor = Color.DarkOrange;
+                            break;
+                        case JobStatus.ERROR:
+                        case JobStatus.CANCELED:
+                            listItem.ForeColor = Color.Red;
+                            break;
+                        case JobStatus.FINISHED:
+                            listItem.ForeColor = Color.DarkBlue;
+                            break;
+                        default:
+                            listItem.ForeColor = Color.Black;
+                            break;
+                    }
                 }
                 listView.EndUpdate();
             }
