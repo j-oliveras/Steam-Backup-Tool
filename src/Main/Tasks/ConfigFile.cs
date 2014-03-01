@@ -6,7 +6,7 @@ namespace steamBackup
     public class ConfigFile
     {
         [JsonProperty("Archiver Version")]
-        public string ArchiverVersion { get; set; }
+        public int ArchiverVersion { get; set; }
 
         [JsonProperty("ACF IDs")]
         public Dictionary<string, string> AcfIds { get; set; } 

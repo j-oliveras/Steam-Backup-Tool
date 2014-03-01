@@ -45,7 +45,7 @@ namespace steamBackup
             {
                 using (StreamReader streamReader = new StreamReader(configDir))
                 {
-                    ConfigFile cfgFile = new ConfigFile();
+                    ConfigFile cfgFile = null;
 
                     try
                     {
@@ -57,9 +57,7 @@ namespace steamBackup
                     }
                     finally
                     {
-                        if (!string.IsNullOrEmpty(cfgFile.ArchiverVersion))
-                            currentArchiveVer = Convert.ToInt32(cfgFile.ArchiverVersion);
-
+                        currentArchiveVer = cfgFile.ArchiverVersion;
                         foreach (KeyValuePair<string, string> acfId in cfgFile.AcfIds)
                         {
                             string name = acfId.Key;
