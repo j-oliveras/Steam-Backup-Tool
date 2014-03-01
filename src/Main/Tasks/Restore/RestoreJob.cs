@@ -53,44 +53,50 @@ namespace steamBackup
         {
             if (wrapper != null)
             {
-                UInt64 processedSize;
-                UInt64 totalSize;
-                lock (wrapper)
+                try
                 {
-                    totalSize = wrapper.TotalSize;
-                    processedSize = wrapper.ProcessedSize;
+                    UInt64 processedSize;
+                    UInt64 totalSize;
+                    lock (wrapper)
+                    {
+                        totalSize = wrapper.TotalSize;
+                        processedSize = wrapper.ProcessedSize;
+                    }
+
+                    if (totalSize <= 0)
+                        totalSize = 1;
+                    if (processedSize <= 0)
+                        processedSize = 1;
+
+                    UInt64 sizeRemaining = totalSize - processedSize;
+
+                    TimeSpan processingTime = DateTime.Now.Subtract(compStarted);
+                    DateTime processingDateTime = new DateTime().AddSeconds(processingTime.TotalSeconds);
+
+                    double processingSeconds = processingTime.TotalSeconds;
+                    double bytesPerSec;
+
+                    if (processingSeconds > 0)
+                        bytesPerSec = processedSize / processingTime.TotalSeconds;
+                    else
+                        bytesPerSec = processedSize;
+
+                    double remainingSeconds = sizeRemaining / bytesPerSec;
+                    DateTime remainingTime = new DateTime().AddSeconds(remainingSeconds);
+
+                    string etaResult = string.Format(Resources.EtaFormatStr,
+                        processingDateTime.ToString("HH:mm:ss"),
+                        remainingTime.ToString("HH:mm:ss"));
+                    string speedResult;
+                    if (bytesPerSec < 10485760f /* 10 MB/s */)
+                        speedResult = string.Format(Resources.SpeedKBFormatStr, bytesPerSec / 1024f, etaResult);
+                    else
+                        speedResult = string.Format(Resources.SpeedMBFormatStr, bytesPerSec / 1048576f, etaResult);
+                    return speedResult;
                 }
-
-                if (totalSize <= 0)
-                    totalSize = 1;
-                if (processedSize <= 0)
-                    processedSize = 1;
-
-                UInt64 sizeRemaining = totalSize - processedSize;
-
-                TimeSpan processingTime = DateTime.Now.Subtract(compStarted);
-                DateTime processingDateTime = new DateTime().AddSeconds(processingTime.TotalSeconds);
-
-                double processingSeconds = processingTime.TotalSeconds;
-                double bytesPerSec;
-
-                if (processingSeconds > 0)
-                    bytesPerSec = processedSize / processingTime.TotalSeconds;
-                else
-                    bytesPerSec = processedSize;
-
-                double remainingSeconds = sizeRemaining / bytesPerSec;
-                DateTime remainingTime = new DateTime().AddSeconds(remainingSeconds);
-
-                string etaResult = string.Format(Resources.EtaFormatStr,
-                                                 processingDateTime.ToString("HH:mm:ss"),
-                                                 remainingTime.ToString("HH:mm:ss"));
-                string speedResult;
-                if (bytesPerSec < 10485760f /* 10 MB/s */)
-                    speedResult = string.Format(Resources.SpeedKBFormatStr, bytesPerSec / 1024f, etaResult);
-                else
-                    speedResult = string.Format(Resources.SpeedMBFormatStr, bytesPerSec / 1048576f, etaResult);
-                return speedResult;
+                catch (Exception)
+                {
+                }
             }
             return string.Empty;
         }
