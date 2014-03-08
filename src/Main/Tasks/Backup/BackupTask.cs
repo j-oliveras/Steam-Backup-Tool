@@ -392,7 +392,7 @@ namespace steamBackup
                         string[] nameSplit = job.getSteamDir().Split('\\');
                         string name = nameSplit[nameSplit.Length - 1];
 
-                        if (!cfgFile.AcfIds.ContainsKey(name))
+                        if (cfgFile.AcfIds == null || !cfgFile.AcfIds.ContainsKey(name))
                         {
                             writer.WritePropertyName(name);
                             writer.WriteValue(job.acfFiles);
