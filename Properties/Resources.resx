@@ -331,4 +331,21 @@ Jobs total: {4} of {5}</value>
   <data name="AbsolutePathExceptionText" xml:space="preserve">
     <value>Absolute path needed, not relative</value>
   </data>
+  <data name="ChangeListLegend" xml:space="preserve">
+    <value>______________________________________
+
++ Added
+- Removed
+^ Updated
+* Bugfix</value>
+  </data>
+  <data name="ToolUpdateBadJson" xml:space="preserve">
+    <value>ERROR: There was a problem parsing the JSON file.</value>
+  </data>
+  <data name="ToolUpdateDownloadFail" xml:space="preserve">
+    <value>ERROR: There was a problem retrieving update information.</value>
+  </data>
+  <data name="ToolUpdateNoNewVersion" xml:space="preserve">
+    <value>Steam Backup Tool is currently up to date.</value>
+  </data>
 </root>

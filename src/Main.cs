@@ -1,15 +1,8 @@
-﻿/*-------------------------------------------------------------------------------------------------------------------------*
+﻿/*
+ *-------------------------------------------------------------------------------------------------------------------------*
  * --==--This program is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.--==--
  *                           --==--http://creativecommons.org/licenses/by-nc-sa/3.0/--==--
  *-------------------------------------------------------------------------------------------------------------------------*
- *Coding by:
- *  ____  ____  _  _       ____  __  __     ____
- * ( ___)(_  _)( \/ )     (  _ \(  )(  )___(_   )
- *  )__)  _)(_  )  (       )(_) ))(__)((___)/ /_
- * (__)  (____)(_/\_) AND (____/(______)   (____)
- *        FiX                        Du-z
- *    
- * aka James Warner and Brian Duhs
  */
 
 using Microsoft.Win32;
@@ -209,6 +202,7 @@ namespace steamBackup
             btnCancel.Visible = true;
             btnPause.Visible = true;
             btnShowLog.Visible = true;
+            btnUpdWiz.Visible = false;
 
             timer.Start();
 
@@ -499,6 +493,7 @@ namespace steamBackup
                 btnPause.Visible = false;
                 btnPause.Text = Resources.PauseText;
                 btnShowLog.Visible = false;
+                btnUpdWiz.Visible = true;
                 this.Size = new Size(400, 402);
                 lbl0.Text = string.Format(Resources.VersionStr, versionNum);
 
@@ -582,7 +577,7 @@ namespace steamBackup
             }
         }
 
-        // Uses steam reg keys to determin why steam is installed 
+        // Uses steam reg keys to determine where steam is installed 
         private void btnFindSteam_Click(object sender, EventArgs e)
         {
             RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\Valve\\Steam", false);
@@ -675,6 +670,12 @@ namespace steamBackup
         {
             AboutBox about = new AboutBox();
             about.ShowDialog();
+        }
+
+        private void btnUpdWiz_Click(object sender, EventArgs e)
+        {
+            UpdateWizard updater = new UpdateWizard();
+            updater.ShowDialog();
         }
     }
 }

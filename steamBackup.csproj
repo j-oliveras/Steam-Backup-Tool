@@ -57,8 +57,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\Resources.Designer.cs">
@@ -83,6 +85,12 @@
     <Compile Include="src\Main\Tasks\ConfigFile.cs" />
     <Compile Include="src\Main\Tasks\Restore\RestoreJob.cs" />
     <Compile Include="src\Main\Tasks\Restore\RestoreTask.cs" />
+    <Compile Include="src\Main\UpdateWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Main\UpdateWizard.Designer.cs">
+      <DependentUpon>UpdateWizard.cs</DependentUpon>
+    </Compile>
     <Compile Include="src\Settings.cs" />
     <Compile Include="src\Main\RestoreUserCtrl.cs">
       <SubType>Form</SubType>
@@ -120,9 +128,18 @@
     <EmbeddedResource Include="src\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\Main\UpdateWizard.resx">
+      <DependentUpon>UpdateWizard.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="rsc\7za.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="rsc\update.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="rsc\7z.dll">

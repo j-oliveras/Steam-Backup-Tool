@@ -71,6 +71,7 @@
             this.lbl1SpeedEta = new System.Windows.Forms.Label();
             this.lbl2SpeedEta = new System.Windows.Forms.Label();
             this.lbl3SpeedEta = new System.Windows.Forms.Label();
+            this.btnUpdWiz = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -90,11 +91,11 @@
             this.label2.AutoSize = true;
             this.label2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label2.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(69, 60);
+            this.label2.Location = new System.Drawing.Point(95, 60);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(259, 15);
+            this.label2.Size = new System.Drawing.Size(203, 15);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Made for the Overclock.net Community";
+            this.label2.Text = "Made by the Steam Community,";
             this.label2.Click += new System.EventHandler(this.title_Click);
             // 
             // label3
@@ -102,11 +103,11 @@
             this.label3.AutoSize = true;
             this.label3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label3.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
-            this.label3.Location = new System.Drawing.Point(96, 75);
+            this.label3.Location = new System.Drawing.Point(112, 75);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(189, 15);
+            this.label3.Size = new System.Drawing.Size(175, 15);
             this.label3.TabIndex = 2;
-            this.label3.Text = " by [OCN]FiX and [OCN]Du-z";
+            this.label3.Text = "for the Steam community.";
             this.label3.Click += new System.EventHandler(this.title_Click);
             // 
             // tbxSteamDir
@@ -447,6 +448,16 @@
             this.lbl3SpeedEta.TabIndex = 53;
             this.lbl3SpeedEta.Text = "lbl3SpeedEta";
             // 
+            // btnUpdWiz
+            // 
+            this.btnUpdWiz.Location = new System.Drawing.Point(279, 200);
+            this.btnUpdWiz.Name = "btnUpdWiz";
+            this.btnUpdWiz.Size = new System.Drawing.Size(98, 45);
+            this.btnUpdWiz.TabIndex = 54;
+            this.btnUpdWiz.Text = "Check For New Version";
+            this.btnUpdWiz.UseVisualStyleBackColor = true;
+            this.btnUpdWiz.Click += new System.EventHandler(this.btnUpdWiz_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -454,6 +465,7 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(390, 370);
+            this.Controls.Add(this.btnUpdWiz);
             this.Controls.Add(this.lbl3SpeedEta);
             this.Controls.Add(this.lbl2SpeedEta);
             this.Controls.Add(this.lbl1SpeedEta);
@@ -543,6 +555,7 @@
         private System.Windows.Forms.Label lbl1SpeedEta;
         private System.Windows.Forms.Label lbl2SpeedEta;
         private System.Windows.Forms.Label lbl3SpeedEta;
+        private System.Windows.Forms.Button btnUpdWiz;
     }
 }
 
