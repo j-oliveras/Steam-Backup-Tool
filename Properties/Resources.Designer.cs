@@ -207,7 +207,8 @@ namespace steamBackup.Properties {
         ///
         ///Please try running the backup process again making sure that there are no programs accessing the files being backed up (e.g. Steam).
         ///
-        ///To check the integrity of this backup: navigate to the backup location -&gt; Select all files in the &apos;common&apos; folder -&gt; right click -&gt; 7zip -&gt; Test archive. You should do the same for &apos;Source Games.7z&apos; also..
+        ///To check the integrity of this backup: navigate to the backup location -&gt; Select all files in the &apos;common&apos; folder -&gt; right click -&gt; 7zip -&gt; Test archive. You should do the same for &apos;Source Games.7z&apos; also.
+        ///.
         /// </summary>
         internal static string ErrorListHeader {
             get {
@@ -331,16 +332,55 @@ namespace steamBackup.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///
-        /////////////////////// Error Time: {0} \\\\\\\\\\\\\\\\\\\\
-        ///
-        ///
-        ///{1}.
+        ///   Looks up a localized string similar to The job was canceled by the user, there is a potential for file corruption..
         /// </summary>
-        internal static string JobError {
+        internal static string JobCanceledUser {
             get {
-                return ResourceManager.GetString("JobError", resourceCulture);
+                return ResourceManager.GetString("JobCanceledUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///Job Details:
+        ///{0}.
+        /// </summary>
+        internal static string JobErrorDetails {
+            get {
+                return ResourceManager.GetString("JobErrorDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///Error Message:
+        ///{0}.
+        /// </summary>
+        internal static string JobErrorMsg {
+            get {
+                return ResourceManager.GetString("JobErrorMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///Stack Trace:
+        ///{0}.
+        /// </summary>
+        internal static string JobErrorStack {
+            get {
+                return ResourceManager.GetString("JobErrorStack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        /////////////////////// Error Time: {0} \\\\\\\\\\\\\\\\\\\\
+        ///.
+        /// </summary>
+        internal static string JobErrorTime {
+            get {
+                return ResourceManager.GetString("JobErrorTime", resourceCulture);
             }
         }
         

@@ -98,9 +98,9 @@ namespace steamBackup
                 wrapper.CompressFiles(Utilities.upDirLvl(dirSteam), fileList);
                 wrapper.Dispose(false);
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                Utilities.addToErrorList(this);
+                ErrorList.add(new ErrorItem(ex.Message, this, ex.StackTrace));
             }
         }
 

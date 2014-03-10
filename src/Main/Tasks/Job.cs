@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using steamBackup.Properties;
 
 namespace steamBackup
 {
@@ -60,7 +61,7 @@ namespace steamBackup
             if (status == JobStatus.CANCELED)
             {
                 e.Cancel = true;
-                Utilities.addToErrorList(this);
+                ErrorList.add(new ErrorItem(Resources.JobCanceledUser, this));
             }
 
             while (status == JobStatus.PAUSED)
@@ -83,7 +84,7 @@ namespace steamBackup
             str += "acfFiles = " + acfFiles + Environment.NewLine;
             str += "dirSteam = " + dirSteam + Environment.NewLine;
             str += "dirBackup = " + dirBackup + Environment.NewLine;
-            str += "status = " + status + Environment.NewLine;
+            str += "status = " + status;
 
             return str;
         }

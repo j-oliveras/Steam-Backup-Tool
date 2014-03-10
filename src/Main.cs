@@ -498,16 +498,16 @@ namespace steamBackup
                 lbl0.Text = string.Format(Resources.VersionStr, versionNum);
 
 
-                    if (string.IsNullOrEmpty(Utilities.getErrorList()))
-                    {
-                        MessageBox.Show(string.Format(Resources.FinishedText, task.jobsDone, task.jobsToDoCount), Resources.FinishedTitle);
-                    }
-                    else
-                    {
-                        MessageBox.Show(string.Format(Resources.FinishedWithErrorsText, task.jobsDone, task.jobsToDoCount), Resources.FinishedWithErrorsTitle,MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                if (ErrorList.hasErrors())
+                {
+                    MessageBox.Show(string.Format(Resources.FinishedWithErrorsText, task.jobsDone, task.jobsToDoCount), Resources.FinishedWithErrorsTitle,MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show(string.Format(Resources.FinishedText, task.jobsDone, task.jobsToDoCount), Resources.FinishedTitle);
+                }
 
-                Utilities.clearErrorList();
+                ErrorList.clear();
                 lblProgress.Text = task.progressText();
                 task = null;
             }
@@ -580,17 +580,16 @@ namespace steamBackup
         // Uses steam reg keys to determine where steam is installed 
         private void btnFindSteam_Click(object sender, EventArgs e)
         {
-            RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\Valve\\Steam", false);
+            const string keyStr = @"Software\Valve\Steam";
 
-
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(keyStr, false);
             try
             {
                 tbxSteamDir.Text = Utilities.getFileSystemCasing((string)key.GetValue("SteamPath"));
             }
             catch (NullReferenceException)
             {
-                key = Registry.LocalMachine.OpenSubKey("Software\\Valve\\Steam", false);
-                
+                key = Registry.LocalMachine.OpenSubKey(keyStr, false);
                 try
                 {
                     tbxSteamDir.Text = (string)key.GetValue("InstallPath");
@@ -641,6 +640,8 @@ namespace steamBackup
                     switch (job.status)
                     {
                         case JobStatus.PAUSED:
+                            listItem.ForeColor = Color.Blue;
+                            break;
                         case JobStatus.WAITING:
                             listItem.ForeColor = Color.Green;
                             break;
@@ -651,8 +652,10 @@ namespace steamBackup
                             listItem.ForeColor = Color.DarkOrange;
                             break;
                         case JobStatus.ERROR:
-                        case JobStatus.CANCELED:
                             listItem.ForeColor = Color.Red;
+                            break;
+                        case JobStatus.CANCELED:
+                            listItem.ForeColor = Color.Orange;
                             break;
                         case JobStatus.FINISHED:
                             listItem.ForeColor = Color.DarkBlue;

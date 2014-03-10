@@ -66,7 +66,7 @@ namespace steamBackup
                         }
                     }
                 }
-                catch (System.Exception ex)
+                catch
                 {
                     infoBox.Text = Resources.ToolUpdateBadJson;
                     return;
@@ -98,7 +98,7 @@ namespace steamBackup
 
                     reader = new JsonTextReader(new StringReader(jsonStr));
                 }
-                catch (System.Exception ex)
+                catch
                 {
                     return null;
                 }
@@ -130,7 +130,7 @@ namespace steamBackup
             {
                 myWebClient.DownloadFile(updUrl, DownloadLocation);
             }
-            catch (System.Exception ex)
+            catch
             {
                 infoBox.Text = "Error downloading update.";
                 btnCancel.Enabled = true;

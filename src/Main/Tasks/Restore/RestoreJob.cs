@@ -43,9 +43,9 @@ namespace steamBackup
                 wrapper.DecompressFileArchive(dirSteam);
                 wrapper.Dispose(true);
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                Utilities.addToErrorList(this);
+                ErrorList.add(new ErrorItem(ex.Message, this, ex.StackTrace));
             }
         }
 

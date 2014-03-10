@@ -39,6 +39,7 @@ namespace steamBackup
 
         public static bool folderExists(string dir, string folder)
         {
+            // This does a case sensitive check (Other solutions are non-case sensitive)
             string[] folderList = Directory.GetDirectories(dir);
 
             foreach(string folderToTest in folderList)
@@ -109,24 +110,6 @@ namespace steamBackup
                 return true;
 
             return false;
-        }
-
-        static private string errorList;
-        static public void clearErrorList(){errorList = "";}
-        static public string getErrorList() { return errorList; }
-        
-        static public void addToErrorList(Job job)
-        {
-            // TODO redo this
-
-            if (string.IsNullOrEmpty(errorList))
-            {
-                errorList = Resources.ErrorListHeader;
-            }
-
-            errorList += string.Format(Resources.JobError, DateTime.Now.ToString("dd/MM/yyyy H:mm.ss"), job.toString());
-
-            File.WriteAllText(Settings.backupDir + "\\Error Log.txt", errorList);
         }
     }
 }

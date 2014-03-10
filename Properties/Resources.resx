@@ -153,19 +153,17 @@
 
 Please try running the backup process again making sure that there are no programs accessing the files being backed up (e.g. Steam).
 
-To check the integrity of this backup: navigate to the backup location -&gt; Select all files in the 'common' folder -&gt; right click -&gt; 7zip -&gt; Test archive. You should do the same for 'Source Games.7z' also.</value>
+To check the integrity of this backup: navigate to the backup location -&gt; Select all files in the 'common' folder -&gt; right click -&gt; 7zip -&gt; Test archive. You should do the same for 'Source Games.7z' also.
+</value>
   </data>
   <data name="InstancesCountTooltip" xml:space="preserve">
     <value>Choose the number of instances to run.
 Recommended: One instance for every two CPU cores.</value>
   </data>
-  <data name="JobError" xml:space="preserve">
+  <data name="JobErrorTime" xml:space="preserve">
     <value>
-
 //////////////////// Error Time: {0} \\\\\\\\\\\\\\\\\\\\
-
-
-{1}</value>
+</value>
   </data>
   <data name="Lzma2CheckboxTooltip" xml:space="preserve">
     <value>{\rtf1\ansi This will use multi threaded compression and reduce concurrent compression instances to 1.  The compressed archives have similar sizes compared to LZMA compression. }</value>
@@ -347,5 +345,23 @@ Jobs total: {4} of {5}</value>
   </data>
   <data name="ToolUpdateNoNewVersion" xml:space="preserve">
     <value>Steam Backup Tool is currently up to date.</value>
+  </data>
+  <data name="JobErrorDetails" xml:space="preserve">
+    <value>
+Job Details:
+{0}</value>
+  </data>
+  <data name="JobErrorMsg" xml:space="preserve">
+    <value>
+Error Message:
+{0}</value>
+  </data>
+  <data name="JobErrorStack" xml:space="preserve">
+    <value>
+Stack Trace:
+{0}</value>
+  </data>
+  <data name="JobCanceledUser" xml:space="preserve">
+    <value>The job was canceled by the user, there is a potential for file corruption.</value>
   </data>
 </root>
