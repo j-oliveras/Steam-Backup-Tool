@@ -1,6 +1,6 @@
 {
-	"name": "v1.7.0",
-	"version":"1.7.0.0",
-	"url":"https://bitbucket.org/Du-z/steam-backup-tool/downloads/v1_7_0.7z",
-	"changelist":"+ Checks online for tool updates\n^ Main Menu title blurb"
+	"name": "v1.7.1",
+	"version":"1.7.1.0",
+	"url":"https://bitbucket.org/Du-z/steam-backup-tool/downloads/v1_7_1.7z",
+	"changelist":"+ Website label to About Box"
 }

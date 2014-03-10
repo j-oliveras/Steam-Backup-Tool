@@ -9,10 +9,18 @@ namespace steamBackup
         public AboutBox()
         {
             InitializeComponent();
-            this.Text = String.Format("About {0}", AssemblyTitle);
-            this.labelProductName.Text = AssemblyProduct;
-            this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
-            this.labelCopyright.Text = AssemblyCopyright;
+
+            Text = String.Format("About {0}", AssemblyTitle);
+            labelProductName.Text = AssemblyProduct;
+            labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
+            labelCopyright.Text = AssemblyCopyright;
+        }
+
+        private void linkWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string url = @"https://bitbucket.org/Du-z/steam-backup-tool";
+
+            System.Diagnostics.Process.Start(url);
         }
 
         #region Assembly Attribute Accessors
@@ -81,5 +89,6 @@ namespace steamBackup
             }
         }
         #endregion
+
     }
 }
