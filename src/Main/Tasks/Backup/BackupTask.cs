@@ -25,69 +25,25 @@ namespace steamBackup
         
         public override int ramUsage(bool useLzma2)
         {
-            int ramPerThread = 0;
-
-            int cpuCount;
             if (useLzma2)
-                cpuCount = threadCount;
-            else 
-                cpuCount = Environment.ProcessorCount;
-
-            int cpuCountEven = cpuCount;
-
-            if (cpuCount > 1 && cpuCount%2 != 0)
-                cpuCountEven--;
-
-            switch ((int)compLevel)
             {
-                case 5:
-                    if (!useLzma2 || (useLzma2 && cpuCountEven == 2))
-                        ramPerThread = 709;
-                    else
-                    {
-                        ramPerThread = (int) Math.Ceiling(cpuCountEven*553f);
-                    }
-                    break;
-                case 4:
-                    if (!useLzma2)
-                        ramPerThread = 376;
-                    else
-                    {
-                        ramPerThread = (int)Math.Ceiling(cpuCountEven * 292f);
-                    }
-                    break;
-                case 3:
-                    if (!useLzma2)
-                        ramPerThread = 192;
-                    else
-                    {
-                        ramPerThread = (int) Math.Ceiling(cpuCountEven*148f);
-                    }
-                    break;
-                case 2: 
-                    if (!useLzma2)
-                        ramPerThread = 19;
-                    else
-                    {
-                        ramPerThread = (int) Math.Ceiling(cpuCount*16f);
-                    }
-                    break;
-                case 1:
-                    if (!useLzma2)
-                        ramPerThread = 6;
-                    else
-                    {
-                        ramPerThread = (int) Math.Ceiling(cpuCount*4.66f);
-                    }
-                    break;
-                case 0:
-                    ramPerThread = 1;
-                    break;
-                default:
-                    return -1;
-            }
+                float[] ramPerThread = { 1.0f, 4.5f, 16.0f, 148.0f, 292.0f, 553.0f};
 
-            return (useLzma2 ? 1 : (threadCount)) * ramPerThread;
+                int ramMultiplier = threadCount;
+                // if there is more than one thread and the thread count is even and the compression level is higher than 'fast'
+                if (threadCount > 1 && threadCount % 2 == 1 && (int)compLevel > 2)
+                    ramMultiplier--;
+
+                // times the ramPerThread with the ramMultiplier.
+                return (int)(ramMultiplier * ramPerThread[(int)compLevel]);
+            }
+            else
+            {
+                int[] ramPerThread = { 1, 8, 19, 192, 376, 709};
+
+                // times the ramPerThread with the number of instances used.
+                return (int)(threadCount * ramPerThread[(int)compLevel]);
+            }
         }
 
         internal void setCompLevel(int compressionLevel)
