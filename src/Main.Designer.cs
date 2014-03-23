@@ -107,7 +107,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(175, 15);
             this.label3.TabIndex = 2;
-            this.label3.Text = "for the Steam community.";
+            this.label3.Text = "for the Steam Community.";
             this.label3.Click += new System.EventHandler(this.title_Click);
             // 
             // tbxSteamDir
