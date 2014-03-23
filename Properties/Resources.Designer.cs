@@ -662,6 +662,15 @@ namespace steamBackup.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {\rtf1\ansi This will remove the restriction to the number of threads usable (Normally set as &apos;core_count&apos;). \b WARNING: \b0 potentially high ram usage  }.
+        /// </summary>
+        internal static string ThreadsLzma2UnlockTooltip {
+            get {
+                return ResourceManager.GetString("ThreadsLzma2UnlockTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {\rtf1\ansi This will change how many instances of 7zip are used, each instance creates two threads. It is recommended that you set the slider to \b &apos;core_count/2&apos; \b0 for best performance.  Dramatically increases ram usage when also using high compression rates. }.
         /// </summary>
         internal static string ThreadsLzmaTooltip {

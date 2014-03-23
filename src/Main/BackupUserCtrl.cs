@@ -33,17 +33,24 @@ namespace steamBackup
 
             updCheckBoxList();
 
+            cBoxUnlockThreads.Checked = Settings.lzma2UnlockThreads;
+            
             if (Settings.useLzma2)
             {
-                tbarThread.Maximum = Environment.ProcessorCount;
+                if (cBoxUnlockThreads.Checked)
+                    tbarThread.Maximum = 8;
+                else
+                    tbarThread.Maximum = Math.Min(8, Environment.ProcessorCount);
                 tbarThread.Value = Settings.lzma2Threads;
                 backupTask.threadCount = Settings.lzma2Threads;
+                cBoxUnlockThreads.Visible = true;
             }
             else
             {
                 tbarThread.Maximum = 4;
                 tbarThread.Value = Settings.threadsBup;
                 backupTask.threadCount = Settings.threadsBup;
+                cBoxUnlockThreads.Visible = false;
             }
 
             cBoxLzma2.Checked = Settings.useLzma2;
@@ -61,6 +68,8 @@ namespace steamBackup
         {
             Settings.compresion = backupTask.getCompLevel();
             Settings.useLzma2 = cBoxLzma2.Checked;
+
+            Settings.lzma2UnlockThreads = cBoxUnlockThreads.Checked;
 
             if (Settings.useLzma2)
                 Settings.lzma2Threads = tbarThread.Value;
@@ -320,6 +329,11 @@ namespace steamBackup
             infoBox.Rtf = Resources.Lzma2CheckboxTooltip;
         }
 
+        private void cBoxUnlockThreads_MouseHover(object sender, EventArgs e)
+        {
+            infoBox.Rtf = Resources.ThreadsLzma2UnlockTooltip;
+        }
+
         #endregion
         
         private void cBoxLzma2_CheckStateChanged(object sender, EventArgs e)
@@ -328,26 +342,55 @@ namespace steamBackup
             {
                 backupTask.setCompMethod(true);
 
-                tbarThread.Maximum = Environment.ProcessorCount;
-                tbarThread.Value = Settings.lzma2Threads;
-                backupTask.threadCount = Settings.lzma2Threads;
-                threadText();
+                if (cBoxUnlockThreads.Checked)
+                    tbarThread.Maximum = 8;
+                else
+                    tbarThread.Maximum = Math.Min(8, Environment.ProcessorCount);
+
+                int numThreads = Math.Min(tbarThread.Maximum, tbarThread.Value);
+                tbarThread.Value = numThreads;
+                backupTask.threadCount = numThreads;
 
                 tbarThreadLbl.Text = Resources.ThreadsCountTooltip;
+
+                cBoxUnlockThreads.Visible = true;
             }
             else
             {
                 backupTask.setCompMethod(false);
 
                 tbarThread.Maximum = 4;
-                tbarThread.Value = Settings.threadsBup;
-                backupTask.threadCount = Settings.threadsBup;
-                threadText();
+
+                int numThreads = Math.Min(tbarThread.Maximum, tbarThread.Value);
+                tbarThread.Value = numThreads;
+                backupTask.threadCount = numThreads;
 
                 tbarThreadLbl.Text = Resources.InstancesCountTooltip;
+
+                cBoxUnlockThreads.Visible = false;
             }
 
+            threadText();
             ramUsage();
+        }
+
+        private void cBoxUnlockThreads_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cBoxUnlockThreads.Checked)
+            {
+                tbarThread.Maximum = 8;
+            }
+            else
+            {
+                tbarThread.Maximum = Math.Min(8, Environment.ProcessorCount);
+
+                int numThreads = Math.Min(tbarThread.Maximum, backupTask.threadCount);
+                tbarThread.Value = numThreads;
+                backupTask.threadCount = numThreads;
+
+                threadText();
+                ramUsage();
+            }
         }
     }
 }

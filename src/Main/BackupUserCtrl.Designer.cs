@@ -54,6 +54,7 @@
             this.btnBupNone = new System.Windows.Forms.Button();
             this.btnUpdLib = new System.Windows.Forms.Button();
             this.cBoxLzma2 = new System.Windows.Forms.CheckBox();
+            this.cBoxUnlockThreads = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.tbarComp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbarThread)).BeginInit();
             this.SuspendLayout();
@@ -231,7 +232,7 @@
             this.tbarThreadLbl.Size = new System.Drawing.Size(269, 26);
             this.tbarThreadLbl.TabIndex = 46;
             this.tbarThreadLbl.Text = "Choose the number of instances to run.\r\nRecommended: One instance for every two C" +
-                "PU cores.";
+    "PU cores.";
             // 
             // label5
             // 
@@ -252,7 +253,7 @@
             this.label4.Size = new System.Drawing.Size(275, 26);
             this.label4.TabIndex = 48;
             this.label4.Text = "Choose the level of compression  to use.\r\nNote: Use a lower compression level for" +
-                " older computers.";
+    " older computers.";
             // 
             // label6
             // 
@@ -343,11 +344,25 @@
             this.cBoxLzma2.MouseLeave += new System.EventHandler(this.controls_MouseLeave);
             this.cBoxLzma2.MouseHover += new System.EventHandler(this.cBoxLzma2_MouseHover);
             // 
+            // cBoxUnlockThreads
+            // 
+            this.cBoxUnlockThreads.AutoSize = true;
+            this.cBoxUnlockThreads.Location = new System.Drawing.Point(438, 58);
+            this.cBoxUnlockThreads.Name = "cBoxUnlockThreads";
+            this.cBoxUnlockThreads.Size = new System.Drawing.Size(116, 17);
+            this.cBoxUnlockThreads.TabIndex = 55;
+            this.cBoxUnlockThreads.Text = "Do not limit threads";
+            this.cBoxUnlockThreads.UseVisualStyleBackColor = true;
+            this.cBoxUnlockThreads.CheckedChanged += new System.EventHandler(this.cBoxUnlockThreads_CheckedChanged);
+            this.cBoxUnlockThreads.MouseLeave += new System.EventHandler(this.controls_MouseLeave);
+            this.cBoxUnlockThreads.MouseHover += new System.EventHandler(this.cBoxUnlockThreads_MouseHover);
+            // 
             // BackupUserCtrl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(590, 646);
+            this.Controls.Add(this.cBoxUnlockThreads);
             this.Controls.Add(this.cBoxLzma2);
             this.Controls.Add(this.btnUpdLib);
             this.Controls.Add(this.label9);
@@ -415,6 +430,7 @@
         private System.Windows.Forms.CheckedListBox chkList;
         private System.Windows.Forms.Button btnUpdLib;
         private System.Windows.Forms.CheckBox cBoxLzma2;
+        private System.Windows.Forms.CheckBox cBoxUnlockThreads;
 
     }
 }

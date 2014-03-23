@@ -364,4 +364,7 @@ Stack Trace:
   <data name="JobCanceledUser" xml:space="preserve">
     <value>The job was canceled by the user, there is a potential for file corruption.</value>
   </data>
+  <data name="ThreadsLzma2UnlockTooltip" xml:space="preserve">
+    <value>{\rtf1\ansi This will remove the restriction to the number of threads usable (Normally set as 'core_count'). \b WARNING: \b0 potentially high ram usage  }</value>
+  </data>
 </root>

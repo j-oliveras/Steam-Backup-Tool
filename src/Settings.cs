@@ -13,12 +13,13 @@ namespace steamBackup
         public static string steamDir = "Steam Install Directory";
         public static string backupDir = "Backup Directory";
         public static int compresion = 5;
-        public static int threadsBup = 1;
-        public static int threadsRest = 4;
+        public static int threadsBup = Math.Min(4, Environment.ProcessorCount / 2);
+        public static int threadsRest = Math.Min(4, Environment.ProcessorCount);
         public static bool checkSteamRun = true;
         public static bool debugMode = false;
         public static bool useLzma2 = false;
-        public static int lzma2Threads = Environment.ProcessorCount;
+        public static bool lzma2UnlockThreads = false;
+        public static int lzma2Threads = Math.Min(8, Environment.ProcessorCount);
 
         public static string sourceEngineGames = " Old Source Engine Games";
 
@@ -76,6 +77,11 @@ namespace steamBackup
                                 reader.Read();
                                 useLzma2 = bool.Parse(reader.Value.ToString());
                             }
+                            else if (reader.Value.ToString() == "lzma2UnlockThreads")
+                            {
+                                reader.Read();
+                                lzma2UnlockThreads = bool.Parse(reader.Value.ToString());
+                            }
                             else if (reader.Value.ToString() == "lzma2Threads")
                             {
                                 reader.Read();
@@ -118,6 +124,8 @@ namespace steamBackup
               writer.WriteValue(debugMode);
               writer.WritePropertyName("useLzma2");
               writer.WriteValue(useLzma2);
+              writer.WritePropertyName("lzma2UnlockThreads");
+              writer.WriteValue(lzma2UnlockThreads);
               writer.WritePropertyName("lzma2Threads");
               writer.WriteValue(lzma2Threads);
 
