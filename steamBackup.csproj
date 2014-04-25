@@ -29,27 +29,25 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>rsc\flamew.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>bin\Release\</OutputPath>
+    <Optimize>true</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
@@ -57,10 +55,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\Resources.Designer.cs">
@@ -68,40 +64,30 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="src\Main\AboutBox.cs">
+    <Compile Include="src\Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\Main\AboutBox.Designer.cs">
+    <Compile Include="src\Forms\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Main\BackupUserCtrl.cs">
+    <Compile Include="src\Forms\BackupUserCtrl.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\Main\BackupUserCtrl.Designer.cs">
+    <Compile Include="src\Forms\BackupUserCtrl.Designer.cs">
       <DependentUpon>BackupUserCtrl.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Main\Tasks\Backup\BackupJob.cs" />
-    <Compile Include="src\Main\Tasks\Backup\BackupTask.cs" />
-    <Compile Include="src\Main\Tasks\ErrorList.cs" />
-    <Compile Include="src\Main\Tasks\ConfigFile.cs" />
-    <Compile Include="src\Main\Tasks\Restore\RestoreJob.cs" />
-    <Compile Include="src\Main\Tasks\Restore\RestoreTask.cs" />
-    <Compile Include="src\Main\UpdateWizard.cs">
+    <Compile Include="src\Forms\UpdateWizard.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\Main\UpdateWizard.Designer.cs">
+    <Compile Include="src\Forms\UpdateWizard.Designer.cs">
       <DependentUpon>UpdateWizard.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Settings.cs" />
-    <Compile Include="src\Main\RestoreUserCtrl.cs">
+    <Compile Include="src\Forms\RestoreUserCtrl.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="src\Main\RestoreUserCtrl.Designer.cs">
+    <Compile Include="src\Forms\RestoreUserCtrl.Designer.cs">
       <DependentUpon>RestoreUserCtrl.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Main\Tasks\Job.cs" />
-    <Compile Include="src\Main\Tasks\Task.cs" />
-    <Compile Include="src\Main\Tasks\Utilities.cs" />
     <Compile Include="src\Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -110,26 +96,24 @@
     </Compile>
     <Compile Include="src\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\SevenZipWrapper\Events.cs" />
-    <Compile Include="src\SevenZipWrapper\SevenZipWrapper.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Main\AboutBox.resx">
+    <EmbeddedResource Include="src\Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Main\BackupUserCtrl.resx">
+    <EmbeddedResource Include="src\Forms\BackupUserCtrl.resx">
       <DependentUpon>BackupUserCtrl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Main\RestoreUserCtrl.resx">
+    <EmbeddedResource Include="src\Forms\RestoreUserCtrl.resx">
       <DependentUpon>RestoreUserCtrl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Main\UpdateWizard.resx">
+    <EmbeddedResource Include="src\Forms\UpdateWizard.resx">
       <DependentUpon>UpdateWizard.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config">
@@ -148,9 +132,6 @@
     </Content>
     <Content Include="rsc\flamew.ico" />
     <Content Include="rsc\flamew.png" />
-    <Content Include="rsc\SevenZip++Lib.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -169,6 +150,13 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="steamBackup.AppServices\steamBackup.AppServices.csproj">
+      <Project>{E070A764-9320-4ECF-959D-35165B658C4F}</Project>
+      <Name>steamBackup.AppServices</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

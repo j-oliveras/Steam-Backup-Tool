@@ -148,22 +148,9 @@
   <data name="DelBackupCheckBoxTooltip" xml:space="preserve">
     <value>{\rtf1\ansi This will delete \b EVERYTHING \b0 in the 'Backup Directory'. Make sure that there are no valuable files in there! }</value>
   </data>
-  <data name="ErrorListHeader" xml:space="preserve">
-    <value>Listed below are the errors for a backup or restore.
-
-Please try running the backup process again making sure that there are no programs accessing the files being backed up (e.g. Steam).
-
-To check the integrity of this backup: navigate to the backup location -&gt; Select all files in the 'common' folder -&gt; right click -&gt; 7zip -&gt; Test archive. You should do the same for 'Source Games.7z' also.
-</value>
-  </data>
   <data name="InstancesCountTooltip" xml:space="preserve">
     <value>Choose the number of instances to run.
 Recommended: One instance for every two CPU cores.</value>
-  </data>
-  <data name="JobErrorTime" xml:space="preserve">
-    <value>
-//////////////////// Error Time: {0} \\\\\\\\\\\\\\\\\\\\
-</value>
   </data>
   <data name="Lzma2CheckboxTooltip" xml:space="preserve">
     <value>{\rtf1\ansi This will use multi threaded compression and reduce concurrent compression instances to 1.  The compressed archives have similar sizes compared to LZMA compression. }</value>
@@ -309,26 +296,6 @@ Please browse for it manually.</value>
   <data name="PercentRangeError" xml:space="preserve">
     <value>The percent of finished work must be between 0 and 100.</value>
   </data>
-  <data name="EtaFormatStr" xml:space="preserve">
-    <value>Time: {0}, ETA: {1}</value>
-  </data>
-  <data name="SpeedKBFormatStr" xml:space="preserve">
-    <value>Speed: {0:###0} KB/s, {1}</value>
-  </data>
-  <data name="SpeedMBFormatStr" xml:space="preserve">
-    <value>Speed: {0:###0} MB/s, {1}</value>
-  </data>
-  <data name="ProgressFormatStr" xml:space="preserve">
-    <value>Jobs started: {0} of {1}
-Jobs skipped: {2} of {3}
-Jobs total: {4} of {5}</value>
-  </data>
-  <data name="InvalidPathExceptionText" xml:space="preserve">
-    <value>Invalid path</value>
-  </data>
-  <data name="AbsolutePathExceptionText" xml:space="preserve">
-    <value>Absolute path needed, not relative</value>
-  </data>
   <data name="ChangeListLegend" xml:space="preserve">
     <value>______________________________________
 
@@ -346,25 +313,11 @@ Jobs total: {4} of {5}</value>
   <data name="ToolUpdateNoNewVersion" xml:space="preserve">
     <value>Steam Backup Tool is currently up to date.</value>
   </data>
-  <data name="JobErrorDetails" xml:space="preserve">
-    <value>
-Job Details:
-{0}</value>
-  </data>
-  <data name="JobErrorMsg" xml:space="preserve">
-    <value>
-Error Message:
-{0}</value>
-  </data>
-  <data name="JobErrorStack" xml:space="preserve">
-    <value>
-Stack Trace:
-{0}</value>
-  </data>
-  <data name="JobCanceledUser" xml:space="preserve">
-    <value>The job was canceled by the user, there is a potential for file corruption.</value>
-  </data>
   <data name="ThreadsLzma2UnlockTooltip" xml:space="preserve">
     <value>{\rtf1\ansi This will remove the restriction to the number of threads usable (Normally set as 'core_count'). \b WARNING: \b0 potentially high ram usage  }</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="flamew" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\rsc\flamew.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

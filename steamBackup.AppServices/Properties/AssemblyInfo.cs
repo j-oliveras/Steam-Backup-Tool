@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Steam Backup Tool")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Steam Backup Tool Application Services")]
+[assembly: AssemblyDescription("Steam Backup Tool Application Services")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Steam Backup Tool")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3d23664b-13dc-49bb-a2a0-5ef566c4057c")]
+[assembly: Guid("cd8bf442-d4c2-431c-97ab-d804b3f59ba0")]
 
 // Version information for an assembly consists of the following four values:
 //
