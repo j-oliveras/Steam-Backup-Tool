@@ -61,7 +61,6 @@
             this.textBoxDescription.Size = new System.Drawing.Size(408, 149);
             this.textBoxDescription.TabIndex = 23;
             this.textBoxDescription.TabStop = false;
-            this.textBoxDescription.Text = resources.GetString("textBoxDescription.Text");
             // 
             // labelCopyright
             // 

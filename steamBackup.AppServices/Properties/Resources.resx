@@ -120,6 +120,18 @@
   <data name="AbsolutePathExceptionText" xml:space="preserve">
     <value>Absolute path needed, not relative</value>
   </data>
+  <data name="AppCredits" xml:space="preserve">
+    <value>Programmers:
+Brian 'Du-z' Duhs (overclock.net/u/69975/du-z)
+Juergen 'UniqProject' Tem (overclock.net/u/395443/uniqproject)
+James 'FiX' Warner (overclock.net/u/98516/fix)
+
+Help and Sugestions:
+InsaneMatt (overclock.net/u/106953/insanematt)
+d3viliz3d (overclock.net/u/167561/d3viliz3d)
+davcomNZ (overclock.net/u/261011/davcomnz)
+ToonLink15 (overclock.net/u/366419/toonlink15)</value>
+  </data>
   <data name="ErrorListHeader" xml:space="preserve">
     <value>Listed below are the errors for a backup or restore.
 
@@ -130,6 +142,9 @@ To check the integrity of this backup: navigate to the backup location -&gt; Sel
   </data>
   <data name="EtaFormatStr" xml:space="preserve">
     <value>Time: {0}, ETA: {1}</value>
+  </data>
+  <data name="EtaShortFormatStr" xml:space="preserve">
+    <value>ETA: {1}</value>
   </data>
   <data name="InvalidPathExceptionText" xml:space="preserve">
     <value>Invalid path</value>
@@ -170,5 +185,16 @@ Jobs total: {4} of {5}</value>
   </data>
   <data name="SpeedMBFormatStr" xml:space="preserve">
     <value>Speed: {0:###0} MB/s, {1}</value>
+  </data>
+  <data name="SpeedShortKBFormatStr" xml:space="preserve">
+    <value>{0:###0} KB/s, {1}</value>
+  </data>
+  <data name="SpeedShortMBFormatStr" xml:space="preserve">
+    <value>{0:###0} MB/s, {1}</value>
+  </data>
+  <data name="SteamFolderNotFound" xml:space="preserve">
+    <value>Sorry, But I could not find where steam has been installed.
+
+Please browse for it manually.</value>
   </data>
 </root>

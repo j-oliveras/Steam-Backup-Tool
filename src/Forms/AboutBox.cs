@@ -3,7 +3,7 @@
     using System;
     using System.Reflection;
     using System.Windows.Forms;
-
+    using steamBackup.AppServices.Properties;
     sealed partial class AboutBox : Form
     {
         public AboutBox()
@@ -14,6 +14,7 @@
             labelProductName.Text = AssemblyProduct;
             labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
             labelCopyright.Text = AssemblyCopyright;
+            labelCredit.Text = Resources.AppCredits;
         }
 
 

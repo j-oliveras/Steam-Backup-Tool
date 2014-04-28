@@ -52,7 +52,7 @@
             }
         }
 
-        public override string GetSpeedEta()
+        public override string GetSpeedEta(bool shortStr)
         {
             if (_wrapper == null) return string.Empty;
 

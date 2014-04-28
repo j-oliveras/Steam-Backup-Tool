@@ -22,7 +22,7 @@ namespace steamBackup.AppServices.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace steamBackup.AppServices.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("steamBackup.AppServices.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace steamBackup.AppServices.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,9 +63,27 @@ namespace steamBackup.AppServices.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Absolute path needed, not relative.
         /// </summary>
-        internal static string AbsolutePathExceptionText {
+        public static string AbsolutePathExceptionText {
             get {
                 return ResourceManager.GetString("AbsolutePathExceptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Programmers:
+        ///Brian &apos;Du-z&apos; Duhs (overclock.net/u/69975/du-z)
+        ///Juergen &apos;UniqProject&apos; Tem (overclock.net/u/395443/uniqproject)
+        ///James &apos;FiX&apos; Warner (overclock.net/u/98516/fix)
+        ///
+        ///Help and Sugestions:
+        ///InsaneMatt (overclock.net/u/106953/insanematt)
+        ///d3viliz3d (overclock.net/u/167561/d3viliz3d)
+        ///davcomNZ (overclock.net/u/261011/davcomnz)
+        ///ToonLink15 (overclock.net/u/366419/toonlink15).
+        /// </summary>
+        public static string AppCredits {
+            get {
+                return ResourceManager.GetString("AppCredits", resourceCulture);
             }
         }
         
@@ -77,7 +95,7 @@ namespace steamBackup.AppServices.Properties {
         ///To check the integrity of this backup: navigate to the backup location -&gt; Select all files in the &apos;common&apos; folder -&gt; right click -&gt; 7zip -&gt; Test archive. You should do the same for &apos;Source Games.7z&apos; also.
         ///.
         /// </summary>
-        internal static string ErrorListHeader {
+        public static string ErrorListHeader {
             get {
                 return ResourceManager.GetString("ErrorListHeader", resourceCulture);
             }
@@ -86,16 +104,25 @@ namespace steamBackup.AppServices.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Time: {0}, ETA: {1}.
         /// </summary>
-        internal static string EtaFormatStr {
+        public static string EtaFormatStr {
             get {
                 return ResourceManager.GetString("EtaFormatStr", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ETA: {1}.
+        /// </summary>
+        public static string EtaShortFormatStr {
+            get {
+                return ResourceManager.GetString("EtaShortFormatStr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid path.
         /// </summary>
-        internal static string InvalidPathExceptionText {
+        public static string InvalidPathExceptionText {
             get {
                 return ResourceManager.GetString("InvalidPathExceptionText", resourceCulture);
             }
@@ -104,7 +131,7 @@ namespace steamBackup.AppServices.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The job was canceled by the user, there is a potential for file corruption..
         /// </summary>
-        internal static string JobCanceledUser {
+        public static string JobCanceledUser {
             get {
                 return ResourceManager.GetString("JobCanceledUser", resourceCulture);
             }
@@ -115,7 +142,7 @@ namespace steamBackup.AppServices.Properties {
         ///Job Details:
         ///{0}.
         /// </summary>
-        internal static string JobErrorDetails {
+        public static string JobErrorDetails {
             get {
                 return ResourceManager.GetString("JobErrorDetails", resourceCulture);
             }
@@ -126,7 +153,7 @@ namespace steamBackup.AppServices.Properties {
         ///Error Message:
         ///{0}.
         /// </summary>
-        internal static string JobErrorMsg {
+        public static string JobErrorMsg {
             get {
                 return ResourceManager.GetString("JobErrorMsg", resourceCulture);
             }
@@ -137,7 +164,7 @@ namespace steamBackup.AppServices.Properties {
         ///Stack Trace:
         ///{0}.
         /// </summary>
-        internal static string JobErrorStack {
+        public static string JobErrorStack {
             get {
                 return ResourceManager.GetString("JobErrorStack", resourceCulture);
             }
@@ -148,7 +175,7 @@ namespace steamBackup.AppServices.Properties {
         /////////////////////// Error Time: {0} \\\\\\\\\\\\\\\\\\\\
         ///.
         /// </summary>
-        internal static string JobErrorTime {
+        public static string JobErrorTime {
             get {
                 return ResourceManager.GetString("JobErrorTime", resourceCulture);
             }
@@ -157,7 +184,7 @@ namespace steamBackup.AppServices.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The percent of finished work must be between 0 and 100..
         /// </summary>
-        internal static string PercentRangeError {
+        public static string PercentRangeError {
             get {
                 return ResourceManager.GetString("PercentRangeError", resourceCulture);
             }
@@ -168,7 +195,7 @@ namespace steamBackup.AppServices.Properties {
         ///Jobs skipped: {2} of {3}
         ///Jobs total: {4} of {5}.
         /// </summary>
-        internal static string ProgressFormatStr {
+        public static string ProgressFormatStr {
             get {
                 return ResourceManager.GetString("ProgressFormatStr", resourceCulture);
             }
@@ -177,7 +204,7 @@ namespace steamBackup.AppServices.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Speed: {0:###0} KB/s, {1}.
         /// </summary>
-        internal static string SpeedKBFormatStr {
+        public static string SpeedKBFormatStr {
             get {
                 return ResourceManager.GetString("SpeedKBFormatStr", resourceCulture);
             }
@@ -186,9 +213,38 @@ namespace steamBackup.AppServices.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Speed: {0:###0} MB/s, {1}.
         /// </summary>
-        internal static string SpeedMBFormatStr {
+        public static string SpeedMBFormatStr {
             get {
                 return ResourceManager.GetString("SpeedMBFormatStr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:###0} KB/s, {1}.
+        /// </summary>
+        public static string SpeedShortKBFormatStr {
+            get {
+                return ResourceManager.GetString("SpeedShortKBFormatStr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:###0} MB/s, {1}.
+        /// </summary>
+        public static string SpeedShortMBFormatStr {
+            get {
+                return ResourceManager.GetString("SpeedShortMBFormatStr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorry, But I could not find where steam has been installed.
+        ///
+        ///Please browse for it manually..
+        /// </summary>
+        public static string SteamFolderNotFound {
+            get {
+                return ResourceManager.GetString("SteamFolderNotFound", resourceCulture);
             }
         }
     }

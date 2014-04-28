@@ -117,18 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="textBoxDescription.Text" xml:space="preserve">
-    <value>Programmers:
-Brian 'Du-z' Duhs (overclock.net/u/69975/du-z)
-Juergen 'UniqProject' Tem (overclock.net/u/395443/uniqproject)
-James 'FiX' Warner (overclock.net/u/98516/fix)
-
-Help and Sugestions:
-InsaneMatt (overclock.net/u/106953/insanematt)
-d3viliz3d (overclock.net/u/167561/d3viliz3d)
-davcomNZ (overclock.net/u/261011/davcomnz)
-ToonLink15 (overclock.net/u/366419/toonlink15)</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

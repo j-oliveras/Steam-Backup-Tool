@@ -331,7 +331,7 @@ namespace steamBackup
                 job.Start();
 
                 if(job.GetJobType() == JobType.Backup)
-                    CopyAcfToBackup(job);
+                    Utilities.CopyAcfToBackup(job, tbxBackupDir.Text);
                 else
                     CopyAcfToRestore(job);
                 
@@ -419,7 +419,7 @@ namespace steamBackup
                 pgsBar.Value = job.GetPercDone();
 
             if (lblJobSpeedEta != null) 
-                lblJobSpeedEta.Text = job.GetSpeedEta();
+                lblJobSpeedEta.Text = job.GetSpeedEta(false);
 
             if (string.IsNullOrEmpty(job.GetCurFileStr())) return;
 
@@ -428,34 +428,6 @@ namespace steamBackup
         }
 
         // Copies ACF files from the steam install to Backup
-        private void CopyAcfToBackup(Job job)
-        {
-            if (!String.IsNullOrEmpty(job.AcfFiles))
-            {
-                string[] acfId = job.AcfFiles.Split('|');
-
-                foreach(string id in acfId)
-                {
-                    string src = job.AcfDir + "\\appmanifest_" + id + ".acf";
-                    string dst = tbxBackupDir.Text + "\\acf";
-
-                    if (!Directory.Exists(dst))
-                        Directory.CreateDirectory(dst);
-
-                    var fi = new FileInfo(src);
-                    StreamReader reader = fi.OpenText();
-
-                    string acf = reader.ReadToEnd();
-                    string gameCommonFolder = Utilities.UpDirLvl(job.GetSteamDir());
-                    acf = acf.Replace(gameCommonFolder, "|DIRECTORY-STD|");
-                    acf = acf.Replace(gameCommonFolder.ToLower(), "|DIRECTORY-LOWER|");
-                    acf = acf.Replace(gameCommonFolder.ToLower().Replace("\\", "\\\\"), "|DIRECTORY-ESCSLASH-LOWER|");
-
-                    File.WriteAllText(dst + "\\appmanifest_" + id + ".acf", acf);
-                    reader.Close();
-                }
-            }
-        }
 
         // Copies ACF files from the Backup to steam install
         private void CopyAcfToRestore(Job job)
@@ -608,11 +580,11 @@ namespace steamBackup
             }
             catch (NullReferenceException)
             {
-                MessageBox.Show(Resources.SteamFolderNotFound);
+                MessageBox.Show(AppServices.Properties.Resources.SteamFolderNotFound);
             }
             catch (SecurityException)
             {
-                MessageBox.Show(Resources.SteamFolderNotFound);
+                MessageBox.Show(AppServices.Properties.Resources.SteamFolderNotFound);
             }
         }
 

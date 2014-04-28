@@ -282,11 +282,6 @@ Click 'Yes' to stop immediately, or 'No' to cancel once the current jobs have be
   <data name="ResumeText" xml:space="preserve">
     <value>Resume</value>
   </data>
-  <data name="SteamFolderNotFound" xml:space="preserve">
-    <value>Sorry, But I could not find where steam has been installed.
-
-Please browse for it manually.</value>
-  </data>
   <data name="JobListHideText" xml:space="preserve">
     <value>Hide Job List</value>
   </data>

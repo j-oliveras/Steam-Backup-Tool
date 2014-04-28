@@ -481,17 +481,6 @@ namespace steamBackup.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sorry, But I could not find where steam has been installed.
-        ///
-        ///Please browse for it manually..
-        /// </summary>
-        internal static string SteamFolderNotFound {
-            get {
-                return ResourceManager.GetString("SteamFolderNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Steam Install Directory.
         /// </summary>
         internal static string SteamInstallDir {

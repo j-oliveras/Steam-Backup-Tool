@@ -71,6 +71,6 @@
             return str;
         }
 
-        public abstract string GetSpeedEta();
+        public abstract string GetSpeedEta(bool shortStr);
     }
 }

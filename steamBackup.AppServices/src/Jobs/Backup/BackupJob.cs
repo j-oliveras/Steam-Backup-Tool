@@ -106,7 +106,7 @@
             }
         }
 
-        public override string GetSpeedEta()
+        public override string GetSpeedEta(bool shortStr)
         {
             if (_wrapper == null) return string.Empty;
 
@@ -141,14 +141,16 @@
                 double remainingSeconds = sizeRemaining / bytesPerSec;
                 DateTime remainingTime = new DateTime().AddSeconds(remainingSeconds);
 
-                string etaResult = string.Format(Resources.EtaFormatStr,
+                string etaResult = string.Format(shortStr ? Resources.EtaShortFormatStr : Resources.EtaFormatStr,
                     processingDateTime.ToString("HH:mm:ss"),
                     remainingTime.ToString("HH:mm:ss"));
+
                 string speedResult;
                 if (bytesPerSec < 10485760f /* 10 MB/s */)
-                    speedResult = string.Format(Resources.SpeedKBFormatStr, bytesPerSec / 1024f, etaResult);
+                    speedResult = string.Format(shortStr ? Resources.SpeedShortKBFormatStr : Resources.SpeedKBFormatStr, bytesPerSec / 1024f, etaResult);
                 else
-                    speedResult = string.Format(Resources.SpeedMBFormatStr, bytesPerSec / 1048576f, etaResult);
+                    speedResult = string.Format(shortStr ? Resources.SpeedShortMBFormatStr : Resources.SpeedMBFormatStr, bytesPerSec / 1048576f, etaResult);
+
                 return speedResult;
             }
             catch (Exception)
