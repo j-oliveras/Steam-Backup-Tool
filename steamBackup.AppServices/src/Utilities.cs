@@ -1,5 +1,7 @@
 ﻿namespace steamBackup.AppServices
 {
+    using System.Security;
+    using Microsoft.Win32;
     using Properties;
     using System;
     using System.Diagnostics;
@@ -18,7 +20,7 @@
             try
             {
                 var name = Path.GetFileName(path);
-                if (string.IsNullOrEmpty(name)) return path.ToUpper() + Path.DirectorySeparatorChar; // root reached
+                if (String.IsNullOrEmpty(name)) return path.ToUpper() + Path.DirectorySeparatorChar; // root reached
 
                 var parent = Path.GetDirectoryName(path); // retrieving parent of element to be corrected
                 parent = GetFileSystemCasing(parent); //to get correct casing on the entire string, and not only on the last element
@@ -87,6 +89,11 @@
             return pname.Length != 0 && Settings.CheckSteamRun;
         }
 
+        /// <summary>
+        /// Copy .acf files from steam to backup directory
+        /// </summary>
+        /// <param name="job">Processed job</param>
+        /// <param name="backupDir">Backup directory</param>
         public static void CopyAcfToBackup(Job job, string backupDir)
         {
             if (String.IsNullOrEmpty(job.AcfFiles)) return;
@@ -113,6 +120,113 @@
                 File.WriteAllText(Path.Combine(dst, "appmanifest_" + id + ".acf"), acf);
                 reader.Close();
             }
+        }
+
+        /// <summary>
+        /// Copies .acf files from the Backup to steam install
+        /// </summary>
+        /// <param name="job">Processed job</param>
+        /// <param name="backupDir">Backup directory</param>
+        public static void CopyAcfToRestore(Job job, string backupDir)
+        {
+            if (String.IsNullOrEmpty(job.AcfFiles)) return;
+
+            var acfId = job.AcfFiles.Split('|');
+
+            foreach (var id in acfId)
+            {
+                var src = Path.Combine(backupDir, BackupDirectory.Acf, "appmanifest_" + id + ".acf");
+                var dst = job.AcfDir;
+
+                if (!Directory.Exists(dst))
+                    Directory.CreateDirectory(dst);
+
+                var fi = new FileInfo(src);
+                var reader = fi.OpenText();
+
+                var acf = reader.ReadToEnd();
+                var gameCommonFolder = Path.Combine(job.AcfDir, SteamDirectory.Common);
+
+                acf = acf.Replace("|DIRECTORY-STD|", gameCommonFolder);
+                acf = acf.Replace("|DIRECTORY-LOWER|", gameCommonFolder.ToLower());
+                acf = acf.Replace("|DIRECTORY-ESCSLASH-LOWER|", gameCommonFolder.ToLower().Replace("\\", "\\\\"));
+
+                File.WriteAllText(Path.Combine(dst, "appmanifest_" + id + ".acf"), acf);
+                reader.Close();
+            }
+        }
+
+        /// <summary>
+        /// Check to see if a steam install directory is valid
+        /// </summary>
+        /// <param name="steamDir">Steam directory</param>
+        /// <returns></returns>
+        public static bool IsValidSteamFolder(string steamDir)
+        {
+            return File.Exists(Path.Combine(steamDir, SteamDirectory.Config, "config.vdf"));
+        }
+
+        /// <summary>
+        /// Check to see if a backup directory is valid
+        /// </summary>
+        /// <param name="backupDir">Backup directory</param>
+        /// <returns></returns>
+        public static bool IsValidBackupFolder(string backupDir)
+        {
+            if(File.Exists(Path.Combine(backupDir, "config.sbt")))
+            {
+                // Valid Archiver Version 2
+                return true;
+            }
+
+            return Directory.Exists(Path.Combine(backupDir, BackupDirectory.Common)) && 
+                   File.Exists(Path.Combine(backupDir, "games.7z")) &&
+                   File.Exists(Path.Combine(backupDir, "steamapps.7z"));
+        }
+
+        /// <summary>
+        /// Create Backup folders if needed
+        /// </summary>
+        /// <param name="backupDir">Target Backup directory</param>
+        public static void SetupBackupDirectory(string backupDir)
+        {
+            if (!Directory.Exists(backupDir))
+                Directory.CreateDirectory(backupDir);
+
+            if (!Directory.Exists(Path.Combine(backupDir, BackupDirectory.Common)))
+                Directory.CreateDirectory(Path.Combine(backupDir, BackupDirectory.Common));
+
+            if (!Directory.Exists(Path.Combine(backupDir, BackupDirectory.Acf)))
+                Directory.CreateDirectory(Path.Combine(backupDir, BackupDirectory.Acf));
+        }
+
+        /// <summary>
+        /// Get Steam directory from registry
+        /// </summary>
+        /// <returns></returns>
+        public static string GetSteamDirectory()
+        {
+            const string keyStr = @"Software\Valve\Steam";
+            try
+            {
+                var key = Registry.CurrentUser.OpenSubKey(keyStr, false);
+                if (key != null)
+                    return GetFileSystemCasing((string)key.GetValue("SteamPath"));
+                
+                key = Registry.LocalMachine.OpenSubKey(keyStr, false);
+                if (key != null)
+                    return (string)key.GetValue("InstallPath");
+            }
+            catch (NullReferenceException)
+            {
+                throw new Exception(Resources.SteamFolderNotFound);
+             }
+            catch (SecurityException)
+            {
+                throw new Exception(Resources.SteamFolderNotFound);
+            }
+
+            return string.Empty;
         }
     }
 }

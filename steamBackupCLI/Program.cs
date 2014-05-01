@@ -4,7 +4,6 @@ namespace steamBackupCLI
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.Win32;
     using NDesk.Options;
     using steamBackup.AppServices;
     using steamBackup.AppServices.Jobs;
@@ -12,7 +11,6 @@ namespace steamBackupCLI
     using steamBackup.AppServices.Tasks.Backup;
     using System;
     using System.Reflection;
-    using System.Security;
     using Timer = System.Timers.Timer;
 
     public class Program
@@ -174,7 +172,17 @@ namespace steamBackupCLI
             BupTask = new BackupTask();
 
             if (string.IsNullOrEmpty(_steamDir))
-                FindSteamDir();
+            {
+                try
+                {
+                    _steamDir = Utilities.GetSteamDirectory();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Environment.Exit(1);
+                }
+            }
 
             BupTask.SteamDir = _steamDir;
             BupTask.BackupDir = _outDir;
@@ -332,54 +340,6 @@ namespace steamBackupCLI
                 var instance = RegisteredInstances.FindIndex(i => i == instanceId);
                 RegisteredInstances[instance] = -1;
             }
-        }
-
-        private static void FindSteamDir()
-        {
-            const string keyStr = @"Software\Valve\Steam";
-
-            try
-            {
-                var key = Registry.CurrentUser.OpenSubKey(keyStr, false);
-                if (key != null)
-                    _steamDir = Utilities.GetFileSystemCasing((string)key.GetValue("SteamPath"));
-                else
-                {
-                    key = Registry.LocalMachine.OpenSubKey(keyStr, false);
-                    if (key != null)
-                        _steamDir = (string)key.GetValue("InstallPath");
-                }
-            }
-            catch (NullReferenceException)
-            {
-                Console.WriteLine(Resources.SteamFolderNotFound);
-                Environment.Exit(1);
-            }
-            catch (SecurityException)
-            {
-                Console.WriteLine(Resources.SteamFolderNotFound);
-                Environment.Exit(1);
-            }
-        }
-    }
-
-    public class JobTask : Task
-    {
-        public Job CurrentJob;
-        /// <summary>
-        /// Initialisiert einen neuen <see cref="T:System.Threading.Tasks.Task"/> mit der angegebenen Aktion.
-        /// </summary>
-        /// <param name="action">Der Delegat, der den in der Aufgabe auszuführenden Code darstellt.</param><exception cref="T:System.ArgumentNullException">Das <paramref name="action"/>-Argument ist NULL.</exception>
-        public JobTask(Action action) : base(action)
-        {
-        }
-
-        /// <summary>
-        /// Initialisiert einen neuen <see cref="T:System.Threading.Tasks.Task"/> mit der angegebenen Aktion und <see cref="T:System.Threading.CancellationToken"/> unter Berücksichtigung des Abbruchtokens.
-        /// </summary>
-        /// <param name="action">Der Delegat, der den in der Aufgabe auszuführenden Code darstellt.</param><param name="cancellationToken">Das <see cref="T:System.Threading.CancellationToken"/>, das die neue Aufgabe berücksichtigt.</param><exception cref="T:System.ObjectDisposedException">Das angegebene <see cref="T:System.Threading.CancellationToken"/> wurde bereits freigegeben. </exception><exception cref="T:System.ArgumentNullException">Das <paramref name="action"/>-Argument ist NULL.</exception>
-        public JobTask(Action action, CancellationToken cancellationToken) : base(action, cancellationToken)
-        {
         }
     }
 }

@@ -7,7 +7,6 @@
 
 namespace steamBackup
 {
-    using Microsoft.Win32;
     using steamBackup.AppServices;
     using steamBackup.AppServices.Errors;
     using steamBackup.AppServices.Jobs;
@@ -18,9 +17,7 @@ namespace steamBackup
     using System.Diagnostics;
     using System.Drawing;
     using System.Globalization;
-    using System.IO;
     using System.Reflection;
-    using System.Security;
     using System.Threading;
     using System.Windows.Forms;
 
@@ -84,92 +81,67 @@ namespace steamBackup
 
         }
 
-        // Check to see if a steam install directory is valid
-        private bool IsValidSteamFolder()
-        {
-            return File.Exists(Path.Combine(tbxSteamDir.Text, SteamDirectory.Config, "config.vdf"));
-        }
-
-        // Check to see if a backup directory is valid
-        private bool IsValidBackupFolder()
-        {
-            if(File.Exists(Path.Combine(tbxBackupDir.Text, "config.sbt")))
-            {
-                // Valid Archiver Version 2
-                return true;
-            }
-
-            return Directory.Exists(Path.Combine(tbxBackupDir.Text, BackupDirectory.Common)) && 
-                   File.Exists(Path.Combine(tbxBackupDir.Text, "games.7z")) &&
-                   File.Exists(Path.Combine(tbxBackupDir.Text, "steamapps.7z"));
-        }
-
         private void btnBackup_Click(object sender, EventArgs e)
         {
-            var pname = Process.GetProcessesByName("Steam");
-            if (pname.Length != 0 && Settings.CheckSteamRun)
+            if (Utilities.IsSteamRunning())
             {
                 MessageBox.Show(Resources.BackupSteamRunningText, Resources.SteamRunningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
             }
-            else if (!IsValidSteamFolder())
+
+            if (!Utilities.IsValidSteamFolder(tbxSteamDir.Text))
             {
                 MessageBox.Show(string.Format(Resources.NotValidSteamDirectory, tbxSteamDir.Text));
+                return;
             }
-            else
-            {
-                Save();
 
-                // Open Backup User Control Window
-                var backupUserCtrl = new BackupUserCtrl();
-                backupUserCtrl.ShowDialog(this);
+            Save();
 
-                if (backupUserCtrl.Canceled)
-                    return;
+            // Open Backup User Control Window
+            var backupUserCtrl = new BackupUserCtrl();
+            backupUserCtrl.ShowDialog(this);
 
-                // create folders if needed
-                if (!Directory.Exists(tbxBackupDir.Text))
-                    Directory.CreateDirectory(tbxBackupDir.Text);
+            if (backupUserCtrl.Canceled)
+                return;
 
-                if (!Directory.Exists(Path.Combine(tbxBackupDir.Text, BackupDirectory.Common)))
-                    Directory.CreateDirectory(Path.Combine(tbxBackupDir.Text, BackupDirectory.Common));
-                if (!Directory.Exists(Path.Combine(tbxBackupDir.Text, BackupDirectory.Acf)))
-                    Directory.CreateDirectory(Path.Combine(tbxBackupDir.Text, BackupDirectory.Acf));
+            // create folders if needed
+            Utilities.SetupBackupDirectory(tbxBackupDir.Text);
 
-                _task = backupUserCtrl.GetTask();
-                Start();
-            }
+            _task = backupUserCtrl.GetTask();
+            Start();
         }
 
         private void btnRestore_Click(object sender, EventArgs e)
         {
-            var pname = Process.GetProcessesByName("Steam");
-            if (pname.Length != 0 && Settings.CheckSteamRun)
+            if (Utilities.IsSteamRunning())
             {
                 MessageBox.Show(Resources.RestoreSteamRunningText, Resources.SteamRunningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
             }
-            else if (!IsValidSteamFolder())
+            
+            if (!Utilities.IsValidSteamFolder(tbxSteamDir.Text))
             {
                 MessageBox.Show(string.Format(Resources.NotValidSteamDirectory, tbxSteamDir.Text));
+                return;
             }
-            else if (!IsValidBackupFolder())
+
+            if (!Utilities.IsValidBackupFolder(tbxBackupDir.Text))
             {
                 MessageBox.Show(string.Format(Resources.NotValidSteamBackupDirectory, tbxBackupDir.Text));
+                return;
             }
-            else
-            {
-                Save();
 
-                // Open Backup User Control Window
-                var restoreUserCtrl = new RestoreUserCtrl();
-                restoreUserCtrl.ShowDialog(this);
+            Save();
 
-                if (restoreUserCtrl.Canceled)
-                    return;
+            // Open Backup User Control Window
+            var restoreUserCtrl = new RestoreUserCtrl();
+            restoreUserCtrl.ShowDialog(this);
 
-                _task = restoreUserCtrl.GetTask();
-                Start();
+            if (restoreUserCtrl.Canceled)
+                return;
 
-            }
+            _task = restoreUserCtrl.GetTask();
+            Start();
         }
 
         private void Start()
@@ -334,7 +306,7 @@ namespace steamBackup
                 if(job.GetJobType() == JobType.Backup)
                     Utilities.CopyAcfToBackup(job, tbxBackupDir.Text);
                 else
-                    CopyAcfToRestore(job);
+                    Utilities.CopyAcfToRestore(job, tbxBackupDir.Text);
                 
                 UpdateList();
 
@@ -428,38 +400,6 @@ namespace steamBackup
                 lblJobFile.Text = job.GetCurFileStr();
         }
 
-        // Copies ACF files from the steam install to Backup
-
-        // Copies ACF files from the Backup to steam install
-        private void CopyAcfToRestore(Job job)
-        {
-            if (String.IsNullOrEmpty(job.AcfFiles)) return;
-
-            var acfId = job.AcfFiles.Split('|');
-
-            foreach (var id in acfId)
-            {
-                var src = Path.Combine(tbxBackupDir.Text, BackupDirectory.Acf, "appmanifest_" + id + ".acf");
-                var dst = job.AcfDir;
-
-                if (!Directory.Exists(dst))
-                    Directory.CreateDirectory(dst);
-
-                var fi = new FileInfo(src);
-                var reader = fi.OpenText();
-
-                var acf = reader.ReadToEnd();
-                var gameCommonFolder = Path.Combine(job.AcfDir, SteamDirectory.Common);
-
-                acf = acf.Replace("|DIRECTORY-STD|", gameCommonFolder);
-                acf = acf.Replace("|DIRECTORY-LOWER|", gameCommonFolder.ToLower());
-                acf = acf.Replace("|DIRECTORY-ESCSLASH-LOWER|", gameCommonFolder.ToLower().Replace("\\", "\\\\"));
-
-                File.WriteAllText(Path.Combine(dst, "appmanifest_" + id + ".acf"), acf);
-                reader.Close();
-            }
-        }
-
         // Runs after each job is done.
         private void JobsFinished()
         {
@@ -482,7 +422,6 @@ namespace steamBackup
                 btnUpdWiz.Visible = true;
                 this.Size = new Size(400, 402);
                 lbl0.Text = string.Format(Resources.VersionStr, _versionNum);
-
 
                 if (ErrorList.HasErrors())
                 {
@@ -566,27 +505,13 @@ namespace steamBackup
         // Uses steam reg keys to determine where steam is installed 
         private void btnFindSteam_Click(object sender, EventArgs e)
         {
-            const string keyStr = @"Software\Valve\Steam";
-
             try
             {
-                var key = Registry.CurrentUser.OpenSubKey(keyStr, false);
-                if (key != null)
-                    tbxSteamDir.Text = Utilities.GetFileSystemCasing((string) key.GetValue("SteamPath"));
-                else
-                {
-                    key = Registry.LocalMachine.OpenSubKey(keyStr, false);
-                    if (key != null)
-                        tbxSteamDir.Text = (string) key.GetValue("InstallPath");
-                }
+                tbxSteamDir.Text = Utilities.GetSteamDirectory();
             }
-            catch (NullReferenceException)
+            catch (Exception ex)
             {
-                MessageBox.Show(AppServices.Properties.Resources.SteamFolderNotFound);
-            }
-            catch (SecurityException)
-            {
-                MessageBox.Show(AppServices.Properties.Resources.SteamFolderNotFound);
+                MessageBox.Show(ex.Message);
             }
         }
 
