@@ -33,7 +33,7 @@
 
         static public void ToFile()
         {
-            ToFile(Settings.BackupDir + "\\Error Log.txt");
+            ToFile(Path.Combine(Settings.BackupDir, "Error Log.txt"));
         }
 
         static public void ToFile(string dir)

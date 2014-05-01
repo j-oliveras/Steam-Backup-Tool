@@ -7,7 +7,7 @@
 
     public static class Settings
     {
-        private static readonly string SettingsDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\SteamBackupTool";
+        private static readonly string SettingsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SteamBackupTool");
 
         public static string SteamDir = "Steam Install Directory";
         public static string BackupDir = "Backup Directory";
@@ -23,9 +23,10 @@
         // Load Settings
         public static void Load()
         {
-            if (!File.Exists(SettingsDir + "\\settings.cfg")) return;
+            var settingsFile = Path.Combine(SettingsDir, "settings.cfg");
+            if (!File.Exists(settingsFile)) return;
 
-            using (var streamReader = new StreamReader(SettingsDir + "\\settings.cfg"))
+            using (var streamReader = new StreamReader(settingsFile))
             {
                 var reader = new JsonTextReader(new StringReader(streamReader.ReadToEnd()));
 
@@ -87,6 +88,7 @@
         {
             var sb = new StringBuilder();
             var sw = new StringWriter(sb);
+            var settingsFile = Path.Combine(SettingsDir, "settings.cfg");
 
             using (JsonWriter writer = new JsonTextWriter(sw))
             {
@@ -120,7 +122,7 @@
             sw.Close();
             
             Directory.CreateDirectory(SettingsDir);
-            File.WriteAllText(SettingsDir + "\\settings.cfg", sb.ToString());
+            File.WriteAllText(settingsFile, sb.ToString());
         }
     }
 }

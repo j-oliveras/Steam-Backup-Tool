@@ -87,21 +87,21 @@ namespace steamBackup
         // Check to see if a steam install directory is valid
         private bool IsValidSteamFolder()
         {
-            return File.Exists(tbxSteamDir.Text + "\\config\\config.vdf");
+            return File.Exists(Path.Combine(tbxSteamDir.Text, SteamDirectory.Config, "config.vdf"));
         }
 
         // Check to see if a backup directory is valid
         private bool IsValidBackupFolder()
         {
-            if(File.Exists(tbxBackupDir.Text + "\\config.sbt"))
+            if(File.Exists(Path.Combine(tbxBackupDir.Text, "config.sbt")))
             {
                 // Valid Archiver Version 2
                 return true;
             }
 
-            return Directory.Exists(tbxBackupDir.Text + "\\common\\") && 
-                   File.Exists(tbxBackupDir.Text + "\\games.7z") &&
-                   File.Exists(tbxBackupDir.Text + "\\steamapps.7z");
+            return Directory.Exists(Path.Combine(tbxBackupDir.Text, BackupDirectory.Common)) && 
+                   File.Exists(Path.Combine(tbxBackupDir.Text, "games.7z")) &&
+                   File.Exists(Path.Combine(tbxBackupDir.Text, "steamapps.7z"));
         }
 
         private void btnBackup_Click(object sender, EventArgs e)
@@ -129,10 +129,11 @@ namespace steamBackup
                 // create folders if needed
                 if (!Directory.Exists(tbxBackupDir.Text))
                     Directory.CreateDirectory(tbxBackupDir.Text);
-                if (!Directory.Exists(tbxBackupDir.Text + "\\common"))
-                    Directory.CreateDirectory(tbxBackupDir.Text + "\\common");
-                if (!Directory.Exists(tbxBackupDir.Text + "\\acf"))
-                    Directory.CreateDirectory(tbxBackupDir.Text + "\\acf");
+
+                if (!Directory.Exists(Path.Combine(tbxBackupDir.Text, BackupDirectory.Common)))
+                    Directory.CreateDirectory(Path.Combine(tbxBackupDir.Text, BackupDirectory.Common));
+                if (!Directory.Exists(Path.Combine(tbxBackupDir.Text, BackupDirectory.Acf)))
+                    Directory.CreateDirectory(Path.Combine(tbxBackupDir.Text, BackupDirectory.Acf));
 
                 _task = backupUserCtrl.GetTask();
                 Start();
@@ -438,7 +439,7 @@ namespace steamBackup
 
             foreach (var id in acfId)
             {
-                var src = tbxBackupDir.Text + "\\acf\\appmanifest_" + id + ".acf";
+                var src = Path.Combine(tbxBackupDir.Text, BackupDirectory.Acf, "appmanifest_" + id + ".acf");
                 var dst = job.AcfDir;
 
                 if (!Directory.Exists(dst))
@@ -448,12 +449,13 @@ namespace steamBackup
                 var reader = fi.OpenText();
 
                 var acf = reader.ReadToEnd();
-                var gameCommonFolder = job.AcfDir + "common\\";
+                var gameCommonFolder = Path.Combine(job.AcfDir, SteamDirectory.Common);
+
                 acf = acf.Replace("|DIRECTORY-STD|", gameCommonFolder);
                 acf = acf.Replace("|DIRECTORY-LOWER|", gameCommonFolder.ToLower());
                 acf = acf.Replace("|DIRECTORY-ESCSLASH-LOWER|", gameCommonFolder.ToLower().Replace("\\", "\\\\"));
 
-                File.WriteAllText(dst + "\\appmanifest_" + id + ".acf", acf);
+                File.WriteAllText(Path.Combine(dst, "appmanifest_" + id + ".acf"), acf);
                 reader.Close();
             }
         }

@@ -43,6 +43,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="src\BackupDirectory.cs" />
     <Compile Include="src\ConfigFile.cs" />
     <Compile Include="src\Errors\ErrorItem.cs" />
     <Compile Include="src\Errors\ErrorList.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="src\Jobs\Restore\RestoreJob.cs" />
     <Compile Include="src\Settings.cs" />
     <Compile Include="src\SevenZipWrapper\SevenZipWrapper.cs" />
+    <Compile Include="src\SteamDirectory.cs" />
     <Compile Include="src\Tasks\Backup\BackupTask.cs" />
     <Compile Include="src\Tasks\Restore\RestoreTask.cs" />
     <Compile Include="src\Tasks\Task.cs" />
@@ -69,6 +71,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

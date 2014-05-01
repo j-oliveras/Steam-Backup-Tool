@@ -125,20 +125,6 @@
             SharedStart();
         }
 
-        //private void scanMisc()
-        //{
-        //    // Add misc backup
-
-        //    Job job = new BackupJob();
-
-        //    job.name = Settings.sourceEngineGames;
-        //    job.setSteamDir(steamDir + "\\" + Utilities.getSteamAppsFolder(steamDir) + "\\");
-        //    job.setBackupDir(backupDir + "\\Source Games.7z");
-        //    job.status = JobStatus.WAITING;
-
-        //    list.Add(job);
-        //}
-
         private void ScanCommonFolders()
         {
 
@@ -146,18 +132,17 @@
 
             foreach (var lib in libraries)
             {
-                if (!Directory.Exists(lib + "common\\")) continue;
+                var commonDir = Path.Combine(lib, SteamDirectory.Common);
+
+                if (!Directory.Exists(commonDir)) continue;
 
                 var acfFiles = new Dictionary<string, string>();
                 BuildAcfFileList(acfFiles, lib);
 
-                
-                var folders = Directory.GetDirectories(lib + "common\\");
+                var folders = Directory.GetDirectories(commonDir);
                 foreach (var folder in folders)
                 {
-                        
-                    var splits = folder.Split('\\');
-                    var name = splits[splits.Length - 1];
+                    var name = Path.GetFileName(folder) ?? string.Empty;
 
                     var textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
 
@@ -165,7 +150,7 @@
 
                     job.Name = textInfo.ToTitleCase(name);
                     job.SetSteamDir(folder);
-                    job.SetBackupDir(BackupDir + "\\common\\" + name + ".7z");
+                    job.SetBackupDir(Path.Combine(BackupDir, BackupDirectory.Common ,name + ".7z"));
                     job.Status = JobStatus.Waiting;
                     job.AcfDir = lib;
 
@@ -256,7 +241,7 @@
 
         public void MakeConfigFile()
         {
-            var configDir = BackupDir + "\\config.sbt";
+            var configDir = Path.Combine(BackupDir, "config.sbt");
             var sb = new StringBuilder();
             var sw = new StringWriter(sb);
 
@@ -308,8 +293,7 @@
                 {
                     if (string.IsNullOrEmpty(job.AcfFiles) || job.Status != JobStatus.Waiting) continue;
 
-                    var nameSplit = job.GetSteamDir().Split('\\');
-                    var name = nameSplit[nameSplit.Length - 1];
+                    var name = Path.GetFileName(job.GetSteamDir()) ?? string.Empty;
 
                     if (cfgFile.AcfIds != null && cfgFile.AcfIds.ContainsKey(name)) continue;
 

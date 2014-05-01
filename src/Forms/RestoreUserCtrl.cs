@@ -1,5 +1,6 @@
 ﻿namespace steamBackup.Forms
 {
+    using System.IO;
     using steamBackup.AppServices;
     using steamBackup.AppServices.Jobs;
     using steamBackup.AppServices.Tasks;
@@ -103,7 +104,11 @@
             if (chkList.SelectedItem == null) return;
 
             var job = (Job) chkList.SelectedItem;
-            job.SetSteamDir(dboxLibList.SelectedItem + "common\\");
+
+            var selectedPath = dboxLibList.SelectedItem as string;
+            if (selectedPath == null) return;
+
+            job.SetSteamDir(Path.Combine(selectedPath, SteamDirectory.Common));
             job.AcfDir = dboxLibList.SelectedItem.ToString();
         }
 

@@ -23,24 +23,23 @@
         {
             // Find all of the backed up items and a it to the job list
 
-            var files = Directory.GetFiles(BackupDir + "\\common\\", "*.7z");
+            var files = Directory.GetFiles(Path.Combine(BackupDir, BackupDirectory.Common, "*.7z"));
             foreach (var file in files)
             {
                 var name = Path.GetFileNameWithoutExtension(file);
 
                 Job job = new RestoreJob();
 
-
                 job.Name = name;
-                job.SetSteamDir(SteamDir + "\\" + Utilities.GetSteamAppsFolder(SteamDir) + "\\common\\");
-                job.SetBackupDir(BackupDir + "\\common\\" + job.Name + ".7z");
+                job.SetSteamDir(Path.Combine(SteamDir, Utilities.GetSteamAppsFolder(SteamDir), SteamDirectory.Common));
+                job.SetBackupDir(Path.Combine(BackupDir, BackupDirectory.Common, job.Name + ".7z"));
                 job.Status = JobStatus.Waiting;
 
                 JobList.Add(job);
             }
 
 
-            var configDir = BackupDir + "\\config.sbt";
+            var configDir = Path.Combine(BackupDir, "config.sbt");
             if (File.Exists(configDir))
             {
                 using (var streamReader = new StreamReader(configDir))
@@ -70,7 +69,7 @@
                                 if (foundJob == null) continue;
 
                                 foundJob.AcfFiles = ids;
-                                foundJob.AcfDir = SteamDir + "\\" + Utilities.GetSteamAppsFolder(SteamDir) + "\\";
+                                foundJob.AcfDir = Path.Combine(SteamDir, Utilities.GetSteamAppsFolder(SteamDir));
                             }
                         }
                     }
@@ -96,7 +95,7 @@
 
             Job job = new RestoreJob();
 
-            job.SetBackupDir(BackupDir + "\\");
+            job.SetBackupDir(BackupDir);
             job.Name = "steamapps";
             job.Status = JobStatus.Waiting;
 

@@ -18,16 +18,12 @@
             try
             {
                 var name = Path.GetFileName(path);
-                if (name == "") return path.ToUpper() + Path.DirectorySeparatorChar; // root reached
+                if (string.IsNullOrEmpty(name)) return path.ToUpper() + Path.DirectorySeparatorChar; // root reached
 
                 var parent = Path.GetDirectoryName(path); // retrieving parent of element to be corrected
-
                 parent = GetFileSystemCasing(parent); //to get correct casing on the entire string, and not only on the last element
 
-                var diParent = new DirectoryInfo(parent);
-                var fsiChildren = diParent.GetFileSystemInfos(name);
-                var fsiChild = fsiChildren.First();
-                return fsiChild.FullName; // coming from GetFileSystemImfos() this has the correct case
+                return new DirectoryInfo(parent).GetFileSystemInfos(name).First().FullName; // coming from GetFileSystemImfos() this has the correct case
             }
             catch (Exception ex)
             {
@@ -41,7 +37,7 @@
             // This does a case sensitive check (Other solutions are non-case sensitive)
             var folderList = Directory.GetDirectories(dir);
 
-            return folderList.Any(folderToTest => folderToTest.Equals(dir + @"\" + folder));
+            return folderList.Any(folderToTest => folderToTest.Equals(Path.Combine(dir, folder)));
         }
 
         public static string GetSteamAppsFolder(string steamDir)
@@ -54,9 +50,9 @@
 
         public static string[] GetLibraries(string steamDir)
         {
-            var libraryLocation = steamDir + "\\" + GetSteamAppsFolder(steamDir) + "\\";
+            var libraryLocation = Path.Combine(steamDir, GetSteamAppsFolder(steamDir));
 
-            var fi = new FileInfo(steamDir + "\\config\\config.vdf");
+            var fi = new FileInfo(Path.Combine(steamDir, SteamDirectory.Common, "config.vdf"));
             var reader = fi.OpenText();
             string line;
             while ((line = reader.ReadLine()) != null)
@@ -82,15 +78,7 @@
 
         public static string UpDirLvl(string dir)
         {
-            var splits = dir.TrimEnd('\\').Split('\\');
-            var rdir = "";
-
-            for (var i = 0; i < splits.Length - 1; i++)
-            {
-                rdir += splits[i] + "\\";
-            }
-
-            return rdir;
+            return Path.GetDirectoryName(dir);
         }
 
         public static bool IsSteamRunning()
@@ -107,8 +95,8 @@
 
             foreach(var id in acfId)
             {
-                var src = job.AcfDir + "\\appmanifest_" + id + ".acf";
-                var dst = backupDir + "\\acf";
+                var src = Path.Combine(job.AcfDir, "appmanifest_" + id + ".acf");
+                var dst = Path.Combine(backupDir, BackupDirectory.Acf);
 
                 if (!Directory.Exists(dst))
                     Directory.CreateDirectory(dst);
@@ -122,7 +110,7 @@
                 acf = acf.Replace(gameCommonFolder.ToLower(), "|DIRECTORY-LOWER|");
                 acf = acf.Replace(gameCommonFolder.ToLower().Replace("\\", "\\\\"), "|DIRECTORY-ESCSLASH-LOWER|");
 
-                File.WriteAllText(dst + "\\appmanifest_" + id + ".acf", acf);
+                File.WriteAllText(Path.Combine(dst, "appmanifest_" + id + ".acf"), acf);
                 reader.Close();
             }
         }
