@@ -22,7 +22,7 @@ namespace steamBackupCLI
         private readonly int _maxDegreeOfParallelism;
 
         // Indicates whether the scheduler is currently processing work items. 
-        private int _delegatesQueuedOrRunning = 0;
+        private int _delegatesQueuedOrRunning;
 
         // Creates a new instance with the specified degree of parallelism. 
         public LimitedConcurrencyLevelTaskScheduler(int maxDegreeOfParallelism)
@@ -77,7 +77,7 @@ namespace steamBackupCLI
                         }
 
                         // Execute the task we pulled out of the queue
-                        base.TryExecuteTask(item);
+                        TryExecuteTask(item);
                     }
                 }
                     // We're done processing items on the current thread
@@ -95,11 +95,11 @@ namespace steamBackupCLI
             if (taskWasPreviouslyQueued)
                 // Try to run the task. 
                 if (TryDequeue(task))
-                    return base.TryExecuteTask(task);
+                    return TryExecuteTask(task);
                 else
                     return false;
             else
-                return base.TryExecuteTask(task);
+                return TryExecuteTask(task);
         }
 
         // Attempt to remove a previously scheduled task from the scheduler. 

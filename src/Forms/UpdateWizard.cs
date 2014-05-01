@@ -87,8 +87,8 @@
 
         private static JsonTextReader GetJsonFile(string url)
         {
-            JsonTextReader reader = null;
-            using (var webClient = new System.Net.WebClient())
+            JsonTextReader reader;
+            using (var webClient = new WebClient())
             {
                 try
                 {
