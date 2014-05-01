@@ -68,7 +68,12 @@
         private void UpdLibDropBox()
         {
             dboxLibList.Items.Clear();
-            dboxLibList.Items.AddRange(Utilities.GetLibraries(Settings.SteamDir));
+
+            var libraries = Utilities.GetLibraries(Settings.SteamDir);
+            foreach (var library in libraries)
+            {
+                dboxLibList.Items.Add(library);
+            }
         }
 
         private void lblRefreshList_Click(object sender, EventArgs e)

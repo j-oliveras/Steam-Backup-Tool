@@ -1,5 +1,6 @@
 ﻿namespace steamBackup.AppServices
 {
+    using System.Collections.Generic;
     using System.Security;
     using Microsoft.Win32;
     using Properties;
@@ -50,9 +51,12 @@
             return FolderExists(steamDir, "SteamApps") ? "SteamApps" : "ERROR";
         }
 
-        public static string[] GetLibraries(string steamDir)
+        public static List<string> GetLibraries(string steamDir)
         {
-            var libraryLocation = Path.Combine(steamDir, GetSteamAppsFolder(steamDir));
+            var libraries = new List<string>
+            {
+                Path.Combine(steamDir, GetSteamAppsFolder(steamDir))
+            };
 
             var fi = new FileInfo(Path.Combine(steamDir, SteamDirectory.Common, "config.vdf"));
             var reader = fi.OpenText();
@@ -71,11 +75,11 @@
                     i++;
                     var dir = lineData[i].Trim('\"').Replace("\\\\", "\\") + "\\SteamApps\\";
                     if (!String.IsNullOrEmpty(dir) && Directory.Exists(dir))
-                        libraryLocation += "|" + dir;
+                        libraries.Add(dir);
                 }
             }
 
-            return libraryLocation.Split('|');
+            return libraries;
         }
 
         public static string UpDirLvl(string dir)
