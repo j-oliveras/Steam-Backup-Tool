@@ -88,6 +88,24 @@ namespace steamBackup.AppServices.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Archiving games....
+        /// </summary>
+        public static string ArchivingGames {
+            get {
+                return ResourceManager.GetString("ArchivingGames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup finished!.
+        /// </summary>
+        public static string BackupFinished {
+            get {
+                return ResourceManager.GetString("BackupFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Listed below are the errors for a backup or restore.
         ///
         ///Please try running the backup process again making sure that there are no programs accessing the files being backed up (e.g. Steam).
@@ -182,6 +200,24 @@ namespace steamBackup.AppServices.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid Steam Backup folder.
+        /// </summary>
+        public static string NotValidSteamBackupDirectory {
+            get {
+                return ResourceManager.GetString("NotValidSteamBackupDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a valid Steam installation directory.
+        /// </summary>
+        public static string NotValidSteamDirectory {
+            get {
+                return ResourceManager.GetString("NotValidSteamDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The percent of finished work must be between 0 and 100..
         /// </summary>
         public static string PercentRangeError {
@@ -198,6 +234,15 @@ namespace steamBackup.AppServices.Properties {
         public static string ProgressFormatStr {
             get {
                 return ResourceManager.GetString("ProgressFormatStr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scanning for installed games....
+        /// </summary>
+        public static string Scanning {
+            get {
+                return ResourceManager.GetString("Scanning", resourceCulture);
             }
         }
         

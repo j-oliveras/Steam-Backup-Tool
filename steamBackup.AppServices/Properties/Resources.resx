@@ -172,6 +172,12 @@ Stack Trace:
 //////////////////// Error Time: {0} \\\\\\\\\\\\\\\\\\\\
 </value>
   </data>
+  <data name="NotValidSteamBackupDirectory" xml:space="preserve">
+    <value>'{0}' is not a valid Steam Backup folder</value>
+  </data>
+  <data name="NotValidSteamDirectory" xml:space="preserve">
+    <value>'{0}' is not a valid Steam installation directory</value>
+  </data>
   <data name="PercentRangeError" xml:space="preserve">
     <value>The percent of finished work must be between 0 and 100.</value>
   </data>
@@ -196,5 +202,14 @@ Jobs total: {4} of {5}</value>
     <value>Sorry, But I could not find where steam has been installed.
 
 Please browse for it manually.</value>
+  </data>
+  <data name="Scanning" xml:space="preserve">
+    <value>Scanning for installed games...</value>
+  </data>
+  <data name="ArchivingGames" xml:space="preserve">
+    <value>Archiving games...</value>
+  </data>
+  <data name="BackupFinished" xml:space="preserve">
+    <value>Backup finished!</value>
   </data>
 </root>

@@ -151,6 +151,27 @@ namespace steamBackupCLI
                 Environment.Exit(2);
             }
 
+            if (string.IsNullOrEmpty(_steamDir))
+            {
+                try
+                {
+                    _steamDir = Utilities.GetSteamDirectory();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Environment.Exit(1);
+                }
+            }
+
+            if (!Utilities.IsValidSteamFolder(_steamDir))
+            {
+                Console.WriteLine(Resources.NotValidSteamDirectory);
+                Environment.Exit(3);
+            }
+
+            Utilities.SetupBackupDirectory(_outDir);
+
             ConsoleWidth = Console.BufferWidth;
 
             StatusLine = Console.CursorTop;
@@ -169,26 +190,11 @@ namespace steamBackupCLI
                 }
             }
 
-            BupTask = new BackupTask();
-
-            if (string.IsNullOrEmpty(_steamDir))
-            {
-                try
-                {
-                    _steamDir = Utilities.GetSteamDirectory();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    Environment.Exit(1);
-                }
-            }
-
-            BupTask.SteamDir = _steamDir;
-            BupTask.BackupDir = _outDir;
             Settings.BackupDir = _outDir;
 
-            Console.WriteLine(@"Scanning for installed games...");
+            BupTask = new BackupTask {SteamDir = _steamDir, BackupDir = _outDir};
+
+            Console.WriteLine(Resources.Scanning);
 
             BupTask.JobList.Clear();
             BupTask.Scan();
@@ -214,12 +220,12 @@ namespace steamBackupCLI
             BupTask.Setup();
 
             Console.SetCursorPosition(0, StatusLine);
-            Console.Write(@"Archiving games...".PadRight(ConsoleWidth));
+            Console.Write(Resources.ArchivingGames.PadRight(ConsoleWidth));
 
             StartCompression();
 
             Console.SetCursorPosition(0, lastLine + 3);
-            Console.WriteLine(@"Backup finished!");
+            Console.WriteLine(Resources.BackupFinished);
             Thread.Sleep(2000);
         }
 
