@@ -91,7 +91,11 @@
 
         private void DboxLibListUpd()
         {
-            if (chkList.SelectedItem == null) return;
+            if (chkList.SelectedItem == null)
+            {
+                dboxLibList.Enabled = false;
+                return;
+            }
 
             var job = (Job) chkList.SelectedItem;
             if (string.IsNullOrEmpty(job.AcfFiles))
