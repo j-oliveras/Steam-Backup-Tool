@@ -43,25 +43,24 @@
                     {
                         if (data.Value == null) continue;
 
-                        if (data.Value.ToString() == "name")
+                        switch (data.Value.ToString())
                         {
-                            data.Read();
-                            _updName = data.Value.ToString();
-                        }
-                        else if (data.Value.ToString() == "version")
-                        {
-                            data.Read();
-                            _updVersion = data.Value.ToString();
-                        }
-                        else if (data.Value.ToString() == "url")
-                        {
-                            data.Read();
-                            _updUrl = data.Value.ToString();
-                        }
-                        else if (data.Value.ToString() == "changelist")
-                        {
-                            data.Read();
-                            _updChangeList = data.Value.ToString();
+                            case "name":
+                                data.Read();
+                                _updName = data.Value.ToString();
+                                break;
+                            case "version":
+                                data.Read();
+                                _updVersion = data.Value.ToString();
+                                break;
+                            case "url":
+                                data.Read();
+                                _updUrl = data.Value.ToString();
+                                break;
+                            case "changelist":
+                                data.Read();
+                                _updChangeList = data.Value.ToString();
+                                break;
                         }
                     }
                 }
