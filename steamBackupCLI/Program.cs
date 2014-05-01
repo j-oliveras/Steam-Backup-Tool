@@ -1,16 +1,17 @@
 ﻿
 namespace steamBackupCLI
 {
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
     using NDesk.Options;
     using steamBackup.AppServices;
     using steamBackup.AppServices.Jobs;
     using steamBackup.AppServices.Properties;
     using steamBackup.AppServices.Tasks.Backup;
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Timer = System.Timers.Timer;
 
     public class Program
@@ -138,6 +139,12 @@ namespace steamBackupCLI
             }
 
             Setup();
+
+            StartCompression();
+
+            Console.SetCursorPosition(0, InstanceLines.Last() + 3);
+            Console.WriteLine(Resources.BackupFinished);
+            Thread.Sleep(2000);
         }
 
         private static void Setup()
@@ -173,20 +180,17 @@ namespace steamBackupCLI
             Utilities.SetupBackupDirectory(_outDir);
 
             ConsoleWidth = Console.BufferWidth;
-
             StatusLine = Console.CursorTop;
-            var lastLine = StatusLine + 2;
 
-            InstanceLines.Add(lastLine);
+            InstanceLines.Add(StatusLine + 2);
             RegisteredInstances.Add(-1);
 
             if (!_useLzma2)
             {
                 for (var i = 1; i < _numThreads; i++)
                 {
-                    InstanceLines.Add(lastLine + 3);
+                    InstanceLines.Add(StatusLine + 2 + (i * 3));
                     RegisteredInstances.Add(-1);
-                    lastLine += 3;
                 }
             }
 
@@ -194,7 +198,8 @@ namespace steamBackupCLI
 
             BupTask = new BackupTask {SteamDir = _steamDir, BackupDir = _outDir};
 
-            Console.WriteLine(Resources.Scanning);
+            Console.SetCursorPosition(0, StatusLine);
+            Console.WriteLine(Resources.Scanning.PadRight(ConsoleWidth));
 
             BupTask.JobList.Clear();
             BupTask.Scan();
@@ -218,19 +223,13 @@ namespace steamBackupCLI
             }
 
             BupTask.Setup();
-
-            Console.SetCursorPosition(0, StatusLine);
-            Console.Write(Resources.ArchivingGames.PadRight(ConsoleWidth));
-
-            StartCompression();
-
-            Console.SetCursorPosition(0, lastLine + 3);
-            Console.WriteLine(Resources.BackupFinished);
-            Thread.Sleep(2000);
         }
 
         private static void StartCompression()
         {
+            Console.SetCursorPosition(0, StatusLine);
+            Console.Write(Resources.ArchivingGames.PadRight(ConsoleWidth));
+
             var lcts = new LimitedConcurrencyLevelTaskScheduler(_useLzma2 ? 1 : _numThreads);
             var tasks = new List<Task>();
 
