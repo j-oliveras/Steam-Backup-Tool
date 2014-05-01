@@ -62,6 +62,8 @@
             // reenable ItemCheck event
             chkList.ItemCheck += chkList_ItemCheck;
 
+            chkList.ClearSelected();
+
             chkList.EndUpdate();
         }
 
