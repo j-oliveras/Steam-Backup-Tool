@@ -1,6 +1,7 @@
 ﻿namespace steamBackup.AppServices.Tasks.Backup
 {
     using System.Linq;
+    using System.Text.RegularExpressions;
     using Newtonsoft.Json;
     using steamBackup.AppServices;
     using steamBackup.AppServices.Jobs;
@@ -173,53 +174,61 @@
         {
             var acfFileList = Directory.GetFiles(lib, "*.acf", SearchOption.TopDirectoryOnly);
 
+            // match text line containing "appID"   "<ID>" into named backreference "appId"
+            var regExId = new Regex("\"appID\"\\s*?\"(?<appId>\\d*?)\"", RegexOptions.Multiline);
+
+            // match text line containing "installdir"   "<directory>" into named backreference "installDir"
+            var regExInstallDir = new Regex("\"installdir\"\\s*?\"(?<installDir>[-\\\\+_:\\w\\s]*?)\"", RegexOptions.Multiline);
+
+            // match text line containing "appinstalldir"   "<directory>" into named backreference "appInstallDir"
+            var regExAppInstallDir = new Regex("\"appinstalldir\"\\s*?\"(?<appInstallDir>[-\\\\+_:\\w\\s]*?)\"", RegexOptions.Multiline);
+
             foreach (var file in acfFileList)
             {
                 if (String.IsNullOrEmpty(file)) continue;
 
-                var dir = "";
-                var appId = "";
+                var dir = string.Empty;
+                var appId = string.Empty;
 
-                var fi = new FileInfo(file);
-                var reader = fi.OpenText();
-
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                using (var reader = new FileInfo(file).OpenText())
                 {
-                    line = line.Trim();
-                    var lineData = line.Split(new[] { "		" }, StringSplitOptions.RemoveEmptyEntries);
+                    var content = reader.ReadToEnd();
 
-                    for (var i = 0; i < lineData.Length; i++)
+                    var installDir = string.Empty;
+                    var installAppDir = string.Empty;
+
+                    var regExMatch = regExId.Match(content);
+                    if (regExMatch.Success)
                     {
-                        var data = lineData[i].Trim('\"');
-
-                        if (data.Equals("appID"))
-                        {
-                            i++;
-                            appId = lineData[i].Trim('\"');
-                        }
-                        else if (data.Equals("installdir"))
-                        {
-                            i++;
-                            var str = lineData[i].Trim('\"').Replace("\\\\", "\\");
-                            if (!Path.IsPathRooted(str))
-                                str = Path.Combine(lib, "common", str);
-                            if (FilterAcfDir(str))
-                                dir = Utilities.GetFileSystemCasing(str);
-                        }
-                        else if (data.Equals("appinstalldir"))
-                        {
-                            i++;
-                            var str = lineData[i].Trim('\"');
-                            if (!Path.IsPathRooted(str))
-                                str = Path.Combine(lib, "common", str);
-                            if (FilterAcfDir(str))
-                                dir = Utilities.GetFileSystemCasing(str);
-                        }
+                        appId = regExMatch.Groups["appId"].Value;
                     }
+
+                    regExMatch = regExInstallDir.Match(content);
+                    if (regExMatch.Success)
+                    {
+                        installDir = regExMatch.Groups["installDir"].Value;
+                    }
+
+                    regExMatch = regExAppInstallDir.Match(content);
+                    if (regExMatch.Success)
+                    {
+                        installAppDir = regExMatch.Groups["appInstallDir"].Value;
+                    }
+
+                    if (!string.IsNullOrEmpty(installDir))
+                        dir = installDir;
+                    else if (!string.IsNullOrEmpty(installAppDir))
+                        dir = installAppDir;
                 }
 
-                if (String.IsNullOrEmpty(dir) || String.IsNullOrEmpty(appId)) continue;
+                if (!string.IsNullOrEmpty(dir))
+                    dir = Path.Combine(lib, SteamDirectory.Common, dir);
+                else continue;
+
+                if (FilterAcfDir(dir))
+                    dir = Utilities.GetFileSystemCasing(dir);
+
+                if (String.IsNullOrEmpty(appId)) continue;
 
                 if (acfFiles.ContainsKey(dir))
                     acfFiles[dir] += "|" + appId;
@@ -230,7 +239,7 @@
 
         public bool FilterAcfDir(string acfString)
         {
-            if (acfString.Equals(""))
+            if (string.IsNullOrEmpty(acfString))
                 return false;
 
             const string excludeString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

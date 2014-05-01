@@ -14,7 +14,6 @@ namespace steamBackup
     using steamBackup.Forms;
     using steamBackup.Properties;
     using System;
-    using System.Diagnostics;
     using System.Drawing;
     using System.Globalization;
     using System.Reflection;
