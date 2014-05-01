@@ -194,6 +194,33 @@ namespace steamBackup.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Downloading Update..
+        /// </summary>
+        internal static string DownloadingUpdate {
+            get {
+                return ResourceManager.GetString("DownloadingUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error downloading update..
+        /// </summary>
+        internal static string DownloadingUpdateError {
+            get {
+                return ResourceManager.GetString("DownloadingUpdateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully Downloaded Update.
+        /// </summary>
+        internal static string DownloadingUpdateSuccess {
+            get {
+                return ResourceManager.GetString("DownloadingUpdateSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Finding Files....
         /// </summary>
         internal static string FindingFilesText {
@@ -579,6 +606,15 @@ namespace steamBackup.Properties {
         internal static string ToolUpdateNoNewVersion {
             get {
                 return ResourceManager.GetString("ToolUpdateNoNewVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update available: {0}{3}{3}{1}{3}{2}.
+        /// </summary>
+        internal static string UpdateAvailable {
+            get {
+                return ResourceManager.GetString("UpdateAvailable", resourceCulture);
             }
         }
         

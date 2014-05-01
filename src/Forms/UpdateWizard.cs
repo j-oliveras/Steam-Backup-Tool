@@ -75,7 +75,7 @@
             }
             else
             {
-                infoBox.Text = "Update available: " + _updName + "\n\n" + _updChangeList + "\n" + Resources.ChangeListLegend;
+                infoBox.Text = string.Format(Resources.UpdateAvailable, _updName, _updChangeList, Resources.ChangeListLegend, Environment.NewLine);
                 btnUpdate.Enabled = true;
             }
         }
@@ -117,7 +117,7 @@
             // Create a new WebClient instance.
             var myWebClient = new WebClient();
 
-            infoBox.Text = "Downloading Update.";
+            infoBox.Text = Resources.DownloadingUpdate;
             this.Refresh();
 
             // Download the Web resource and save it into the current filesystem folder.
@@ -127,13 +127,13 @@
             }
             catch
             {
-                infoBox.Text = "Error downloading update.";
+                infoBox.Text = Resources.DownloadingUpdateError;
                 btnCancel.Enabled = true;
                 return;
             }
 
 
-            infoBox.Text = "Successfully Downloaded Update";
+            infoBox.Text = Resources.DownloadingUpdateSuccess;
 
             Application.Exit();
             System.Diagnostics.Process.Start(@"rsc\update.bat");
