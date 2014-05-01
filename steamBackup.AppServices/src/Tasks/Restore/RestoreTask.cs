@@ -23,7 +23,7 @@
         {
             // Find all of the backed up items and a it to the job list
 
-            var files = Directory.GetFiles(Path.Combine(BackupDir, BackupDirectory.Common, "*.7z"));
+            var files = Directory.GetFiles(Path.Combine(BackupDir, BackupDirectory.Common), "*.7z");
             foreach (var file in files)
             {
                 var name = Path.GetFileNameWithoutExtension(file);

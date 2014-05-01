@@ -58,7 +58,7 @@
                 Path.Combine(steamDir, GetSteamAppsFolder(steamDir))
             };
 
-            var fi = new FileInfo(Path.Combine(steamDir, SteamDirectory.Common, "config.vdf"));
+            var fi = new FileInfo(Path.Combine(steamDir, SteamDirectory.Config, "config.vdf"));
             var reader = fi.OpenText();
             string line;
             while ((line = reader.ReadLine()) != null)
