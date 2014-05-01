@@ -6,6 +6,7 @@
     using steamBackup.AppServices.Tasks.Backup;
     using steamBackup.Properties;
     using System;
+    using System.ComponentModel;
     using System.Drawing;
     using System.Windows.Forms;
 
@@ -126,20 +127,15 @@
 
         private void btnUpdBup_Click(object sender, EventArgs e)
         {
-            DisableButtons(false);
-  
-            cBoxDelBup.Enabled = false;
-            cBoxDelBup.Checked = false;
-
-            Cursor = Cursors.WaitCursor;
-            BupTask.SetEnableUpd(true);
-            UpdCheckBoxList();
-            Cursor = Cursors.Arrow;
-
-            DisableButtons(true);
+            UpdateSelection(true);
         }
 
         private void btnUpdLib_Click(object sender, EventArgs e)
+        {
+            UpdateSelection(false);
+        }
+
+        private void UpdateSelection(bool archivedOnly)
         {
             DisableButtons(false);
 
@@ -147,11 +143,17 @@
             cBoxDelBup.Checked = false;
 
             Cursor = Cursors.WaitCursor;
-            BupTask.SetEnableUpd(false);
-            UpdCheckBoxList();
-            Cursor = Cursors.Arrow;
 
-            DisableButtons(true);
+            var worker = new BackgroundWorker();
+            worker.DoWork += (o, args) => BupTask.SetEnableUpd(archivedOnly);
+            worker.RunWorkerCompleted += (o, args) =>
+            {
+                UpdCheckBoxList();
+                Cursor = Cursors.Arrow;
+                DisableButtons(true);
+            };
+
+            worker.RunWorkerAsync();
         }
 
         private void DisableButtons(bool disableBool)
