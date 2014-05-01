@@ -60,7 +60,7 @@
 
         public override string ToString()
         {
-            string str = "";
+            var str = "";
             
             str += "name = " + Name + Environment.NewLine;
             str += "acfFiles = " + AcfFiles + Environment.NewLine;

@@ -52,10 +52,10 @@
 
             // disable ItemCheck event temporarily
             chkList.ItemCheck -= chkList_ItemCheck;
-            foreach (Job job in RstTask.JobList)
+            foreach (var job in RstTask.JobList)
             {
-                int index = chkList.Items.IndexOf(job);
-                bool enabled = job.Status == JobStatus.Waiting;
+                var index = chkList.Items.IndexOf(job);
+                var enabled = job.Status == JobStatus.Waiting;
                 chkList.SetItemChecked(index, enabled);
             }
             // reenable ItemCheck event

@@ -25,10 +25,10 @@
         {
             // Find all of the backed up items and a it to the job list
 
-            string[] files = Directory.GetFiles(BackupDir + "\\common\\", "*.7z");
-            foreach (string file in files)
+            var files = Directory.GetFiles(BackupDir + "\\common\\", "*.7z");
+            foreach (var file in files)
             {
-                string name = Path.GetFileNameWithoutExtension(file);
+                var name = Path.GetFileNameWithoutExtension(file);
 
                 Job job = new RestoreJob();
 
@@ -42,7 +42,7 @@
             }
 
 
-            string configDir = BackupDir + "\\config.sbt";
+            var configDir = BackupDir + "\\config.sbt";
             if (File.Exists(configDir))
             {
                 using (var streamReader = new StreamReader(configDir))
@@ -62,12 +62,12 @@
                         if (cfgFile != null)
                         {
                             CurrentArchiveVer = cfgFile.ArchiverVersion;
-                            foreach (KeyValuePair<string, string> acfId in cfgFile.AcfIds)
+                            foreach (var acfId in cfgFile.AcfIds)
                             {
-                                string name = acfId.Key;
-                                string ids = acfId.Value;
+                                var name = acfId.Key;
+                                var ids = acfId.Value;
 
-                                Job foundJob = JobList.Find(job => job.Name.Equals(name));
+                                var foundJob = JobList.Find(job => job.Name.Equals(name));
 
                                 if (foundJob != null)
                                 {
@@ -80,8 +80,8 @@
                 }
             }
 
-            TextInfo textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
-            foreach (Job job in JobList)
+            var textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
+            foreach (var job in JobList)
                 job.Name = textInfo.ToTitleCase(job.Name);
 
             //// if we are using v2 of the archiver add 'Source Games.7z'

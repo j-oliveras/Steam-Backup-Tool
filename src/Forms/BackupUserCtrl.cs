@@ -88,10 +88,10 @@
 
             // disable ItemCheck event temporarily
             chkList.ItemCheck -= chkList_ItemCheck;
-            foreach (Job item in BupTask.JobList)
+            foreach (var item in BupTask.JobList)
             {
-                int index = chkList.Items.IndexOf(item);
-                bool enabled = item.Status == JobStatus.Waiting;
+                var index = chkList.Items.IndexOf(item);
+                var enabled = item.Status == JobStatus.Waiting;
                 chkList.SetItemChecked(index, enabled);
             }
             // reenable ItemCheck event
@@ -216,7 +216,7 @@
 
         private void CompresionText()
         {
-            int compLevel = BupTask.GetCompLevel();
+            var compLevel = BupTask.GetCompLevel();
 
             if (compLevel <= 5 && compLevel >= 0)
                 lblComp.Text = Resources.CompressionLevelText + CompressionStrings[compLevel];
@@ -226,7 +226,7 @@
 
         private void RamUsage()
         {
-            int ram = BupTask.RamUsage(cBoxLzma2.Checked);
+            var ram = BupTask.RamUsage(cBoxLzma2.Checked);
 
             lblRamBackup.Text = string.Format(Resources.MaxRamUsageText, ram);
 
@@ -351,7 +351,7 @@
                 else
                     tbarThread.Maximum = Math.Min(8, Environment.ProcessorCount);
 
-                int numThreads = Math.Min(tbarThread.Maximum, tbarThread.Value);
+                var numThreads = Math.Min(tbarThread.Maximum, tbarThread.Value);
                 tbarThread.Value = numThreads;
                 BupTask.ThreadCount = numThreads;
 
@@ -365,7 +365,7 @@
 
                 tbarThread.Maximum = 4;
 
-                int numThreads = Math.Min(tbarThread.Maximum, tbarThread.Value);
+                var numThreads = Math.Min(tbarThread.Maximum, tbarThread.Value);
                 tbarThread.Value = numThreads;
                 BupTask.ThreadCount = numThreads;
 
@@ -388,7 +388,7 @@
             {
                 tbarThread.Maximum = Math.Min(8, Environment.ProcessorCount);
 
-                int numThreads = Math.Min(tbarThread.Maximum, BupTask.ThreadCount);
+                var numThreads = Math.Min(tbarThread.Maximum, BupTask.ThreadCount);
                 tbarThread.Value = numThreads;
                 BupTask.ThreadCount = numThreads;
 

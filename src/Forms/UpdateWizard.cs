@@ -25,9 +25,9 @@
         {
             this.Refresh();
 
-            JsonTextReader data = getJsonFile(@"http://du-z.com/sbtRelease.json");
+            var data = getJsonFile(@"http://du-z.com/sbtRelease.json");
 
-            string thisVer = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            var thisVer = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             // check to make sure we have a valid json file.
             if (data == null)
@@ -93,7 +93,7 @@
                 try
                 {
 
-                    string jsonStr = webClient.DownloadString(url);
+                    var jsonStr = webClient.DownloadString(url);
                     // Now parse with JSON.Net
 
                     reader = new JsonTextReader(new StringReader(jsonStr));
@@ -117,10 +117,10 @@
             btnUpdate.Enabled = false;
             btnCancel.Enabled = false;
             
-            string DownloadLocation = Application.StartupPath + @"/rsc/update.7z";
+            var DownloadLocation = Application.StartupPath + @"/rsc/update.7z";
 
             // Create a new WebClient instance.
-            WebClient myWebClient = new WebClient();
+            var myWebClient = new WebClient();
 
             infoBox.Text = "Downloading Update.";
             this.Refresh();

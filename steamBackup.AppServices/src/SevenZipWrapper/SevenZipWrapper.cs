@@ -148,10 +148,10 @@
             {
                 _fileNameCallback = value =>
                 {
-                    string fPath = Path.GetFileName(value);
+                    var fPath = Path.GetFileName(value);
                     if (FileExtractionStarted != null)
                     {
-                        FileNameEventArgs ev = new FileNameEventArgs(fPath, (byte)_progress);
+                        var ev = new FileNameEventArgs(fPath, (byte)_progress);
                         FileExtractionStarted(this, ev);
                         if (ev.Cancel)
                             Cancel(false);
@@ -180,10 +180,10 @@
             {
                 _fileNameCallback = value =>
                 {
-                    string fPath = Path.GetFileName(value);
+                    var fPath = Path.GetFileName(value);
                     if (FileCompressionStarted != null)
                     {
-                        FileNameEventArgs ev = new FileNameEventArgs(fPath, (byte) _progress);
+                        var ev = new FileNameEventArgs(fPath, (byte) _progress);
                         FileCompressionStarted(this, ev);
                         if (ev.Cancel)
                             Cancel(false);

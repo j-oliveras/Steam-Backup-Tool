@@ -39,7 +39,7 @@
             JobsSkiped = 0;
             JobCount = 0;
 
-            foreach (Job job in JobList)
+            foreach (var job in JobList)
             {
                 if (job.Status == JobStatus.Waiting)
                     JobsToDoCount++;
@@ -59,7 +59,7 @@
         {
             while (JobsAnalysed < JobCount)
             {
-                Job job = JobList[JobsAnalysed];
+                var job = JobList[JobsAnalysed];
                 JobsAnalysed++;
 
                 if (job.Status == JobStatus.Waiting)
@@ -96,7 +96,7 @@
         public void SetEnableAll()
         {
             // Mark all jobs as enable
-            foreach (Job job in JobList)
+            foreach (var job in JobList)
             {
                 EnableJob(job);
             }
@@ -105,7 +105,7 @@
         public void SetEnableNone()
         {
             // Mark all jobs as disabled
-            foreach (Job job in JobList)
+            foreach (var job in JobList)
             {
                 DisableJob(job);
             }

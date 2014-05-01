@@ -163,7 +163,7 @@ namespace steamBackupCLI
 
             if (!_useLzma2)
             {
-                for (int i = 1; i < _numThreads; i++)
+                for (var i = 1; i < _numThreads; i++)
                 {
                     InstanceLines.Add(lastLine + 3);
                     RegisteredInstances.Add(-1);
@@ -227,8 +227,8 @@ namespace steamBackupCLI
 
             foreach (var job in procList)
             {
-                Job lJob = job;
-                int jobId = procList.IndexOf(job) + 1;
+                var lJob = job;
+                var jobId = procList.IndexOf(job) + 1;
 
                 var t = factory.StartNew(() =>
                 {
@@ -242,9 +242,9 @@ namespace steamBackupCLI
                     {
                         lock (lJob)
                         {
-                            string eta = lJob.GetSpeedEta(true);
-                            string file = lJob.GetCurFileStr();
-                            byte perc = lJob.GetPercDone();
+                            var eta = lJob.GetSpeedEta(true);
+                            var file = lJob.GetCurFileStr();
+                            var perc = lJob.GetPercDone();
                             WriteConsole(tId, jobId, lJob.Name, perc, file, eta);
                         }
                     };
@@ -283,7 +283,7 @@ namespace steamBackupCLI
             {
                 Console.SetCursorPosition(0, instanceLine);
                 var restWidth = ConsoleWidth - 7;
-                string shorted = string.Empty;
+                var shorted = string.Empty;
 
                 if (jobId != -1)
                 {
@@ -340,7 +340,7 @@ namespace steamBackupCLI
 
             try
             {
-                RegistryKey key = Registry.CurrentUser.OpenSubKey(keyStr, false);
+                var key = Registry.CurrentUser.OpenSubKey(keyStr, false);
                 if (key != null)
                     _steamDir = Utilities.GetFileSystemCasing((string)key.GetValue("SteamPath"));
                 else

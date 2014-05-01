@@ -32,7 +32,7 @@
             _compStarted = DateTime.Now;
             try
             {
-                string libPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                var libPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
                 if (libPath != null)
                 {
                     libPath = Path.Combine(libPath, "rsc", "7z.dll");
@@ -71,12 +71,12 @@
                 if (processedSize <= 0)
                     processedSize = 1;
 
-                UInt64 sizeRemaining = totalSize - processedSize;
+                var sizeRemaining = totalSize - processedSize;
 
-                TimeSpan processingTime = DateTime.Now.Subtract(_compStarted);
-                DateTime processingDateTime = new DateTime().AddSeconds(processingTime.TotalSeconds);
+                var processingTime = DateTime.Now.Subtract(_compStarted);
+                var processingDateTime = new DateTime().AddSeconds(processingTime.TotalSeconds);
 
-                double processingSeconds = processingTime.TotalSeconds;
+                var processingSeconds = processingTime.TotalSeconds;
                 double bytesPerSec;
 
                 if (processingSeconds > 0)
@@ -84,10 +84,10 @@
                 else
                     bytesPerSec = processedSize;
 
-                double remainingSeconds = sizeRemaining / bytesPerSec;
-                DateTime remainingTime = new DateTime().AddSeconds(remainingSeconds);
+                var remainingSeconds = sizeRemaining / bytesPerSec;
+                var remainingTime = new DateTime().AddSeconds(remainingSeconds);
 
-                string etaResult = string.Format(Resources.EtaFormatStr,
+                var etaResult = string.Format(Resources.EtaFormatStr,
                     processingDateTime.ToString("HH:mm:ss"),
                     remainingTime.ToString("HH:mm:ss"));
                 string speedResult;

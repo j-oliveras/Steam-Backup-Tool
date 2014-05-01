@@ -21,7 +21,7 @@ namespace steamBackup.AppServices.Errors
 
         public override string ToString()
         {
-            string str = string.Format(Resources.JobErrorTime, _mTime.ToString("dd/MM/yyyy H:mm.ss")) + Environment.NewLine;
+            var str = string.Format(Resources.JobErrorTime, _mTime.ToString("dd/MM/yyyy H:mm.ss")) + Environment.NewLine;
 
             if (_mJob != null)
                 str += string.Format(Resources.JobErrorDetails, _mJob) + Environment.NewLine;

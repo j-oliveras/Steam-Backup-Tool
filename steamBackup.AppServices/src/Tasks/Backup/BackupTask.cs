@@ -35,7 +35,7 @@
             {
                 float[] ramPerThread = { 1.0f, 4.5f, 16.0f, 148.0f, 292.0f, 553.0f};
 
-                int ramMultiplier = ThreadCount;
+                var ramMultiplier = ThreadCount;
                 // if there is more than one thread and the thread count is even and the compression level is higher than 'fast'
                 if (ThreadCount > 1 && ThreadCount % 2 == 1 && CompLevel > 2)
                     ramMultiplier--;
@@ -56,7 +56,7 @@
         {
             CompLevel = compressionLevel;
 
-            foreach (Job job in JobList)
+            foreach (var job in JobList)
             {
                 var bJob = (BackupJob)job;
 
@@ -68,7 +68,7 @@
         {
             UseLzma2Compression = useLzma2;
 
-            foreach (Job job in JobList)
+            foreach (var job in JobList)
             {
                 var bJob = (BackupJob) job;
                 bJob.SetLzma2Compression(UseLzma2Compression);
@@ -77,7 +77,7 @@
 
         public void SetEnableUpd(bool achivedOnly)
         {
-            foreach (Job job in JobList)
+            foreach (var job in JobList)
             {  
                 if (job.Name.Equals(Settings.SourceEngineGames))
                 {
@@ -85,12 +85,12 @@
                 }
                 else
                 {
-                    bool isNewer = false;
+                    var isNewer = false;
 
                     if (File.Exists(job.GetBackupDir()))
                     {
-                        DateTime achiveDate = new FileInfo(job.GetBackupDir()).LastWriteTimeUtc;
-                        string[] fileList = Directory.GetFiles(job.GetSteamDir(), "*.*", SearchOption.AllDirectories);
+                        var achiveDate = new FileInfo(job.GetBackupDir()).LastWriteTimeUtc;
+                        var fileList = Directory.GetFiles(job.GetSteamDir(), "*.*", SearchOption.AllDirectories);
 
                         if (fileList.Select(file => new FileInfo(file).LastWriteTimeUtc).Any(fileDate => fileDate.CompareTo(achiveDate) > 0))
                         {
@@ -151,9 +151,9 @@
         private void ScanCommonFolders()
         {
 
-            string[] libraries = Utilities.GetLibraries(SteamDir);
+            var libraries = Utilities.GetLibraries(SteamDir);
 
-            foreach (string lib in libraries)
+            foreach (var lib in libraries)
             {
                 if (Directory.Exists(lib + "common\\"))
                 {
@@ -161,14 +161,14 @@
                     BuildAcfFileList(acfFiles, lib);
 
                 
-                    string[] folders = Directory.GetDirectories(lib + "common\\");
-                    foreach (string folder in folders)
+                    var folders = Directory.GetDirectories(lib + "common\\");
+                    foreach (var folder in folders)
                     {
                         
-                        string[] splits = folder.Split('\\');
-                        string name = splits[splits.Length - 1];
+                        var splits = folder.Split('\\');
+                        var name = splits[splits.Length - 1];
 
-                        TextInfo textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
+                        var textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
 
                         Job job = new BackupJob();
 
@@ -196,28 +196,28 @@
 
         private void BuildAcfFileList(Dictionary<string, string> acfFiles, string lib)
         {
-            string[] acfFileList = Directory.GetFiles(lib, "*.acf", SearchOption.TopDirectoryOnly);
+            var acfFileList = Directory.GetFiles(lib, "*.acf", SearchOption.TopDirectoryOnly);
 
-            foreach (string file in acfFileList)
+            foreach (var file in acfFileList)
             {
                 
                 if (!String.IsNullOrEmpty(file))
                 {
-                    string dir = "";
-                    string appId = "";
+                    var dir = "";
+                    var appId = "";
 
                     var fi = new FileInfo(file);
-                    StreamReader reader = fi.OpenText();
+                    var reader = fi.OpenText();
 
                     string line;
                     while ((line = reader.ReadLine()) != null)
                     {
                         line = line.Trim();
-                        string[] lineData = line.Split(new[] { "		" }, StringSplitOptions.RemoveEmptyEntries);
+                        var lineData = line.Split(new[] { "		" }, StringSplitOptions.RemoveEmptyEntries);
 
-                        for (int i = 0; i < lineData.Length; i++)
+                        for (var i = 0; i < lineData.Length; i++)
                         {
-                            string data = lineData[i].Trim('\"');
+                            var data = lineData[i].Trim('\"');
 
                             if (data.Equals("appID"))
                             {
@@ -227,7 +227,7 @@
                             else if (data.Equals("installdir"))
                             {
                                 i++;
-                                string str = lineData[i].Trim('\"').Replace("\\\\", "\\");
+                                var str = lineData[i].Trim('\"').Replace("\\\\", "\\");
                                 if (!Path.IsPathRooted(str))
                                     str = Path.Combine(lib, "common", str);
                                 if (FilterAcfDir(str))
@@ -236,7 +236,7 @@
                             else if (data.Equals("appinstalldir"))
                             {
                                 i++;
-                                string str = lineData[i].Trim('\"');
+                                var str = lineData[i].Trim('\"');
                                 if (!Path.IsPathRooted(str))
                                     str = Path.Combine(lib, "common", str);
                                 if (FilterAcfDir(str))
@@ -262,7 +262,7 @@
                 return false;
 
             const string excludeString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-            char[] excludeCharList = excludeString.ToCharArray();
+            var excludeCharList = excludeString.ToCharArray();
 
             if (excludeCharList.Any(excludeChar => acfString.Equals(excludeChar + ":")))
             {
@@ -277,7 +277,7 @@
 
         public void MakeConfigFile()
         {
-            string configDir = BackupDir + "\\config.sbt";
+            var configDir = BackupDir + "\\config.sbt";
             var sb = new StringBuilder();
             var sw = new StringWriter(sb);
 
@@ -313,7 +313,7 @@
                         }
                         finally
                         {
-                            foreach (KeyValuePair<string, string> acfId in cfgFile.AcfIds)
+                            foreach (var acfId in cfgFile.AcfIds)
                             {
                                 writer.WritePropertyName(acfId.Key);
                                 writer.WriteValue(acfId.Value);
@@ -325,12 +325,12 @@
                 // Add new apps to the list
                 writer.WriteWhitespace(Environment.NewLine);
                 writer.WriteComment("From latest backup");
-                foreach (Job job in JobList)
+                foreach (var job in JobList)
                 {
                     if (!string.IsNullOrEmpty(job.AcfFiles) && job.Status == JobStatus.Waiting)
                     {
-                        string[] nameSplit = job.GetSteamDir().Split('\\');
-                        string name = nameSplit[nameSplit.Length - 1];
+                        var nameSplit = job.GetSteamDir().Split('\\');
+                        var name = nameSplit[nameSplit.Length - 1];
 
                         if (cfgFile.AcfIds == null || !cfgFile.AcfIds.ContainsKey(name))
                         {

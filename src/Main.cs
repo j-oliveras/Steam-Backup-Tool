@@ -106,7 +106,7 @@ namespace steamBackup
 
         private void btnBackup_Click(object sender, EventArgs e)
         {
-            Process[] pname = Process.GetProcessesByName("Steam");
+            var pname = Process.GetProcessesByName("Steam");
             if (pname.Length != 0 && Settings.CheckSteamRun)
             {
                 MessageBox.Show(Resources.BackupSteamRunningText, Resources.SteamRunningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -141,7 +141,7 @@ namespace steamBackup
 
         private void btnRestore_Click(object sender, EventArgs e)
         {
-            Process[] pname = Process.GetProcessesByName("Steam");
+            var pname = Process.GetProcessesByName("Steam");
             if (pname.Length != 0 && Settings.CheckSteamRun)
             {
                 MessageBox.Show(Resources.RestoreSteamRunningText, Resources.SteamRunningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -310,7 +310,7 @@ namespace steamBackup
 
             while (_task.JobsAnalysed < _task.JobCount && !_cancelJob)
             {
-                Job job = _task.GetNextJob();
+                var job = _task.GetNextJob();
                 if (job == null)
                     break;
 
@@ -363,7 +363,7 @@ namespace steamBackup
         // Used to update the UI at each tick
         private void timer_Tick(object sender, EventArgs e)
         {
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
                 if (_currJobs[i] != null)
                 {
@@ -408,7 +408,7 @@ namespace steamBackup
                     break;
             }
 
-            string name = job.Name;
+            var name = job.Name;
             if (job.Name.Length >= 28)
                 name = job.Name.Substring(0, 25) + "...";
 
@@ -434,21 +434,21 @@ namespace steamBackup
         {
             if (String.IsNullOrEmpty(job.AcfFiles)) return;
 
-            string[] acfId = job.AcfFiles.Split('|');
+            var acfId = job.AcfFiles.Split('|');
 
-            foreach (string id in acfId)
+            foreach (var id in acfId)
             {
-                string src = tbxBackupDir.Text + "\\acf\\appmanifest_" + id + ".acf";
-                string dst = job.AcfDir;
+                var src = tbxBackupDir.Text + "\\acf\\appmanifest_" + id + ".acf";
+                var dst = job.AcfDir;
 
                 if (!Directory.Exists(dst))
                     Directory.CreateDirectory(dst);
 
                 var fi = new FileInfo(src);
-                StreamReader reader = fi.OpenText();
+                var reader = fi.OpenText();
 
-                string acf = reader.ReadToEnd();
-                string gameCommonFolder = job.AcfDir + "common\\";
+                var acf = reader.ReadToEnd();
+                var gameCommonFolder = job.AcfDir + "common\\";
                 acf = acf.Replace("|DIRECTORY-STD|", gameCommonFolder);
                 acf = acf.Replace("|DIRECTORY-LOWER|", gameCommonFolder.ToLower());
                 acf = acf.Replace("|DIRECTORY-ESCSLASH-LOWER|", gameCommonFolder.ToLower().Replace("\\", "\\\\"));
@@ -521,7 +521,7 @@ namespace steamBackup
                 _pauseJob = false;
                 btnPause.Visible = false;
 
-                for (int i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                 {
                     if (_currJobs[i] != null)
                         _currJobs[i].Status = JobStatus.Canceled;
@@ -542,7 +542,7 @@ namespace steamBackup
                 _pauseJob = false;
                 btnPause.Text = Resources.PauseText;
 
-                for (int i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                 {
                     if (_currJobs[i] != null)
                         _currJobs[i].Status = JobStatus.Working;
@@ -553,7 +553,7 @@ namespace steamBackup
                 _pauseJob = true;
                 btnPause.Text = Resources.ResumeText;
 
-                for (int i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                 {
                     if (_currJobs[i] != null)
                         _currJobs[i].Status = JobStatus.Paused;
@@ -568,7 +568,7 @@ namespace steamBackup
 
             try
             {
-                RegistryKey key = Registry.CurrentUser.OpenSubKey(keyStr, false);
+                var key = Registry.CurrentUser.OpenSubKey(keyStr, false);
                 if (key != null)
                     tbxSteamDir.Text = Utilities.GetFileSystemCasing((string) key.GetValue("SteamPath"));
                 else
@@ -609,13 +609,13 @@ namespace steamBackup
             if (Size.Width != 400)
             {
                 listView.Items.Clear();
-                int i = 0;
+                var i = 0;
 
                 listView.BeginUpdate();
-                foreach (Job job in _task.JobList)
+                foreach (var job in _task.JobList)
                 {
                     i++;
-                    ListViewItem listItem = listView.Items.Add(i.ToString(CultureInfo.InvariantCulture));
+                    var listItem = listView.Items.Add(i.ToString(CultureInfo.InvariantCulture));
                     listItem.SubItems.Add(job.Name);
                     listItem.SubItems.Add("");
                     listItem.SubItems.Add(job.Status.ToString());
