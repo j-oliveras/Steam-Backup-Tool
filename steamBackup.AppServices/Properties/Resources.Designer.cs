@@ -106,6 +106,24 @@ namespace steamBackup.AppServices.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Finding Files....
+        /// </summary>
+        public static string CompressionFindingFiles {
+            get {
+                return ResourceManager.GetString("CompressionFindingFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jobs total: {0} | Compressing: {1} | Pending: {2} | Finished: {3} | Skipped: {4}.
+        /// </summary>
+        public static string ConsoleCompressionStatus {
+            get {
+                return ResourceManager.GetString("ConsoleCompressionStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Listed below are the errors for a backup or restore.
         ///
         ///Please try running the backup process again making sure that there are no programs accessing the files being backed up (e.g. Steam).

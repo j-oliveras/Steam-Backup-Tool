@@ -182,14 +182,14 @@ namespace steamBackupCLI
             ConsoleWidth = Console.BufferWidth;
             StatusLine = Console.CursorTop;
 
-            InstanceLines.Add(StatusLine + 2);
+            InstanceLines.Add(StatusLine + 4);
             RegisteredInstances.Add(-1);
 
             if (!_useLzma2)
             {
                 for (var i = 1; i < _numThreads; i++)
                 {
-                    InstanceLines.Add(StatusLine + 2 + (i * 3));
+                    InstanceLines.Add(StatusLine + 4 + (i * 3));
                     RegisteredInstances.Add(-1);
                 }
             }
@@ -238,6 +238,9 @@ namespace steamBackupCLI
 
             var procList = BupTask.JobList.FindAll(job => job.Status == JobStatus.Waiting);
 
+            var statusTimer = new Timer(2500) { AutoReset = true };
+            statusTimer.Elapsed += (sender, args) => UpdateStats();
+
             foreach (var job in procList)
             {
                 var lJob = job;
@@ -248,7 +251,9 @@ namespace steamBackupCLI
                     var tId = Thread.CurrentThread.ManagedThreadId;
                     RegisterInstance(tId);
 
-                    WriteConsole(tId, jobId, lJob.Name, 0, "Finding Files...", " ");
+                    lJob.Status = JobStatus.Working;
+
+                    WriteConsole(tId, jobId, lJob.Name, 0, Resources.CompressionFindingFiles, " ");
 
                     var timer = new Timer(1000) {AutoReset = true, Enabled = true};
                     timer.Elapsed += (sender, args) =>
@@ -269,18 +274,47 @@ namespace steamBackupCLI
 
                     WriteConsole(tId, -1, string.Empty, 0, string.Empty, string.Empty);
                     UnRegisterInstance(tId);
+
+                    UpdateStats();
                 }, cts.Token);
 
                 tasks.Add(t);
             }
 
+            statusTimer.Start();
             Task.WaitAll(tasks.ToArray());
+            statusTimer.Stop();
+        }
+
+        private static void UpdateStats()
+        {
+            int skippedCount;
+            int waitingCount;
+            int finishedCount;
+            int totalCount;
+            int compressingCount;
+
+            lock (BupTask)
+            {
+                totalCount = BupTask.JobCount;
+                skippedCount = BupTask.JobsToSkipCount;
+                waitingCount = BupTask.JobList.FindAll(job => job.Status == JobStatus.Waiting).Count;
+                finishedCount = BupTask.JobList.FindAll(job => job.Status == JobStatus.Finished).Count;
+                compressingCount = BupTask.JobList.FindAll(job => job.Status == JobStatus.Working).Count;
+            }
+
+            lock (Console.Out)
+            {
+                Console.SetCursorPosition(0, StatusLine + 2);
+                Console.Write(Resources.ConsoleCompressionStatus.PadRight(ConsoleWidth), totalCount, compressingCount, waitingCount, finishedCount, skippedCount);
+            }
         }
 
         private static void WriteConsole(int instanceId, int jobId, string jobName, byte progress, string file, string eta)
         {
             int instanceLine;
             int instance;
+            int lastInstanceLine;
 
             lock (RegisteredInstances)
             {
@@ -290,12 +324,13 @@ namespace steamBackupCLI
             lock (InstanceLines)
             {
                 instanceLine = InstanceLines[instance];
+                lastInstanceLine = InstanceLines.Last() + 3;
             }
 
             lock (Console.Out)
             {
                 Console.SetCursorPosition(0, instanceLine);
-                var restWidth = ConsoleWidth - 7;
+                var restWidth = ConsoleWidth - 9;
                 var shorted = string.Empty;
 
                 if (jobId != -1)
@@ -303,7 +338,7 @@ namespace steamBackupCLI
                     shorted = jobName.Substring(0, jobName.Length > restWidth ? restWidth - 3 : jobName.Length);
                     shorted = shorted.Length < jobName.Length ? shorted + "..." : shorted;
                     shorted = shorted.Length < restWidth ? shorted.PadRight(restWidth) : shorted;
-                    Console.Write(@"#{0,4}: {1}", jobId, shorted);
+                    Console.Write(@" #{0,4}: {1}", jobId, shorted);
                 }
                 else
                 {
@@ -313,19 +348,21 @@ namespace steamBackupCLI
                 shorted = string.Empty;
 
                 Console.SetCursorPosition(0, instanceLine + 1);
-                restWidth = ConsoleWidth - eta.Length - 10;
+                restWidth = ConsoleWidth - eta.Length - 12;
                 
                 if (jobId != -1)
                 {
                     shorted = file.Substring(0, file.Length > restWidth ? restWidth - 3 : file.Length);
                     shorted = shorted.Length < file.Length ? shorted + "..." : shorted;
                     shorted = shorted.Length < restWidth ? shorted.PadRight(restWidth) : shorted;
-                    Console.Write(@"{0,3}% | {1} | {2}", progress, shorted, eta);
+                    Console.Write(@" {0,3}% | {1} | {2}", progress, shorted, eta);
                 }
                 else
                 {
                     Console.Write(@"{0}", shorted.PadRight(ConsoleWidth));
                 }
+
+                Console.SetCursorPosition(0, lastInstanceLine);
             }
         }
 

@@ -212,4 +212,10 @@ Please browse for it manually.</value>
   <data name="BackupFinished" xml:space="preserve">
     <value>Backup finished!</value>
   </data>
+  <data name="CompressionFindingFiles" xml:space="preserve">
+    <value>Finding Files...</value>
+  </data>
+  <data name="ConsoleCompressionStatus" xml:space="preserve">
+    <value>Jobs total: {0} | Compressing: {1} | Pending: {2} | Finished: {3} | Skipped: {4}</value>
+  </data>
 </root>
