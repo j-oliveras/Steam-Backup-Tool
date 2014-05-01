@@ -206,11 +206,11 @@ namespace steamBackupCLI
 
             BupTask.SetCompMethod(_useLzma2);
             BupTask.SetCompLevel(_compLevel);
-            
-            BupTask.ThreadCount = _numThreads;
 
             if (_useLzma2)
-                Settings.Lzma2Threads = _numThreads;
+                BupTask.SetLzma2Threads(_numThreads);
+            else
+                BupTask.ThreadCount = _numThreads;
 
             if (_updateBackup)
                 BupTask.SetEnableUpd(true);

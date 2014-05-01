@@ -18,6 +18,7 @@
 
         protected int CompLevel;
         protected bool UseLzma2Compression;
+        protected int Lzma2Threads;
 
         public int GetCompLevel()
         {
@@ -69,6 +70,16 @@
             foreach (var bJob in JobList.Cast<BackupJob>())
             {
                 bJob.SetLzma2Compression(UseLzma2Compression);
+            }
+        }
+
+        public void SetLzma2Threads(int threads)
+        {
+            Lzma2Threads = threads;
+
+            foreach (var bJob in JobList.Cast<BackupJob>())
+            {
+                bJob.SetLzma2Threads(threads);
             }
         }
 

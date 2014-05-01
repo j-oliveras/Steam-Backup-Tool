@@ -13,6 +13,7 @@
         private bool _compressionLzma2;
         private int _compLevel = 5;
         private DateTime _compStarted;
+        private int _lzma2Threads;
 
         public BackupJob()
         {
@@ -41,14 +42,17 @@
                     libPath = Path.Combine(libPath, "rsc", "7z.dll");
                     _wrapper = new SevenZipWrapper(libPath, DirBackup, false);
                 }
+
                 _wrapper.Compressing += Working;
                 _wrapper.FileCompressionStarted += Started;
                 _wrapper.CompressionFinished += Finished;
+
                 if (_compressionLzma2)
                 {
                     _wrapper.UseLzma2Compression = true;
-                    _wrapper.MultithreadingNumThreads = Settings.Lzma2Threads;
+                    _wrapper.MultithreadingNumThreads = _lzma2Threads;
                 }
+
                 int compressionLevel;
                 switch (_compLevel)
                 {
@@ -68,6 +72,7 @@
                         compressionLevel = _compLevel;
                         break;
                 }
+
                 _wrapper.CompressionLevel = compressionLevel;
                 _wrapper.UseMultithreading = true;
 
@@ -155,5 +160,9 @@
             _compressionLzma2 = lzma2Compression;
         }
 
+        public void SetLzma2Threads(int threads)
+        {
+            _lzma2Threads = threads;
+        }
     }
 }

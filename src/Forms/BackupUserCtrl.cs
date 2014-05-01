@@ -192,6 +192,9 @@
         {
             BupTask.ThreadCount = tbarThread.Value;
 
+            if (cBoxLzma2.Checked)
+                BupTask.SetLzma2Threads(tbarThread.Value);
+
             ThreadText();
 
             RamUsage();
@@ -346,6 +349,8 @@
                 tbarThread.Value = numThreads;
                 BupTask.ThreadCount = numThreads;
 
+                BupTask.SetLzma2Threads(numThreads);
+
                 tbarThreadLbl.Text = Resources.ThreadsCountTooltip;
 
                 cBoxUnlockThreads.Visible = true;
@@ -382,6 +387,8 @@
                 var numThreads = Math.Min(tbarThread.Maximum, BupTask.ThreadCount);
                 tbarThread.Value = numThreads;
                 BupTask.ThreadCount = numThreads;
+
+                BupTask.SetLzma2Threads(numThreads);
 
                 ThreadText();
                 RamUsage();
