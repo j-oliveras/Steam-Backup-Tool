@@ -35,40 +35,39 @@
                 infoBox.Text = Resources.ToolUpdateDownloadFail;
                 return;
             }
-            else
-            {
-                try
-                {
-                    while (data.Read())
-                    {
-                        if (data.Value == null) continue;
 
-                        switch (data.Value.ToString())
-                        {
-                            case "name":
-                                data.Read();
-                                _updName = data.Value.ToString();
-                                break;
-                            case "version":
-                                data.Read();
-                                _updVersion = data.Value.ToString();
-                                break;
-                            case "url":
-                                data.Read();
-                                _updUrl = data.Value.ToString();
-                                break;
-                            case "changelist":
-                                data.Read();
-                                _updChangeList = data.Value.ToString();
-                                break;
-                        }
+            try
+            {
+                while (data.Read())
+                {
+                    if (data.Value == null) continue;
+
+                    switch (data.Value.ToString())
+                    {
+                        case "name":
+                            data.Read();
+                            _updName = data.Value.ToString();
+                            break;
+                        case "version":
+                            data.Read();
+                            _updVersion = data.Value.ToString();
+                            break;
+                        case "url":
+                            data.Read();
+                            _updUrl = data.Value.ToString();
+                            break;
+                        case "changelist":
+                            data.Read();
+                            _updChangeList = data.Value.ToString();
+                            break;
                     }
                 }
-                catch
-                {
-                    infoBox.Text = Resources.ToolUpdateBadJson;
-                    return;
-                }
+            }
+            catch
+            {
+                infoBox.Text = Resources.ToolUpdateBadJson;
+                return;
+            }
                 
             if (thisVer.Equals(_updVersion))
             {
@@ -78,8 +77,6 @@
             {
                 infoBox.Text = "Update available: " + _updName + "\n\n" + _updChangeList + "\n" + Resources.ChangeListLegend;
                 btnUpdate.Enabled = true;
-            }
-
             }
         }
 

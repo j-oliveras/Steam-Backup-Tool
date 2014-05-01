@@ -94,8 +94,8 @@ namespace steamBackupCLI
             if (taskWasPreviouslyQueued)
                 // Try to run the task. 
                 return TryDequeue(task) && TryExecuteTask(task);
-            else
-                return TryExecuteTask(task);
+
+            return TryExecuteTask(task);
         }
 
         // Attempt to remove a previously scheduled task from the scheduler. 
