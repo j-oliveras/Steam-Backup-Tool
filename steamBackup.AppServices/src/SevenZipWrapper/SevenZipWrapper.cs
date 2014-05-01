@@ -1,6 +1,7 @@
 ﻿namespace steamBackup.AppServices.SevenZipWrapper
 {
     using System;
+    using System.Globalization;
     using System.IO;
     using System.Runtime.InteropServices;
 
@@ -248,6 +249,9 @@
 
         public void CompressFiles(string pathPrefix, string[] filePaths)
         {
+            if (!pathPrefix.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
+                pathPrefix += Path.DirectorySeparatorChar;
+
             CompressFileList(_libHandle, pathPrefix, filePaths, filePaths.Length);
             if (CompressionFinished != null)
             {
