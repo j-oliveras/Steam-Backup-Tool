@@ -146,6 +146,7 @@
                     remainingTime.ToString("HH:mm:ss"));
 
                 string speedResult;
+
                 if (bytesPerSec < 10485760f /* 10 MB/s */)
                     speedResult = string.Format(shortStr ? Resources.SpeedShortKBFormatStr : Resources.SpeedKBFormatStr, bytesPerSec / 1024f, etaResult);
                 else

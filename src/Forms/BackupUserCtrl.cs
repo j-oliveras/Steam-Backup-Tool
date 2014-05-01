@@ -41,10 +41,8 @@
             
             if (Settings.UseLzma2)
             {
-                if (cBoxUnlockThreads.Checked)
-                    tbarThread.Maximum = 8;
-                else
-                    tbarThread.Maximum = Math.Min(8, Environment.ProcessorCount);
+                tbarThread.Maximum = cBoxUnlockThreads.Checked ? 8 : Math.Min(8, Environment.ProcessorCount);
+
                 tbarThread.Value = Settings.Lzma2Threads;
                 BupTask.ThreadCount = Settings.Lzma2Threads;
                 cBoxUnlockThreads.Visible = true;
@@ -255,10 +253,7 @@
 
         private void cBoxDelBup_CheckedChanged(object sender, EventArgs e)
         {
-            if (cBoxDelBup.Checked)
-                cBoxDelBup.ForeColor = Color.Red;
-            else
-                cBoxDelBup.ForeColor = Color.Black;
+            cBoxDelBup.ForeColor = cBoxDelBup.Checked ? Color.Red : Color.Black;
 
             BupTask.DeleteAll = cBoxDelBup.Checked;
         }
@@ -297,10 +292,7 @@
 
         private void lblThread_MouseHover(object sender, EventArgs e)
         {
-            if (cBoxLzma2.Checked) 
-                infoBox.Rtf = Resources.ThreadsLzma2Tooltip;
-            else 
-                infoBox.Rtf = Resources.ThreadsLzmaTooltip;
+            infoBox.Rtf = cBoxLzma2.Checked ? Resources.ThreadsLzma2Tooltip : Resources.ThreadsLzmaTooltip;
         }
 
         private void chkList_MouseHover(object sender, EventArgs e)
@@ -346,10 +338,7 @@
             {
                 BupTask.SetCompMethod(true);
 
-                if (cBoxUnlockThreads.Checked)
-                    tbarThread.Maximum = 8;
-                else
-                    tbarThread.Maximum = Math.Min(8, Environment.ProcessorCount);
+                tbarThread.Maximum = cBoxUnlockThreads.Checked ? 8 : Math.Min(8, Environment.ProcessorCount);
 
                 var numThreads = Math.Min(tbarThread.Maximum, tbarThread.Value);
                 tbarThread.Value = numThreads;
