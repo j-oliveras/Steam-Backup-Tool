@@ -253,22 +253,22 @@ namespace steamBackup
                 this.Size = new Size(400, 642);
                 lbl3.Text = string.Format(Resources.VersionStr, _versionNum);
             }
-            if (_task.ThreadCount >= 4 && !Settings.UseLzma2)
-            {
-                _threadList[3] = new Thread(() => DoWork(3))
-                {
-                    Priority = ThreadPriority.Lowest,
-                    Name = string.Format(Resources.JobThreadText, 4),
-                    IsBackground = true
-                };
-                _threadList[3].Start();
 
-                lbl3.Text = string.Format(Resources.InstanceNumText, 4);
-                lbl3Info.Text = Resources.WaitingText;
-                lbl3SpeedEta.Text = string.Empty;
-                this.Size = new Size(400, 722);
-                lbl4.Text = string.Format(Resources.VersionStr, _versionNum);
-            }
+            if (_task.ThreadCount < 4 || Settings.UseLzma2) return;
+
+            _threadList[3] = new Thread(() => DoWork(3))
+            {
+                Priority = ThreadPriority.Lowest,
+                Name = string.Format(Resources.JobThreadText, 4),
+                IsBackground = true
+            };
+            _threadList[3].Start();
+
+            lbl3.Text = string.Format(Resources.InstanceNumText, 4);
+            lbl3Info.Text = Resources.WaitingText;
+            lbl3SpeedEta.Text = string.Empty;
+            this.Size = new Size(400, 722);
+            lbl4.Text = string.Format(Resources.VersionStr, _versionNum);
         }
 
         private void DoWork(int thread)
@@ -606,52 +606,51 @@ namespace steamBackup
 
         private void UpdateList()
         {
-            if (Size.Width != 400)
+            if (Size.Width == 400) return;
+
+            listView.Items.Clear();
+            var i = 0;
+
+            listView.BeginUpdate();
+            foreach (var job in _task.JobList)
             {
-                listView.Items.Clear();
-                var i = 0;
+                i++;
+                var listItem = listView.Items.Add(i.ToString(CultureInfo.InvariantCulture));
+                listItem.SubItems.Add(job.Name);
+                listItem.SubItems.Add("");
+                listItem.SubItems.Add(job.Status.ToString());
+                listItem.SubItems.Add("");
+                listItem.SubItems.Add(job.AcfFiles);
 
-                listView.BeginUpdate();
-                foreach (var job in _task.JobList)
+                switch (job.Status)
                 {
-                    i++;
-                    var listItem = listView.Items.Add(i.ToString(CultureInfo.InvariantCulture));
-                    listItem.SubItems.Add(job.Name);
-                    listItem.SubItems.Add("");
-                    listItem.SubItems.Add(job.Status.ToString());
-                    listItem.SubItems.Add("");
-                    listItem.SubItems.Add(job.AcfFiles);
-
-                    switch (job.Status)
-                    {
-                        case JobStatus.Paused:
-                            listItem.ForeColor = Color.Blue;
-                            break;
-                        case JobStatus.Waiting:
-                            listItem.ForeColor = Color.Green;
-                            break;
-                        case JobStatus.Working:
-                            listItem.ForeColor = Color.BlueViolet;
-                            break;
-                        case JobStatus.Skipped:
-                            listItem.ForeColor = Color.DarkOrange;
-                            break;
-                        case JobStatus.Error:
-                            listItem.ForeColor = Color.Red;
-                            break;
-                        case JobStatus.Canceled:
-                            listItem.ForeColor = Color.Orange;
-                            break;
-                        case JobStatus.Finished:
-                            listItem.ForeColor = Color.DarkBlue;
-                            break;
-                        default:
-                            listItem.ForeColor = Color.Black;
-                            break;
-                    }
+                    case JobStatus.Paused:
+                        listItem.ForeColor = Color.Blue;
+                        break;
+                    case JobStatus.Waiting:
+                        listItem.ForeColor = Color.Green;
+                        break;
+                    case JobStatus.Working:
+                        listItem.ForeColor = Color.BlueViolet;
+                        break;
+                    case JobStatus.Skipped:
+                        listItem.ForeColor = Color.DarkOrange;
+                        break;
+                    case JobStatus.Error:
+                        listItem.ForeColor = Color.Red;
+                        break;
+                    case JobStatus.Canceled:
+                        listItem.ForeColor = Color.Orange;
+                        break;
+                    case JobStatus.Finished:
+                        listItem.ForeColor = Color.DarkBlue;
+                        break;
+                    default:
+                        listItem.ForeColor = Color.Black;
+                        break;
                 }
-                listView.EndUpdate();
             }
+            listView.EndUpdate();
         }
 
         private void title_Click(object sender, EventArgs e)

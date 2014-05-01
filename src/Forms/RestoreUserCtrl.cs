@@ -145,16 +145,15 @@
         {
             var job = (Job)chkList.Items[e.Index];
 
-            if (job != null)
+            if (job == null) return;
+
+            if (e.NewValue == CheckState.Checked)
             {
-                if (e.NewValue == CheckState.Checked)
-                {
-                    RstTask.EnableJob(job);
-                }
-                else
-                {
-                    RstTask.DisableJob(job);
-                }
+                RstTask.EnableJob(job);
+            }
+            else
+            {
+                RstTask.DisableJob(job);
             }
         }
 

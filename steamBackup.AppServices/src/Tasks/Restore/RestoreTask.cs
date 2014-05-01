@@ -69,11 +69,10 @@
 
                                 var foundJob = JobList.Find(job => job.Name.Equals(name));
 
-                                if (foundJob != null)
-                                {
-                                    foundJob.AcfFiles = ids;
-                                    foundJob.AcfDir = SteamDir + "\\" + Utilities.GetSteamAppsFolder(SteamDir) + "\\";
-                                }
+                                if (foundJob == null) continue;
+
+                                foundJob.AcfFiles = ids;
+                                foundJob.AcfDir = SteamDir + "\\" + Utilities.GetSteamAppsFolder(SteamDir) + "\\";
                             }
                         }
                     }

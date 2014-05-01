@@ -39,11 +39,10 @@ namespace steamBackupCLI
             lock (_tasks)
             {
                 _tasks.AddLast(task);
-                if (_delegatesQueuedOrRunning < _maxDegreeOfParallelism)
-                {
-                    ++_delegatesQueuedOrRunning;
-                    NotifyThreadPoolOfPendingWork();
-                }
+                if (_delegatesQueuedOrRunning >= _maxDegreeOfParallelism) return;
+
+                ++_delegatesQueuedOrRunning;
+                NotifyThreadPoolOfPendingWork();
             }
         }
 

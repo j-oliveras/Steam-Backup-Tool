@@ -71,13 +71,12 @@
                 {
                     var data = lineData[i].Trim('\"');
 
-                    if (data.Contains("BaseInstallFolder_"))
-                    {
-                        i++;
-                        var dir = lineData[i].Trim('\"').Replace("\\\\", "\\") + "\\SteamApps\\";
-                        if (!String.IsNullOrEmpty(dir) && Directory.Exists(dir))
-                            libraryLocation += "|" + dir;
-                    }
+                    if (!data.Contains("BaseInstallFolder_")) continue;
+
+                    i++;
+                    var dir = lineData[i].Trim('\"').Replace("\\\\", "\\") + "\\SteamApps\\";
+                    if (!String.IsNullOrEmpty(dir) && Directory.Exists(dir))
+                        libraryLocation += "|" + dir;
                 }
             }
 
@@ -108,30 +107,29 @@
 
         public static void CopyAcfToBackup(Job job, string backupDir)
         {
-            if (!String.IsNullOrEmpty(job.AcfFiles))
+            if (String.IsNullOrEmpty(job.AcfFiles)) return;
+
+            var acfId = job.AcfFiles.Split('|');
+
+            foreach(var id in acfId)
             {
-                var acfId = job.AcfFiles.Split('|');
+                var src = job.AcfDir + "\\appmanifest_" + id + ".acf";
+                var dst = backupDir + "\\acf";
 
-                foreach(var id in acfId)
-                {
-                    var src = job.AcfDir + "\\appmanifest_" + id + ".acf";
-                    var dst = backupDir + "\\acf";
+                if (!Directory.Exists(dst))
+                    Directory.CreateDirectory(dst);
 
-                    if (!Directory.Exists(dst))
-                        Directory.CreateDirectory(dst);
+                var fi = new FileInfo(src);
+                var reader = fi.OpenText();
 
-                    var fi = new FileInfo(src);
-                    var reader = fi.OpenText();
+                var acf = reader.ReadToEnd();
+                var gameCommonFolder = UpDirLvl(job.GetSteamDir());
+                acf = acf.Replace(gameCommonFolder, "|DIRECTORY-STD|");
+                acf = acf.Replace(gameCommonFolder.ToLower(), "|DIRECTORY-LOWER|");
+                acf = acf.Replace(gameCommonFolder.ToLower().Replace("\\", "\\\\"), "|DIRECTORY-ESCSLASH-LOWER|");
 
-                    var acf = reader.ReadToEnd();
-                    var gameCommonFolder = UpDirLvl(job.GetSteamDir());
-                    acf = acf.Replace(gameCommonFolder, "|DIRECTORY-STD|");
-                    acf = acf.Replace(gameCommonFolder.ToLower(), "|DIRECTORY-LOWER|");
-                    acf = acf.Replace(gameCommonFolder.ToLower().Replace("\\", "\\\\"), "|DIRECTORY-ESCSLASH-LOWER|");
-
-                    File.WriteAllText(dst + "\\appmanifest_" + id + ".acf", acf);
-                    reader.Close();
-                }
+                File.WriteAllText(dst + "\\appmanifest_" + id + ".acf", acf);
+                reader.Close();
             }
         }
     }

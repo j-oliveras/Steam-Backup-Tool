@@ -149,13 +149,12 @@
                 _fileNameCallback = value =>
                 {
                     var fPath = Path.GetFileName(value);
-                    if (FileExtractionStarted != null)
-                    {
-                        var ev = new FileNameEventArgs(fPath, (byte)_progress);
-                        FileExtractionStarted(this, ev);
-                        if (ev.Cancel)
-                            Cancel(false);
-                    }
+                    if (FileExtractionStarted == null) return;
+
+                    var ev = new FileNameEventArgs(fPath, (byte)_progress);
+                    FileExtractionStarted(this, ev);
+                    if (ev.Cancel)
+                        Cancel(false);
                 };
                 _progressCallback = value =>
                 {
@@ -181,13 +180,12 @@
                 _fileNameCallback = value =>
                 {
                     var fPath = Path.GetFileName(value);
-                    if (FileCompressionStarted != null)
-                    {
-                        var ev = new FileNameEventArgs(fPath, (byte) _progress);
-                        FileCompressionStarted(this, ev);
-                        if (ev.Cancel)
-                            Cancel(false);
-                    }
+                    if (FileCompressionStarted == null) return;
+
+                    var ev = new FileNameEventArgs(fPath, (byte) _progress);
+                    FileCompressionStarted(this, ev);
+                    if (ev.Cancel)
+                        Cancel(false);
                 };
                 _progressCallback = value =>
                 {

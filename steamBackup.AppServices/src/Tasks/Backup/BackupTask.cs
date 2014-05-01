@@ -155,41 +155,40 @@
 
             foreach (var lib in libraries)
             {
-                if (Directory.Exists(lib + "common\\"))
-                {
-                    var acfFiles = new Dictionary<string, string>();
-                    BuildAcfFileList(acfFiles, lib);
+                if (!Directory.Exists(lib + "common\\")) continue;
+
+                var acfFiles = new Dictionary<string, string>();
+                BuildAcfFileList(acfFiles, lib);
 
                 
-                    var folders = Directory.GetDirectories(lib + "common\\");
-                    foreach (var folder in folders)
-                    {
+                var folders = Directory.GetDirectories(lib + "common\\");
+                foreach (var folder in folders)
+                {
                         
-                        var splits = folder.Split('\\');
-                        var name = splits[splits.Length - 1];
+                    var splits = folder.Split('\\');
+                    var name = splits[splits.Length - 1];
 
-                        var textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
+                    var textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
 
-                        Job job = new BackupJob();
+                    Job job = new BackupJob();
 
-                        job.Name = textInfo.ToTitleCase(name);
-                        job.SetSteamDir(folder);
-                        job.SetBackupDir(BackupDir + "\\common\\" + name + ".7z");
-                        job.Status = JobStatus.Waiting;
-                        job.AcfDir = lib;
+                    job.Name = textInfo.ToTitleCase(name);
+                    job.SetSteamDir(folder);
+                    job.SetBackupDir(BackupDir + "\\common\\" + name + ".7z");
+                    job.Status = JobStatus.Waiting;
+                    job.AcfDir = lib;
 
-                        if (acfFiles.ContainsKey(folder))
-                        {
-                            job.AcfFiles = acfFiles[folder];
-                            acfFiles.Remove(folder);
-                        }
-                        else
-                        {
-                            job.AcfFiles = "";
-                        }
-
-                        JobList.Add(job);
+                    if (acfFiles.ContainsKey(folder))
+                    {
+                        job.AcfFiles = acfFiles[folder];
+                        acfFiles.Remove(folder);
                     }
+                    else
+                    {
+                        job.AcfFiles = "";
+                    }
+
+                    JobList.Add(job);
                 }
             }
         }
@@ -200,59 +199,56 @@
 
             foreach (var file in acfFileList)
             {
-                
-                if (!String.IsNullOrEmpty(file))
+                if (String.IsNullOrEmpty(file)) continue;
+
+                var dir = "";
+                var appId = "";
+
+                var fi = new FileInfo(file);
+                var reader = fi.OpenText();
+
+                string line;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    var dir = "";
-                    var appId = "";
+                    line = line.Trim();
+                    var lineData = line.Split(new[] { "		" }, StringSplitOptions.RemoveEmptyEntries);
 
-                    var fi = new FileInfo(file);
-                    var reader = fi.OpenText();
-
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
+                    for (var i = 0; i < lineData.Length; i++)
                     {
-                        line = line.Trim();
-                        var lineData = line.Split(new[] { "		" }, StringSplitOptions.RemoveEmptyEntries);
+                        var data = lineData[i].Trim('\"');
 
-                        for (var i = 0; i < lineData.Length; i++)
+                        if (data.Equals("appID"))
                         {
-                            var data = lineData[i].Trim('\"');
-
-                            if (data.Equals("appID"))
-                            {
-                                i++;
-                                appId = lineData[i].Trim('\"');
-                            }
-                            else if (data.Equals("installdir"))
-                            {
-                                i++;
-                                var str = lineData[i].Trim('\"').Replace("\\\\", "\\");
-                                if (!Path.IsPathRooted(str))
-                                    str = Path.Combine(lib, "common", str);
-                                if (FilterAcfDir(str))
-                                    dir = Utilities.GetFileSystemCasing(str);
-                            }
-                            else if (data.Equals("appinstalldir"))
-                            {
-                                i++;
-                                var str = lineData[i].Trim('\"');
-                                if (!Path.IsPathRooted(str))
-                                    str = Path.Combine(lib, "common", str);
-                                if (FilterAcfDir(str))
-                                    dir = Utilities.GetFileSystemCasing(str);
-                            }
+                            i++;
+                            appId = lineData[i].Trim('\"');
+                        }
+                        else if (data.Equals("installdir"))
+                        {
+                            i++;
+                            var str = lineData[i].Trim('\"').Replace("\\\\", "\\");
+                            if (!Path.IsPathRooted(str))
+                                str = Path.Combine(lib, "common", str);
+                            if (FilterAcfDir(str))
+                                dir = Utilities.GetFileSystemCasing(str);
+                        }
+                        else if (data.Equals("appinstalldir"))
+                        {
+                            i++;
+                            var str = lineData[i].Trim('\"');
+                            if (!Path.IsPathRooted(str))
+                                str = Path.Combine(lib, "common", str);
+                            if (FilterAcfDir(str))
+                                dir = Utilities.GetFileSystemCasing(str);
                         }
                     }
-
-                    if (!String.IsNullOrEmpty(dir) && !String.IsNullOrEmpty(appId))
-                    {
-                        if (acfFiles.ContainsKey(dir))
-                            acfFiles[dir] += "|" + appId;
-                        else
-                            acfFiles.Add(dir, appId);
-                    }
                 }
+
+                if (String.IsNullOrEmpty(dir) || String.IsNullOrEmpty(appId)) continue;
+
+                if (acfFiles.ContainsKey(dir))
+                    acfFiles[dir] += "|" + appId;
+                else
+                    acfFiles.Add(dir, appId);
             }
         }
 
@@ -327,17 +323,15 @@
                 writer.WriteComment("From latest backup");
                 foreach (var job in JobList)
                 {
-                    if (!string.IsNullOrEmpty(job.AcfFiles) && job.Status == JobStatus.Waiting)
-                    {
-                        var nameSplit = job.GetSteamDir().Split('\\');
-                        var name = nameSplit[nameSplit.Length - 1];
+                    if (string.IsNullOrEmpty(job.AcfFiles) || job.Status != JobStatus.Waiting) continue;
 
-                        if (cfgFile.AcfIds == null || !cfgFile.AcfIds.ContainsKey(name))
-                        {
-                            writer.WritePropertyName(name);
-                            writer.WriteValue(job.AcfFiles);
-                        }
-                    }
+                    var nameSplit = job.GetSteamDir().Split('\\');
+                    var name = nameSplit[nameSplit.Length - 1];
+
+                    if (cfgFile.AcfIds != null && cfgFile.AcfIds.ContainsKey(name)) continue;
+
+                    writer.WritePropertyName(name);
+                    writer.WriteValue(job.AcfFiles);
                 }
                 writer.WriteEndObject();
                 writer.WriteEndObject();
