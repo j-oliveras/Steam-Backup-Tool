@@ -77,39 +77,34 @@
         public void SetEnableUpd(bool achivedOnly)
         {
             foreach (var job in JobList)
-            {  
-                if (job.Name.Equals(Settings.SourceEngineGames))
+            {
+                var isNewer = false;
+
+                if (File.Exists(job.GetBackupDir()))
+                {
+                    var achiveDate = new FileInfo(job.GetBackupDir()).LastWriteTimeUtc;
+                    var fileList = Directory.GetFiles(job.GetSteamDir(), "*.*", SearchOption.AllDirectories);
+
+                    if (
+                        fileList.Select(file => new FileInfo(file).LastWriteTimeUtc)
+                            .Any(fileDate => fileDate.CompareTo(achiveDate) > 0))
+                    {
+                        isNewer = true;
+                    }
+                }
+                else
+                {
+                    if (!achivedOnly)
+                        isNewer = true;
+                }
+
+                if (isNewer)
                 {
                     EnableJob(job);
                 }
                 else
                 {
-                    var isNewer = false;
-
-                    if (File.Exists(job.GetBackupDir()))
-                    {
-                        var achiveDate = new FileInfo(job.GetBackupDir()).LastWriteTimeUtc;
-                        var fileList = Directory.GetFiles(job.GetSteamDir(), "*.*", SearchOption.AllDirectories);
-
-                        if (fileList.Select(file => new FileInfo(file).LastWriteTimeUtc).Any(fileDate => fileDate.CompareTo(achiveDate) > 0))
-                        {
-                            isNewer = true;
-                        }
-                    }
-                    else
-                    {
-                        if (!achivedOnly)
-                            isNewer = true;
-                    }
-
-                    if (isNewer)
-                    {
-                        EnableJob(job);
-                    }
-                    else
-                    {
-                        DisableJob(job);
-                    }
+                    DisableJob(job);
                 }
             }
         }

@@ -80,19 +80,6 @@
             var textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
             foreach (var job in JobList)
                 job.Name = textInfo.ToTitleCase(job.Name);
-
-            //// if we are using v2 of the archiver add 'Source Games.7z'
-            //if (currentArchiveVer == 2 && File.Exists(backupDir + "\\Source Games.7z"))
-            //{
-            //    Job job = new RestoreJob();
-
-            //    job.setSteamDir(steamDir + "\\");
-            //    job.setBackupDir(backupDir + "\\Source Games.7z");
-            //    job.name = Settings.sourceEngineGames;
-            //    job.status = JobStatus.WAITING;
-
-            //    list.Insert(0, job);
-            //}
         }
 
         public override void Setup()

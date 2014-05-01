@@ -20,8 +20,6 @@
         public static bool Lzma2UnlockThreads = false;
         public static int Lzma2Threads = Math.Min(8, Environment.ProcessorCount);
 
-        public static string SourceEngineGames = " Old Source Engine Games";
-
         // Load Settings
         public static void Load()
         {

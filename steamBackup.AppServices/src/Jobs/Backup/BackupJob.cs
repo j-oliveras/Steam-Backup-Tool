@@ -32,32 +32,7 @@
         public override void Start()
         {
             _compStarted = DateTime.Now;
-            string[] fileList;
-            
-            if (Name.Equals(Settings.SourceEngineGames))
-            {                
-                var fileListBuilder = new List<string>();
-                
-                fileListBuilder.AddRange(Directory.GetFiles(DirSteam, "*.gcf", SearchOption.TopDirectoryOnly));
-                fileListBuilder.AddRange(Directory.GetFiles(DirSteam, "*.ncf", SearchOption.TopDirectoryOnly));
-
-                var folderList = Directory.GetDirectories(DirSteam, "*", SearchOption.TopDirectoryOnly);
-                foreach (var folder in folderList)
-                {
-                    if (!folder.Contains(@"\" + Utilities.GetSteamAppsFolder(DirSteam) + @"\common") &&
-                        !folder.Contains(@"\" + Utilities.GetSteamAppsFolder(DirSteam) + @"\downloading") &&
-                        !folder.Contains(@"\" + Utilities.GetSteamAppsFolder(DirSteam) + @"\temp"))
-                    {
-                        fileListBuilder.AddRange(Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories));
-                    }
-                }
-
-                fileList = fileListBuilder.ToArray();
-            }
-            else
-            {
-                fileList = Directory.GetFiles(DirSteam, "*.*", SearchOption.AllDirectories);
-            }
+            var fileList = Directory.GetFiles(DirSteam, "*.*", SearchOption.AllDirectories);
 
             try
             {
@@ -96,7 +71,7 @@
                 }
                 _wrapper.CompressionLevel = compressionLevel;
                 _wrapper.UseMultithreading = true;
-                
+
                 _wrapper.CompressFiles(Utilities.UpDirLvl(DirSteam), fileList);
                 _wrapper.Dispose(false);
             }

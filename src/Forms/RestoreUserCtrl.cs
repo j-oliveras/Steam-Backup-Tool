@@ -86,7 +86,7 @@
             if (chkList.SelectedItem == null) return;
 
             var job = (Job) chkList.SelectedItem;
-            if (string.IsNullOrEmpty(job.AcfFiles) || job.Name.Equals(Settings.SourceEngineGames))
+            if (string.IsNullOrEmpty(job.AcfFiles))
             {
                 dboxLibList.Enabled = false;
                 dboxLibList.SelectedItem = Utilities.UpDirLvl(job.GetSteamDir());
