@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Security;
+    using System.Text.RegularExpressions;
     using Microsoft.Win32;
     using Properties;
     using System;
@@ -58,25 +59,19 @@
                 Path.Combine(steamDir, GetSteamAppsFolder(steamDir))
             };
 
-            var fi = new FileInfo(Path.Combine(steamDir, SteamDirectory.Config, "config.vdf"));
-            var reader = fi.OpenText();
-            string line;
-            while ((line = reader.ReadLine()) != null)
+            using (var reader = new FileInfo(Path.Combine(steamDir, SteamDirectory.Config, "config.vdf")).OpenText())
             {
-                line = line.Trim();
-                var lineData = line.Split(new[] { "		" }, StringSplitOptions.RemoveEmptyEntries);
+                var content = reader.ReadToEnd();
+                var regEx = new Regex(@"^\s*?""BaseInstallFolder_\d*?""\s*?""([\w:\\]*?)""$",
+                                      RegexOptions.Multiline);
+                var matches = regEx.Matches(content);
 
-                for (var i = 0; i < lineData.Length; i++)
-                {
-                    var data = lineData[i].Trim('\"');
-
-                    if (!data.Contains("BaseInstallFolder_")) continue;
-
-                    i++;
-                    var dir = lineData[i].Trim('\"').Replace("\\\\", "\\") + "\\SteamApps\\";
-                    if (!String.IsNullOrEmpty(dir) && Directory.Exists(dir))
-                        libraries.Add(dir);
-                }
+                libraries.AddRange(from Match match in matches
+                                   where match.Success
+                                   select match.Groups[1].Value
+                                   into path
+                                   where !String.IsNullOrEmpty(path) && Directory.Exists(path)
+                                   select Path.GetFullPath(path));
             }
 
             return libraries;
