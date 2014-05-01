@@ -49,10 +49,7 @@
             if (FolderExists(steamDir , "steamapps"))
                 return "steamapps";
 
-            if (FolderExists(steamDir, "SteamApps"))
-                return "SteamApps";
-
-            return "ERROR";
+            return FolderExists(steamDir, "SteamApps") ? "SteamApps" : "ERROR";
         }
 
         public static string[] GetLibraries(string steamDir)
@@ -99,10 +96,7 @@
         public static bool IsSteamRunning()
         {
             var pname = Process.GetProcessesByName("Steam");
-            if (pname.Length != 0 && Settings.CheckSteamRun)
-                return true;
-
-            return false;
+            return pname.Length != 0 && Settings.CheckSteamRun;
         }
 
         public static void CopyAcfToBackup(Job job, string backupDir)

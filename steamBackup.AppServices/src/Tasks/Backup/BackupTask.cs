@@ -260,15 +260,7 @@
             const string excludeString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
             var excludeCharList = excludeString.ToCharArray();
 
-            if (excludeCharList.Any(excludeChar => acfString.Equals(excludeChar + ":")))
-            {
-                return false;
-            }
-
-            if (!Directory.Exists(acfString))
-                return false;
-
-            return true;
+            return !excludeCharList.Any(excludeChar => acfString.Equals(excludeChar + ":")) && Directory.Exists(acfString);
         }
 
         public void MakeConfigFile()

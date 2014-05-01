@@ -93,10 +93,7 @@ namespace steamBackupCLI
             // If the task was previously queued, remove it from the queue
             if (taskWasPreviouslyQueued)
                 // Try to run the task. 
-                if (TryDequeue(task))
-                    return TryExecuteTask(task);
-                else
-                    return false;
+                return TryDequeue(task) && TryExecuteTask(task);
             else
                 return TryExecuteTask(task);
         }

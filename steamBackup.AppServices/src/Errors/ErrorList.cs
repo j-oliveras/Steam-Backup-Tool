@@ -23,9 +23,7 @@
 
         static public bool HasErrors()
         {
-            if (MList.Count == 0)
-                return false;
-            return true;
+            return MList.Count != 0;
         }
 
         public new static string ToString()
