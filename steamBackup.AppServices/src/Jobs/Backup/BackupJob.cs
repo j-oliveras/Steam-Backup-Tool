@@ -4,7 +4,6 @@
     using steamBackup.AppServices.Properties;
     using steamBackup.AppServices.SevenZipWrapper;
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
 

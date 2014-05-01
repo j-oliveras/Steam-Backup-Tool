@@ -55,10 +55,8 @@
         {
             CompLevel = compressionLevel;
 
-            foreach (var job in JobList)
+            foreach (var bJob in JobList.Cast<BackupJob>())
             {
-                var bJob = (BackupJob)job;
-
                 bJob.SetCompression(compressionLevel);
             }
         }
@@ -67,9 +65,8 @@
         {
             UseLzma2Compression = useLzma2;
 
-            foreach (var job in JobList)
+            foreach (var bJob in JobList.Cast<BackupJob>())
             {
-                var bJob = (BackupJob) job;
                 bJob.SetLzma2Compression(UseLzma2Compression);
             }
         }
