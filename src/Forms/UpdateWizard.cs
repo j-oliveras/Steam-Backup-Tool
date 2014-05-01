@@ -11,10 +11,10 @@
     public partial class UpdateWizard : Form
     {
 
-        private string updName = @"N/A";
-        private string updVersion = @"N/A";
-        private string updUrl = @"N/A";
-        private string updChangeList = @"N/A";
+        private string _updName = @"N/A";
+        private string _updVersion = @"N/A";
+        private string _updUrl = @"N/A";
+        private string _updChangeList = @"N/A";
 
         public UpdateWizard()
         {
@@ -25,7 +25,7 @@
         {
             this.Refresh();
 
-            var data = getJsonFile(@"http://du-z.com/sbtRelease.json");
+            var data = GetJsonFile(@"http://du-z.com/sbtRelease.json");
 
             var thisVer = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
@@ -46,22 +46,22 @@
                             if (data.Value.ToString() == "name")
                             {
                                 data.Read();
-                                updName = data.Value.ToString();
+                                _updName = data.Value.ToString();
                             }
                             else if (data.Value.ToString() == "version")
                             {
                                 data.Read();
-                                updVersion = data.Value.ToString();
+                                _updVersion = data.Value.ToString();
                             }
                             else if (data.Value.ToString() == "url")
                             {
                                 data.Read();
-                                updUrl = data.Value.ToString();
+                                _updUrl = data.Value.ToString();
                             }
                             else if (data.Value.ToString() == "changelist")
                             {
                                 data.Read();
-                                updChangeList = data.Value.ToString();
+                                _updChangeList = data.Value.ToString();
                             }
                         }
                     }
@@ -72,20 +72,20 @@
                     return;
                 }
                 
-            if (thisVer.Equals(updVersion))
+            if (thisVer.Equals(_updVersion))
             {
                 infoBox.Text = Resources.ToolUpdateNoNewVersion;
             }
             else
             {
-                infoBox.Text = "Update available: " + updName + "\n\n" + updChangeList + "\n" + Resources.ChangeListLegend;
+                infoBox.Text = "Update available: " + _updName + "\n\n" + _updChangeList + "\n" + Resources.ChangeListLegend;
                 btnUpdate.Enabled = true;
             }
 
             }
         }
 
-        private JsonTextReader getJsonFile(string url)
+        private static JsonTextReader GetJsonFile(string url)
         {
             JsonTextReader reader = null;
             using (var webClient = new System.Net.WebClient())
@@ -117,7 +117,7 @@
             btnUpdate.Enabled = false;
             btnCancel.Enabled = false;
             
-            var DownloadLocation = Application.StartupPath + @"/rsc/update.7z";
+            var downloadLocation = Application.StartupPath + @"/rsc/update.7z";
 
             // Create a new WebClient instance.
             var myWebClient = new WebClient();
@@ -128,7 +128,7 @@
             // Download the Web resource and save it into the current filesystem folder.
             try
             {
-                myWebClient.DownloadFile(updUrl, DownloadLocation);
+                myWebClient.DownloadFile(_updUrl, downloadLocation);
             }
             catch
             {
