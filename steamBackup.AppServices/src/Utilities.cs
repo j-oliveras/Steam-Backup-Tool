@@ -71,7 +71,9 @@
                                    select match.Groups[1].Value
                                    into path
                                    where !String.IsNullOrEmpty(path) && Directory.Exists(path)
-                                   select Path.GetFullPath(path));
+                                   select Path.GetFullPath(path)
+                                   into steamLib
+                                   select Path.Combine(steamLib, GetSteamAppsFolder(steamLib)));
             }
 
             return libraries;
