@@ -4,7 +4,7 @@
 
 This tool has been created to replace the built in Steam backup and restore utility. Generally speaking it will compress games faster and/or smaller (depending on the settings) than the default backup feature in Steam. This tool also tends to be a lot more stable and it doesn't break the file into segments unlike the utility built into steam.
 
-More information is available at the Wiki: https://bitbucket.org/Du-z/steam-backup-tool/wiki
+More information is available at the Wiki: bitbucket.org/Du-z/steam-backup-tool/wiki
 
 ### Main Features ###
 
@@ -25,8 +25,6 @@ More information is available at the Wiki: https://bitbucket.org/Du-z/steam-back
 ### Using Steam Backup Tool with the Command Line ###
 
 ```
-#!CLI
-
 usage: steamBackupCLI [options]
 
 Parameters:
@@ -61,27 +59,25 @@ Parameters:
 
 ### How do I report bugs? ###
 
-You can report bugs at the following link: https://bitbucket.org/Du-z/steam-backup-tool/issues
+You can report bugs at the following link: bitbucket.org/Du-z/steam-backup-tool/issues
 
-If you have programming experience you are welcome to submit a GIT patch. 
+If you have programming experience you are welcome to submit a GIT patch.
 
 ### How do I contribute? ###
 
 If you wish to contribute to the tool you can submit a enhancement through a couple of ways.
-The issue tracker: https://bitbucket.org/Du-z/steam-backup-tool/issues
-Overclock.net forum thread: http://www.overclock.net/t/969143/open-source-automatic-steam-backup-restore-tool
+The issue tracker: bitbucket.org/Du-z/steam-backup-tool/issues
+Overclock.net forum thread: overclock.net/t/969143/open-source-automatic-steam-backup-restore-tool
 
-If you wish to contribute directly to the code base you can submit GIT patches through the above means (Preferably the issue tracker).
+If you wish to contribute directly to the code base you can submit GIT patches through the issue tracker.
 
-If you want to contribute more heavily you can request write permissions for the Bitbucket repository by messaging Du-z.
+If you want to contribute more heavily you can request write permissions to the Bitbucket repository by messaging Du-z.
 
 All contributors are recognized in the tools credits. 
 
 ### Version Changelist ###
 
 ```
-#!CLI
-
 v1.8.2
 * Target path was generated incorrectly during a restore.
 
@@ -151,5 +147,4 @@ ______________________________________
 - Removed
 ^ Updated
 * Bugfix
-
 ```
