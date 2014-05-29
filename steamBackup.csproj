@@ -119,6 +119,9 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="rsc\7za.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
