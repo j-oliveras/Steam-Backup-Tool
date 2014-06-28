@@ -8,7 +8,7 @@
 
     public class SevenZipWrapper : IDisposable
     {
-        private static readonly bool Is64Bit = Environment.Is64BitOperatingSystem;
+        private static readonly bool Is64Bit = Environment.Is64BitProcess;
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         delegate void ProgressCallback(int value);

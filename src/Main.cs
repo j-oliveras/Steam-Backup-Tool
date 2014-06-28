@@ -190,7 +190,7 @@ namespace steamBackup
                 lbl0.Text = string.Format(Resources.InstanceNumText, 1);
                 lbl0Info.Text = Resources.WaitingText;
                 lbl0SpeedEta.Text = string.Empty;
-                this.Size = new Size(400, 482);
+                this.Size = new Size(400, 492);
                 lbl1.Text = string.Format(Resources.VersionStr, _versionNum);
             }
             if (_task.ThreadCount >= 2 && !Settings.UseLzma2)
@@ -206,7 +206,7 @@ namespace steamBackup
                 lbl1.Text = string.Format(Resources.InstanceNumText, 2);
                 lbl1Info.Text = Resources.WaitingText;
                 lbl1SpeedEta.Text = string.Empty;
-                this.Size = new Size(400, 562);
+                this.Size = new Size(400, 572);
                 lbl2.Text = string.Format(Resources.VersionStr, _versionNum);
             }
             if (_task.ThreadCount >= 3 && !Settings.UseLzma2)
@@ -222,7 +222,7 @@ namespace steamBackup
                 lbl2.Text = string.Format(Resources.InstanceNumText, 3);
                 lbl2Info.Text = Resources.WaitingText;
                 lbl2SpeedEta.Text = string.Empty;
-                this.Size = new Size(400, 642);
+                this.Size = new Size(400, 652);
                 lbl3.Text = string.Format(Resources.VersionStr, _versionNum);
             }
 
@@ -239,7 +239,7 @@ namespace steamBackup
             lbl3.Text = string.Format(Resources.InstanceNumText, 4);
             lbl3Info.Text = Resources.WaitingText;
             lbl3SpeedEta.Text = string.Empty;
-            this.Size = new Size(400, 722);
+            this.Size = new Size(400, 732);
             lbl4.Text = string.Format(Resources.VersionStr, _versionNum);
         }
 
