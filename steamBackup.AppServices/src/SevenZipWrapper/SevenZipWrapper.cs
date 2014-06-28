@@ -8,6 +8,8 @@
 
     public class SevenZipWrapper : IDisposable
     {
+        private static readonly bool Is64Bit = Environment.Is64BitOperatingSystem;
+
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         delegate void ProgressCallback(int value);
 
@@ -147,7 +149,11 @@
             set
             {
                 _useMt = value;
-                SetUseMt64(_libHandle, value);
+
+                if (Is64Bit)
+                    SetUseMt64(_libHandle, value);
+                else
+                    SetUseMt32(_libHandle, value);
             }
         }
 
@@ -157,7 +163,11 @@
             set
             {
                 _mtNumCores = value;
-                SetMtNumCores64(_libHandle, value);
+
+                if (Is64Bit)
+                    SetMtNumCores64(_libHandle, value);
+                else
+                    SetMtNumCores32(_libHandle, value);
             }
         }
 
@@ -167,7 +177,11 @@
             set
             {
                 _compressionLevel = value;
-                SetCompressionLevel64(_libHandle, value);
+
+                if (Is64Bit)
+                    SetCompressionLevel64(_libHandle, value);
+                else
+                    SetCompressionLevel32(_libHandle, value);
             }
         }
 
@@ -177,7 +191,11 @@
             set
             {
                 _useLzma2 = value;
-                SetUseLzma264(_libHandle, value);
+
+                if (Is64Bit)
+                    SetUseLzma264(_libHandle, value);
+                else
+                    SetUseLzma232(_libHandle, value);
             }
         }
 
@@ -187,7 +205,11 @@
             set
             {
                 _useSolidCompression = value;
-                SetUseSolid64(_libHandle, value);
+
+                if (Is64Bit)
+                    SetUseSolid64(_libHandle, value);
+                else
+                    SetUseSolid32(_libHandle, value);
             }
         }
 
@@ -197,8 +219,9 @@
 
         public SevenZipWrapper(string archiveName, bool decompressor)
         {
-            string rootDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            string libraryPath = Path.Combine(rootDir, "rsc", IntPtr.Size == 8 ? "64" : "32", "7z.dll");
+            var rootDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            // check for IntPtr.Size == 8 does not work here, as we are in a 32 bit process, IntPtr.Size is always 4
+            var libraryPath = Path.Combine(rootDir, "rsc", Is64Bit ? "64" : "32", "7z.dll");
             
             if (decompressor)
             {
@@ -229,7 +252,12 @@
                     ProcessedSize = value;
                 };
 
-                _libHandle = InitDecompressLibrary64(libraryPath, archiveName, _progressCallback, _fileNameCallback, _totalSizeCallback, _processedSizeCallback);
+                if (Is64Bit)
+                    _libHandle = InitDecompressLibrary64(libraryPath, archiveName, _progressCallback, _fileNameCallback,
+                        _totalSizeCallback, _processedSizeCallback);
+                else
+                    _libHandle = InitDecompressLibrary32(libraryPath, archiveName, _progressCallback, _fileNameCallback,
+                        _totalSizeCallback, _processedSizeCallback);
             }
             else
             {
@@ -260,7 +288,12 @@
                     ProcessedSize = value;
                 };
 
-                _libHandle = InitCompressLibrary64(libraryPath, archiveName, _progressCallback, _fileNameCallback, _totalSizeCallback, _processedSizeCallback);
+                if (Is64Bit)
+                    _libHandle = InitCompressLibrary64(libraryPath, archiveName, _progressCallback, _fileNameCallback,
+                        _totalSizeCallback, _processedSizeCallback);
+                else
+                    _libHandle = InitCompressLibrary32(libraryPath, archiveName, _progressCallback, _fileNameCallback,
+                        _totalSizeCallback, _processedSizeCallback);
             }
         }
 
@@ -276,9 +309,19 @@
         public void Dispose(bool decompressor)
         {
             if (decompressor)
-                DestroyDecompressLibrary64(_libHandle);
+            {
+                if (Is64Bit)
+                    DestroyDecompressLibrary64(_libHandle);
+                else
+                    DestroyDecompressLibrary32(_libHandle);
+            }
             else
-                DestroyCompressLibrary64(_libHandle);
+            {
+                if (Is64Bit)
+                    DestroyCompressLibrary64(_libHandle);
+                else
+                    DestroyCompressLibrary32(_libHandle);
+            }
 
             _fileNameCallback = null;
             _progressCallback = null;
@@ -297,9 +340,19 @@
         public void Cancel(bool decompressor)
         {
             if (decompressor)
-                CancelDecompression64(_libHandle);
+            {
+                if (Is64Bit)
+                    CancelDecompression64(_libHandle);
+                else
+                    CancelDecompression32(_libHandle);
+            }
             else
-                CancelCompression64(_libHandle);
+            {
+                if (Is64Bit)
+                    CancelCompression64(_libHandle);
+                else
+                    CancelCompression32(_libHandle);
+            }
         }
 
         public void CompressFiles(string pathPrefix, string[] filePaths)
@@ -307,7 +360,11 @@
             if (!pathPrefix.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
                 pathPrefix += Path.DirectorySeparatorChar;
 
-            CompressFileList64(_libHandle, pathPrefix, filePaths, filePaths.Length);
+            if (Is64Bit)
+                CompressFileList64(_libHandle, pathPrefix, filePaths, filePaths.Length);
+            else
+                CompressFileList32(_libHandle, pathPrefix, filePaths, filePaths.Length);
+
             if (CompressionFinished != null)
             {
                 CompressionFinished(this, new EventArgs());
@@ -316,7 +373,11 @@
 
         public void DecompressFileArchive(string targetPath)
         {
-            DecompressArchive64(_libHandle, targetPath);
+            if (Is64Bit)
+                DecompressArchive64(_libHandle, targetPath);
+            else
+                DecompressArchive32(_libHandle, targetPath);
+
             if (ExtractionFinished != null)
             {
                 ExtractionFinished(this, new EventArgs());

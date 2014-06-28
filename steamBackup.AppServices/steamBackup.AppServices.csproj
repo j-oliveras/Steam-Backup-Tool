@@ -73,6 +73,9 @@
     <Content Include="rsc\32\7z.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="rsc\32\SevenZip++Lib.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="rsc\64\7z.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
