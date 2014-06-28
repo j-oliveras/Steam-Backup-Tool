@@ -1,9 +1,11 @@
 ﻿namespace steamBackup.AppServices.Errors
 {
+    using System;
     using steamBackup.AppServices.Properties;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
 
     public static class ErrorList
     {
@@ -28,7 +30,16 @@
 
         public new static string ToString()
         {
-            return MList.Aggregate(Resources.ErrorListHeader, (current, error) => current + error.ToString());
+            string errorHeader = String.Format(Resources.ErrorListHeader,
+                Environment.OSVersion,
+                Environment.Is64BitOperatingSystem,
+                Environment.Is64BitProcess,
+                Environment.ProcessorCount,
+                Directory.GetCurrentDirectory(),
+                Assembly.GetExecutingAssembly().GetName().Version.ToString()
+                );
+            
+            return MList.Aggregate(errorHeader, (current, error) => current + error.ToString());
         }
 
         static public void ToFile()
