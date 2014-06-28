@@ -327,4 +327,10 @@ Click 'Yes' to stop immediately, or 'No' to cancel once the current jobs have be
   <data name="DownloadingUpdateSuccess" xml:space="preserve">
     <value>Successfully Downloaded Update</value>
   </data>
+  <data name="SteamDirNotFound" xml:space="preserve">
+    <value>The Steam directory could not be found, has it been installed correctly?</value>
+  </data>
+  <data name="SteamDirNotFoundTitle" xml:space="preserve">
+    <value>Steam Directory Not Found</value>
+  </data>
 </root>

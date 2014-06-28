@@ -87,8 +87,6 @@
         {
             foreach (var job in JobList)
             {
-                var isNewer = false;
-
                 if (File.Exists(job.GetBackupDir()))
                 {
                     var achiveDate = new FileInfo(job.GetBackupDir()).LastWriteTimeUtc;
@@ -98,23 +96,20 @@
                         fileList.Select(file => new FileInfo(file).LastWriteTimeUtc)
                             .Any(fileDate => fileDate.CompareTo(achiveDate) > 0))
                     {
-                        isNewer = true;
+                        EnableJob(job);
+                        continue;
                     }
                 }
                 else
                 {
                     if (!achivedOnly)
-                        isNewer = true;
+                    {
+                        EnableJob(job);
+                        continue;
+                    }
                 }
 
-                if (isNewer)
-                {
-                    EnableJob(job);
-                }
-                else
-                {
-                    DisableJob(job);
-                }
+                DisableJob(job);
             }
         }
 

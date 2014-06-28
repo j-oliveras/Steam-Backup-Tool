@@ -506,7 +506,12 @@ namespace steamBackup
         {
             try
             {
-                tbxSteamDir.Text = Utilities.GetSteamDirectory();
+                string dir = Utilities.GetSteamDirectory();
+
+                if (String.IsNullOrEmpty(dir))
+                    MessageBox.Show(Resources.SteamDirNotFound, Resources.SteamDirNotFoundTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);                    
+                else
+                    tbxSteamDir.Text = Utilities.GetSteamDirectory();
             }
             catch (Exception ex)
             {
