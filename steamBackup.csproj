@@ -130,9 +130,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="rsc\7z.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="rsc\flamew.ico" />
     <Content Include="rsc\flamew.png" />
   </ItemGroup>

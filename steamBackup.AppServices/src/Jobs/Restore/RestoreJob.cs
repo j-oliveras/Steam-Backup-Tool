@@ -32,12 +32,7 @@
             _compStarted = DateTime.Now;
             try
             {
-                var libPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                if (libPath != null)
-                {
-                    libPath = Path.Combine(libPath, "rsc", "7z.dll");
-                    _wrapper = new SevenZipWrapper(libPath, DirBackup, true);
-                }
+                _wrapper = new SevenZipWrapper(DirBackup, true);
 
                 _wrapper.Extracting += Working;
                 _wrapper.FileExtractionStarted += Started;

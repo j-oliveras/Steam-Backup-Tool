@@ -36,12 +36,7 @@
 
             try
             {
-                var libPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                if (libPath != null)
-                {
-                    libPath = Path.Combine(libPath, "rsc", "7z.dll");
-                    _wrapper = new SevenZipWrapper(libPath, DirBackup, false);
-                }
+                _wrapper = new SevenZipWrapper(DirBackup, false);
 
                 _wrapper.Compressing += Working;
                 _wrapper.FileCompressionStarted += Started;
