@@ -91,6 +91,7 @@
     <ProjectReference Include="..\steamBackup.AppServices\steamBackup.AppServices.csproj">
       <Project>{e070a764-9320-4ecf-959d-35165b658c4f}</Project>
       <Name>steamBackup.AppServices</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
