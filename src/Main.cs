@@ -24,6 +24,8 @@ namespace steamBackup
     {
         readonly string _versionNum = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
+        bool _working = false;
+
         bool _cancelJob;
         bool _pauseJob;
         int _threadDone;
@@ -35,7 +37,15 @@ namespace steamBackup
 
         private void main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Save(); // save Main form settings then close
+            if (_working && MessageBox.Show(Resources.ClosingWhileRunning, "Close Application", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                e.Cancel = true;
+                this.Activate();
+            }
+            else
+            {
+                Save(); // save Main form settings then close
+            }
         }
 
         // Save Main form settings
@@ -145,6 +155,8 @@ namespace steamBackup
 
         private void Start()
         {
+            _working = true;
+            
             // set UI to starting values
             pgsBarAll.Value = 0;
             pgsBarAll.Maximum = _task.JobsToDoCount;
@@ -406,7 +418,8 @@ namespace steamBackup
             if ((_task.ThreadCount == _threadDone && !Settings.UseLzma2) || Settings.UseLzma2)
             {
                 timer.Stop();
-                
+
+                _working = false;
                 btnBrowseSteam.Enabled = true;
                 btnFindSteam.Enabled = true;
                 btnBrowseBackup.Enabled = true;

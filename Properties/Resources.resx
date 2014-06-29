@@ -333,4 +333,9 @@ Click 'Yes' to stop immediately, or 'No' to cancel once the current jobs have be
   <data name="SteamDirNotFoundTitle" xml:space="preserve">
     <value>Steam Directory Not Found</value>
   </data>
+  <data name="ClosingWhileRunning" xml:space="preserve">
+    <value>The tool is currently working on a job. If you close the tool now you might corrupt the backup.
+
+Are you sure you want to close?</value>
+  </data>
 </root>

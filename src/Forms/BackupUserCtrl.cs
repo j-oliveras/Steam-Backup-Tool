@@ -197,7 +197,13 @@
 
             ThreadText();
 
-            RamUsage();
+            int ram = RamUsage();
+
+            if (!Environment.Is64BitProcess && ram > 2750)
+            {
+                tbarThread.Value--;
+                tbarThread_Scroll(sender, e); // just incase it was moved two or more spots with only one call
+            }
         }
 
         private void ThreadText()
@@ -214,7 +220,13 @@
             
             CompresionText();
 
-            RamUsage();
+            int ram = RamUsage();
+
+            if(!Environment.Is64BitProcess && ram > 2750)
+            {
+                tbarComp.Value--;
+                tbarComp_Scroll(sender, e); // just incase it was moved two or more spots with only one call
+            }
         }
 
         private void CompresionText()
@@ -227,9 +239,9 @@
                 lblComp.Text = Resources.CompressionLevelText + CompressionStrings[6];
         }
 
-        private void RamUsage()
+        private int RamUsage()
         {
-            var ram = BupTask.RamUsage(cBoxLzma2.Checked);
+            int ram = BupTask.RamUsage(cBoxLzma2.Checked);
 
             lblRamBackup.Text = string.Format(Resources.MaxRamUsageText, ram);
 
@@ -239,6 +251,8 @@
                 lblRamBackup.ForeColor = Color.Orange;
             else
                 lblRamBackup.ForeColor = Color.Black;
+
+            return ram;
         }
 
         private void chkList_ItemCheck(object sender, ItemCheckEventArgs e)
