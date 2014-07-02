@@ -1,6 +1,0 @@
-{
-	"name": "v1.8.3",
-	"version":"1.8.3.0",
-	"url":"https://bitbucket.org/Du-z/steam-backup-tool/downloads/v1_8_3.7z",
-	"changelist":"+ readme.txt\n^ The updater now cleans up the downloaded archive after installation\n+ Trying to find a Steam installation when it is not findable now notifies the user\n+ Now works with 32bit installations\n+ Asks the user if they really want to close the tool while a job is taking place"
-}

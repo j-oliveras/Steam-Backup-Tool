@@ -25,7 +25,8 @@
         {
             this.Refresh();
 
-            var data = GetJsonFile(@"http://du-z.com/sbtRelease.json");
+            // https://docs.google.com/document/d/1d-ftHzMkjHXzmlAdjmm8XK1ZvTLK5TVYREMN2fzx2Jg/edit
+            var data = GetJsonFile(@"https://docs.google.com/document/d/1d-ftHzMkjHXzmlAdjmm8XK1ZvTLK5TVYREMN2fzx2Jg/export?format=txt");
 
             var thisVer = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
