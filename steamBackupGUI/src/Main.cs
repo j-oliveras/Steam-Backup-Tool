@@ -19,6 +19,7 @@ namespace steamBackup
     using System.Reflection;
     using System.Threading;
     using System.Windows.Forms;
+    using System.Diagnostics;
 
     public partial class Main : Form
     {
@@ -34,6 +35,7 @@ namespace steamBackup
 
         readonly Job[] m_currJobs = new Job[4];
         readonly Thread[] m_threadList = new Thread[4];
+        Stopwatch m_stopWatch = new Stopwatch();
 
         private void main_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -181,6 +183,7 @@ namespace steamBackup
             btnUpdWiz.Visible = false;
 
             timer.Start();
+            m_stopWatch.Start();
 
             // Launch task threads
             StartThreads();
@@ -418,6 +421,7 @@ namespace steamBackup
             if ((m_task.m_threadCount == m_threadDone && !Settings.UseLzma2) || Settings.UseLzma2)
             {
                 timer.Stop();
+                m_stopWatch.Stop();
 
                 m_working = false;
                 btnBrowseSteam.Enabled = true;
@@ -435,13 +439,18 @@ namespace steamBackup
                 this.Size = new Size(400, 402);
                 lbl0.Text = string.Format(Resources.VersionStr, m_versionNum);
 
+                TimeSpan ts = m_stopWatch.Elapsed;
+                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+
                 if (ErrorList.HasErrors())
                 {
-                    MessageBox.Show(string.Format(Resources.FinishedWithErrorsText, m_task.m_jobsDone, m_task.m_jobsToDoCount), Resources.FinishedWithErrorsTitle,MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string str = string.Format(Resources.FinishedWithErrorsText, m_task.m_jobsDone, m_task.m_jobsToDoCount, elapsedTime);
+                    MessageBox.Show(str, Resources.FinishedWithErrorsTitle,MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                 {
-                    MessageBox.Show(string.Format(Resources.FinishedText, m_task.m_jobsDone, m_task.m_jobsToDoCount), Resources.FinishedTitle);
+                    string str = string.Format(Resources.FinishedText, m_task.m_jobsDone, m_task.m_jobsToDoCount, elapsedTime);
+                    MessageBox.Show(str, Resources.FinishedTitle);
                 }
 
                 ErrorList.Clear();

@@ -250,7 +250,7 @@ namespace steamBackup.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Jobs finished with {0} of {1} completed!
+        ///   Looks up a localized string similar to Jobs finished with {0} of {1} completed in {2}!
         ///
         ///Steam Backup Tool finished without finding any errors..
         /// </summary>
@@ -272,7 +272,7 @@ namespace steamBackup.Properties {
         /// <summary>
         ///   Looks up a localized string similar to WARNING!
         ///
-        ///Jobs finished with {0} of {1} completed!
+        ///Jobs finished with {0} of {1} completed in {2}!
         ///
         ///However, Steam Backup Tool has encountered error, It is recommended that you look at the &apos;Error Log.txt&apos; file in the backup directory for a full list of errors..
         /// </summary>

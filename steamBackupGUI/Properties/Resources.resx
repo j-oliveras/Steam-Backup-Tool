@@ -246,7 +246,7 @@ Recommended: One Thread for every CPU core.</value>
     <value>Instance {0}:- ({1}) {2}</value>
   </data>
   <data name="FinishedText" xml:space="preserve">
-    <value>Jobs finished with {0} of {1} completed!
+    <value>Jobs finished with {0} of {1} completed in {2}!
 
 Steam Backup Tool finished without finding any errors.</value>
   </data>
@@ -256,7 +256,7 @@ Steam Backup Tool finished without finding any errors.</value>
   <data name="FinishedWithErrorsText" xml:space="preserve">
     <value>WARNING!
 
-Jobs finished with {0} of {1} completed!
+Jobs finished with {0} of {1} completed in {2}!
 
 However, Steam Backup Tool has encountered error, It is recommended that you look at the 'Error Log.txt' file in the backup directory for a full list of errors.</value>
   </data>
