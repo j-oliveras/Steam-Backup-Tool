@@ -9,7 +9,7 @@
     {
         // General Info
         public JobType m_type { get; protected set; }
-        public string m_name { get; protected set; }
+        public string m_name { get; set; }
         public JobStatus m_status;
 
         public byte m_percDone { get; private set; }

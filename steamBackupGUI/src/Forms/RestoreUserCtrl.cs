@@ -35,7 +35,7 @@
 
             // use databinding instead of direct access to the control
             chkList.DataSource = m_task.JobList;
-            chkList.DisplayMember = "name";
+            chkList.DisplayMember = "m_name";
 
             UpdCheckBoxList();
             UpdLibDropBox();

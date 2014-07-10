@@ -151,10 +151,14 @@ namespace steamBackupCLI
         {
             if (Utilities.IsSteamRunning())
             {
+                Console.WriteLine(@"");
                 Console.WriteLine(@"Steam is running!");
                 Console.WriteLine(@"Please exit Steam before backing up.");
                 Console.WriteLine(@"To continue, exit Steam and restart this Application.");
                 Console.WriteLine(@"Do not start Steam until the backup process is finished.");
+                Console.WriteLine(@"");
+                Console.WriteLine(@"Press enter to exit.");
+                Console.ReadLine();
                 Environment.Exit(2);
             }
 
@@ -261,8 +265,8 @@ namespace steamBackupCLI
                         lock (lJob)
                         {
                             var eta = lJob.GetSpeedEta(true);
-                            var file = lJob.GetCurFileStr();
-                            var perc = lJob.GetPercDone();
+                            var file = lJob.m_curFileStr;
+                            var perc = lJob.m_percDone;
                             WriteConsole(tId, jobId, lJob.m_name, perc, file, eta);
                         }
                     };
