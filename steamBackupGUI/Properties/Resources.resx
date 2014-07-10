@@ -246,7 +246,9 @@ Recommended: One Thread for every CPU core.</value>
     <value>Instance {0}:- ({1}) {2}</value>
   </data>
   <data name="FinishedText" xml:space="preserve">
-    <value>Jobs finished with {0} of {1} completed in {2}!
+    <value>Jobs finished with {0} of {1} completed!
+
+Completed in {2}
 
 Steam Backup Tool finished without finding any errors.</value>
   </data>
@@ -256,7 +258,9 @@ Steam Backup Tool finished without finding any errors.</value>
   <data name="FinishedWithErrorsText" xml:space="preserve">
     <value>WARNING!
 
-Jobs finished with {0} of {1} completed in {2}!
+Jobs finished with {0} of {1} completed!
+
+Completed in {2}
 
 However, Steam Backup Tool has encountered error, It is recommended that you look at the 'Error Log.txt' file in the backup directory for a full list of errors.</value>
   </data>
@@ -271,6 +275,7 @@ However, Steam Backup Tool has encountered error, It is recommended that you loo
   </data>
   <data name="CancelQueryText" xml:space="preserve">
     <value>Do you want to cancel immediately? This could corrupt the games that are currently being worked on.
+
 Click 'Yes' to stop immediately, or 'No' to cancel once the current jobs have been finished.</value>
   </data>
   <data name="CancelQueryTitle" xml:space="preserve">
@@ -337,5 +342,12 @@ Click 'Yes' to stop immediately, or 'No' to cancel once the current jobs have be
     <value>The tool is currently working on a job. If you close the tool now you might corrupt the backup.
 
 Are you sure you want to close?</value>
+  </data>
+  <data name="PotentiallyDeletedInstall" xml:space="preserve">
+    <value>It looks like {0} has been removed by Steam.
+
+Steam tends to leave some files left over after using its "Delete Local Content" function. You might be accidentally backing up these leftover files.
+
+Are you sure you want to backup {0}.</value>
   </data>
 </root>

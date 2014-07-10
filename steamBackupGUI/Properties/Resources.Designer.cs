@@ -125,6 +125,7 @@ namespace steamBackup.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Do you want to cancel immediately? This could corrupt the games that are currently being worked on.
+        ///
         ///Click &apos;Yes&apos; to stop immediately, or &apos;No&apos; to cancel once the current jobs have been finished..
         /// </summary>
         internal static string CancelQueryText {
@@ -250,7 +251,9 @@ namespace steamBackup.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Jobs finished with {0} of {1} completed in {2}!
+        ///   Looks up a localized string similar to Jobs finished with {0} of {1} completed!
+        ///
+        ///Completed in {2}
         ///
         ///Steam Backup Tool finished without finding any errors..
         /// </summary>
@@ -272,7 +275,9 @@ namespace steamBackup.Properties {
         /// <summary>
         ///   Looks up a localized string similar to WARNING!
         ///
-        ///Jobs finished with {0} of {1} completed in {2}!
+        ///Jobs finished with {0} of {1} completed!
+        ///
+        ///Completed in {2}
         ///
         ///However, Steam Backup Tool has encountered error, It is recommended that you look at the &apos;Error Log.txt&apos; file in the backup directory for a full list of errors..
         /// </summary>
@@ -425,6 +430,19 @@ namespace steamBackup.Properties {
         internal static string PercentRangeError {
             get {
                 return ResourceManager.GetString("PercentRangeError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It looks like {0} has been removed by Steam.
+        ///
+        ///Steam tends to leave some files left over after using its &quot;Delete Local Content&quot; function. You might be accidentally backing up these leftover files.
+        ///
+        ///Are you sure you want to backup {0}..
+        /// </summary>
+        internal static string PotentiallyDeletedInstall {
+            get {
+                return ResourceManager.GetString("PotentiallyDeletedInstall", resourceCulture);
             }
         }
         

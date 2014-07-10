@@ -165,6 +165,17 @@
 
         private void btnStartBup_Click(object sender, EventArgs e)
         {
+            foreach(Job job in m_task.JobList)
+            {
+                if (job.m_status == JobStatus.Waiting && job.m_steamFileSize < job.m_backupFileSize / 2)
+                {
+                    if(MessageBox.Show(string.Format(Resources.PotentiallyDeletedInstall, job.m_name), "Warning", MessageBoxButtons.YesNo) == DialogResult.No)
+                    {
+                        m_task.DisableJob(job);
+                    }
+                }
+            }
+            
             if (Utilities.IsSteamRunning())
             {
                 MessageBox.Show(Resources.BackupSteamRunningText, Resources.SteamRunningTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);

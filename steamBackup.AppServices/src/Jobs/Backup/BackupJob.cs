@@ -34,7 +34,7 @@
             {
                 FileInfo fileInfo = new FileInfo(file);
 
-                m_steamFileSize = fileInfo.Length;
+                m_steamFileSize += fileInfo.Length;
                 if(fileInfo.LastWriteTimeUtc.CompareTo(m_steamFileDate) > 0)
                     m_steamFileDate = fileInfo.LastWriteTimeUtc;
             }
