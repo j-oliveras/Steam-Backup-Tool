@@ -438,7 +438,7 @@ namespace steamBackup.Properties {
         ///
         ///Steam tends to leave some files left over after using its &quot;Delete Local Content&quot; function. You might be accidentally backing up these leftover files.
         ///
-        ///Are you sure you want to backup {0}..
+        ///Are you sure you want to backup {0}?.
         /// </summary>
         internal static string PotentiallyDeletedInstall {
             get {

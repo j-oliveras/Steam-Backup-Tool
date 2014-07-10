@@ -78,6 +78,16 @@ All contributors are recognized in the tools credits.
 ### Version Changelist ###
 
 ```
+v1.8.3
++ readme.txt
+^ The updater now cleans up the downloaded archive after installation
++ Trying to find a Steam installation when it is not findable now notifies the user
++ Now works with 32bit installations
++ Asks the user if they really want to close the tool while a job is taking place
+^ Update wizard now checks a google doc file for higher reliability
++ Now notifies the user if they could be backing up a game that may of been deleted by steam
++ Building the list of potential backup jobs is slower, but allows for the above change and faster toggling between backup modes
+
 v1.8.2
 * Target path was generated incorrectly during a restore.
 

@@ -348,6 +348,6 @@ Are you sure you want to close?</value>
 
 Steam tends to leave some files left over after using its "Delete Local Content" function. You might be accidentally backing up these leftover files.
 
-Are you sure you want to backup {0}.</value>
+Are you sure you want to backup {0}?</value>
   </data>
 </root>
