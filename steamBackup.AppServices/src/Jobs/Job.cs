@@ -6,47 +6,43 @@
     using System.Threading;
 
     public abstract class Job
-    {        
-        protected JobType Type = JobType.Unset;
-        public JobType GetJobType() { return Type; }
+    {
+        // General Info
+        public JobType m_type { get; protected set; }
+        public string m_name { get; protected set; }
+        public JobStatus m_status;
 
-        public string AcfFiles;
-        public string AcfDir;
-        public string Name { get; set; }
-        public JobStatus Status;
+        public byte m_percDone { get; private set; }
+        public string m_curFileStr { get; private set; }
 
-        protected string DirSteam;
-        abstract public void SetSteamDir(string dir);
-        public string GetSteamDir() { return DirSteam; }
+        // Steam Info
+        public string m_steamDir;
 
-        protected string DirBackup;
-        abstract public void SetBackupDir(string dir);
-        public string GetBackupDir() { return DirBackup; }
+        // Backup Info
+        public string m_backupDir;
 
+        // ACF Info
+        public string m_acfFiles { get; protected set; }
+        public string m_acfDir { get; set; }
 
         abstract public void Start();
 
-        protected byte PercDone;
-        public byte GetPercDone() { return PercDone; }
-        private string _curFileStr;
-        public string GetCurFileStr() { return _curFileStr; }
-
         protected void Working(object sender, ProgressEventArgs e)
         {
-            PercDone = e.PercentDone;
+            m_percDone = e.PercentDone;
         }
 
         protected void Started(object sender, FileNameEventArgs e)
         {
-            _curFileStr = e.FileName;
+            m_curFileStr = e.FileName;
 
-            if (Status == JobStatus.Canceled)
+            if (m_status == JobStatus.Canceled)
             {
                 e.Cancel = true;
                 ErrorList.Add(new ErrorItem(Resources.JobCanceledUser, this));
             }
 
-            while (Status == JobStatus.Paused)
+            while (m_status == JobStatus.Paused)
             {
                 Thread.Sleep(100);
             }
@@ -54,19 +50,19 @@
 
         protected void Finished(object sender, EventArgs e)
         {
-            if (Status == JobStatus.Working)
-                Status = JobStatus.Finished;
+            if (m_status == JobStatus.Working)
+                m_status = JobStatus.Finished;
         }
 
         public override string ToString()
         {
             var str = "";
             
-            str += "name = " + Name + Environment.NewLine;
-            str += "acfFiles = " + AcfFiles + Environment.NewLine;
-            str += "dirSteam = " + DirSteam + Environment.NewLine;
-            str += "dirBackup = " + DirBackup + Environment.NewLine;
-            str += "status = " + Status;
+            str += "name = " + m_name + Environment.NewLine;
+            str += "acfFiles = " + m_acfFiles + Environment.NewLine;
+            str += "dirSteam = " + m_steamDir + Environment.NewLine;
+            str += "dirBackup = " + m_backupDir + Environment.NewLine;
+            str += "status = " + m_status;
 
             return str;
         }

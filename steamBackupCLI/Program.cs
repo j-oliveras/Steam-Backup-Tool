@@ -16,24 +16,24 @@ namespace steamBackupCLI
 
     public class Program
     {
-        static bool _showHelp;
-        static bool _useLzma2;
-        static int _compLevel = 3;
-        static bool _updateBackup;
-        static bool _updateLibrary;
-        static bool _deleteBackup;
-        static int _numThreads = Environment.ProcessorCount / 2;
-        static string _outDir = string.Empty;
-        static string _steamDir = string.Empty;
+        static bool m_showHelp;
+        static bool m_useLzma2;
+        static int m_compLevel = 3;
+        static bool m_updateBackup;
+        static bool m_updateLibrary;
+        static bool m_deleteBackup;
+        static int m_numThreads = Environment.ProcessorCount / 2;
+        static string m_outDir = string.Empty;
+        static string m_steamDir = string.Empty;
 
-        public static BackupTask BupTask;
+        public static BackupTask m_bupTask;
 
-        public static int ConsoleWidth;
+        public static int m_consoleWidth;
 
-        internal static List<int> InstanceLines = new List<int>();
-        internal static int StatusLine;
+        internal static List<int> m_instanceLines = new List<int>();
+        internal static int m_statusLine;
 
-        internal static List<int> RegisteredInstances = new List<int>();
+        internal static List<int> m_registeredInstances = new List<int>();
 
         static void Main(string[] args)
         {
@@ -60,22 +60,22 @@ namespace steamBackupCLI
                 {
                     "h|?|help",
                     "show this message and exit.",
-                    v => _showHelp = v != null
+                    v => m_showHelp = v != null
                 },
                 {
                     "O|out-dir=",
                     "(required) Set backup directory",
-                    v => _outDir = v
+                    v => m_outDir = v
                 },
                 {
                     "S|steam-dir=",
                     "Do not automatically detect Steam directory, use this directory instead",
-                    v => _steamDir = v
+                    v => m_steamDir = v
                 },
                 {
                     "2|lzma2",
                     "Use LZMA2 compression.",
-                    v => { _useLzma2 = true; }
+                    v => { m_useLzma2 = true; }
                 },
                 {
                     "C|compression=",
@@ -86,32 +86,32 @@ namespace steamBackupCLI
                     "\t3 : Normal" + Environment.NewLine + 
                     "\t4 : Maximum" + Environment.NewLine + 
                     "\t5 : Ultra",
-                    (int comp) => _compLevel = comp
+                    (int comp) => m_compLevel = comp
                 },
                 {
                     "B|backup",
                     "Update backup" + Environment.NewLine + 
                     "Update games that have been changed since the last backup, EXCLUDING games that have not been backed up yet.",
-                    v => _updateBackup = v != null
+                    v => m_updateBackup = v != null
                 },
                 {
                     "L|library",
                     "Update library" + Environment.NewLine + 
                     "Update games that have been changed since the last backup, INCLUDING games that have not been backed up yet.",
-                    v => _updateLibrary = v != null
+                    v => m_updateLibrary = v != null
                 },
                 {
                     "D|delete",
                     "Delete all backup files before starting" + Environment.NewLine + 
                     "ignored when either update library or update backup parameter is used",
-                    v => _deleteBackup = v != null
+                    v => m_deleteBackup = v != null
                 },
                 {
                     "T|threads=",
                     "Thread count" + Environment.NewLine + 
                     "LZMA:  number of concurrent instances," + Environment.NewLine + 
                     "LZMA2: number of threads used",
-                    (int num) => _numThreads = num
+                    (int num) => m_numThreads = num
                 }
             };
 
@@ -127,9 +127,9 @@ namespace steamBackupCLI
                 }
             }
             else
-                _showHelp = true;
+                m_showHelp = true;
 
-            if (_showHelp || string.IsNullOrEmpty(_outDir))
+            if (m_showHelp || string.IsNullOrEmpty(m_outDir))
             {
                 Console.WriteLine(@"usage: steamBackupCLI [options]" + Environment.NewLine);
                 Console.WriteLine(@"Parameters:");
@@ -142,7 +142,7 @@ namespace steamBackupCLI
 
             StartCompression();
 
-            Console.SetCursorPosition(0, InstanceLines.Last() + 3);
+            Console.SetCursorPosition(0, m_instanceLines.Last() + 3);
             Console.WriteLine(Resources.BackupFinished);
             Thread.Sleep(2000);
         }
@@ -158,11 +158,11 @@ namespace steamBackupCLI
                 Environment.Exit(2);
             }
 
-            if (string.IsNullOrEmpty(_steamDir))
+            if (string.IsNullOrEmpty(m_steamDir))
             {
                 try
                 {
-                    _steamDir = Utilities.GetSteamDirectory();
+                    m_steamDir = Utilities.GetSteamDirectory();
                 }
                 catch (Exception ex)
                 {
@@ -171,72 +171,72 @@ namespace steamBackupCLI
                 }
             }
 
-            if (!Utilities.IsValidSteamFolder(_steamDir))
+            if (!Utilities.IsValidSteamFolder(m_steamDir))
             {
                 Console.WriteLine(Resources.NotValidSteamDirectory);
                 Environment.Exit(3);
             }
 
-            Utilities.SetupBackupDirectory(_outDir);
+            Utilities.SetupBackupDirectory(m_outDir);
 
-            ConsoleWidth = Console.BufferWidth;
-            StatusLine = Console.CursorTop;
+            m_consoleWidth = Console.BufferWidth;
+            m_statusLine = Console.CursorTop;
 
-            InstanceLines.Add(StatusLine + 4);
-            RegisteredInstances.Add(-1);
+            m_instanceLines.Add(m_statusLine + 4);
+            m_registeredInstances.Add(-1);
 
-            if (!_useLzma2)
+            if (!m_useLzma2)
             {
-                for (var i = 1; i < _numThreads; i++)
+                for (var i = 1; i < m_numThreads; i++)
                 {
-                    InstanceLines.Add(StatusLine + 4 + (i * 3));
-                    RegisteredInstances.Add(-1);
+                    m_instanceLines.Add(m_statusLine + 4 + (i * 3));
+                    m_registeredInstances.Add(-1);
                 }
             }
 
-            Settings.BackupDir = _outDir;
+            Settings.BackupDir = m_outDir;
 
-            BupTask = new BackupTask {SteamDir = _steamDir, BackupDir = _outDir};
+            m_bupTask = new BackupTask {m_steamDir = m_steamDir, m_backupDir = m_outDir};
 
-            Console.SetCursorPosition(0, StatusLine);
-            Console.WriteLine(Resources.Scanning.PadRight(ConsoleWidth));
+            Console.SetCursorPosition(0, m_statusLine);
+            Console.WriteLine(Resources.Scanning.PadRight(m_consoleWidth));
 
-            BupTask.JobList.Clear();
-            BupTask.Scan();
+            m_bupTask.JobList.Clear();
+            m_bupTask.Scan();
 
-            BupTask.SetCompMethod(_useLzma2);
-            BupTask.SetCompLevel(_compLevel);
+            m_bupTask.SetCompMethod(m_useLzma2);
+            m_bupTask.SetCompLevel(m_compLevel);
 
-            if (_useLzma2)
-                BupTask.SetLzma2Threads(_numThreads);
+            if (m_useLzma2)
+                m_bupTask.SetLzma2Threads(m_numThreads);
             else
-                BupTask.ThreadCount = _numThreads;
+                m_bupTask.m_threadCount = m_numThreads;
 
-            if (_updateBackup)
-                BupTask.SetEnableUpd(true);
-            else if (_updateLibrary)
-                BupTask.SetEnableUpd(false);
+            if (m_updateBackup)
+                m_bupTask.SetEnableUpd(true);
+            else if (m_updateLibrary)
+                m_bupTask.SetEnableUpd(false);
             else
             {
-                BupTask.SetEnableAll();
-                BupTask.DeleteAll = _deleteBackup;
+                m_bupTask.SetEnableAll();
+                m_bupTask.m_deleteAll = m_deleteBackup;
             }
 
-            BupTask.Setup();
+            m_bupTask.Setup();
         }
 
         private static void StartCompression()
         {
-            Console.SetCursorPosition(0, StatusLine);
-            Console.Write(Resources.ArchivingGames.PadRight(ConsoleWidth));
+            Console.SetCursorPosition(0, m_statusLine);
+            Console.Write(Resources.ArchivingGames.PadRight(m_consoleWidth));
 
-            var lcts = new LimitedConcurrencyLevelTaskScheduler(_useLzma2 ? 1 : _numThreads);
+            var lcts = new LimitedConcurrencyLevelTaskScheduler(m_useLzma2 ? 1 : m_numThreads);
             var tasks = new List<Task>();
 
             var factory = new TaskFactory(lcts);
             var cts = new CancellationTokenSource();
 
-            var procList = BupTask.JobList.FindAll(job => job.Status == JobStatus.Waiting);
+            var procList = m_bupTask.JobList.FindAll(job => job.m_status == JobStatus.Waiting);
 
             var statusTimer = new Timer(2500) { AutoReset = true };
             statusTimer.Elapsed += (sender, args) => UpdateStats();
@@ -251,9 +251,9 @@ namespace steamBackupCLI
                     var tId = Thread.CurrentThread.ManagedThreadId;
                     RegisterInstance(tId);
 
-                    lJob.Status = JobStatus.Working;
+                    lJob.m_status = JobStatus.Working;
 
-                    WriteConsole(tId, jobId, lJob.Name, 0, Resources.CompressionFindingFiles, " ");
+                    WriteConsole(tId, jobId, lJob.m_name, 0, Resources.CompressionFindingFiles, " ");
 
                     var timer = new Timer(1000) {AutoReset = true, Enabled = true};
                     timer.Elapsed += (sender, args) =>
@@ -263,12 +263,12 @@ namespace steamBackupCLI
                             var eta = lJob.GetSpeedEta(true);
                             var file = lJob.GetCurFileStr();
                             var perc = lJob.GetPercDone();
-                            WriteConsole(tId, jobId, lJob.Name, perc, file, eta);
+                            WriteConsole(tId, jobId, lJob.m_name, perc, file, eta);
                         }
                     };
 
                     lJob.Start();
-                    Utilities.CopyAcfToBackup(lJob, _outDir);
+                    Utilities.CopyAcfToBackup(lJob, m_outDir);
 
                     timer.Stop();
 
@@ -294,19 +294,19 @@ namespace steamBackupCLI
             int totalCount;
             int compressingCount;
 
-            lock (BupTask)
+            lock (m_bupTask)
             {
-                totalCount = BupTask.JobCount;
-                skippedCount = BupTask.JobsToSkipCount;
-                waitingCount = BupTask.JobList.FindAll(job => job.Status == JobStatus.Waiting).Count;
-                finishedCount = BupTask.JobList.FindAll(job => job.Status == JobStatus.Finished).Count;
-                compressingCount = BupTask.JobList.FindAll(job => job.Status == JobStatus.Working).Count;
+                totalCount = m_bupTask.m_jobCount;
+                skippedCount = m_bupTask.m_jobsToSkipCount;
+                waitingCount = m_bupTask.JobList.FindAll(job => job.m_status == JobStatus.Waiting).Count;
+                finishedCount = m_bupTask.JobList.FindAll(job => job.m_status == JobStatus.Finished).Count;
+                compressingCount = m_bupTask.JobList.FindAll(job => job.m_status == JobStatus.Working).Count;
             }
 
             lock (Console.Out)
             {
-                Console.SetCursorPosition(0, StatusLine + 2);
-                Console.Write(Resources.ConsoleCompressionStatus.PadRight(ConsoleWidth), totalCount, compressingCount, waitingCount, finishedCount, skippedCount);
+                Console.SetCursorPosition(0, m_statusLine + 2);
+                Console.Write(Resources.ConsoleCompressionStatus.PadRight(m_consoleWidth), totalCount, compressingCount, waitingCount, finishedCount, skippedCount);
             }
         }
 
@@ -316,21 +316,21 @@ namespace steamBackupCLI
             int instance;
             int lastInstanceLine;
 
-            lock (RegisteredInstances)
+            lock (m_registeredInstances)
             {
-                instance = RegisteredInstances.FindIndex(i => i == instanceId);
+                instance = m_registeredInstances.FindIndex(i => i == instanceId);
             }
 
-            lock (InstanceLines)
+            lock (m_instanceLines)
             {
-                instanceLine = InstanceLines[instance];
-                lastInstanceLine = InstanceLines.Last() + 3;
+                instanceLine = m_instanceLines[instance];
+                lastInstanceLine = m_instanceLines.Last() + 3;
             }
 
             lock (Console.Out)
             {
                 Console.SetCursorPosition(0, instanceLine);
-                var restWidth = ConsoleWidth - 9;
+                var restWidth = m_consoleWidth - 9;
                 var shorted = string.Empty;
 
                 if (jobId != -1)
@@ -342,13 +342,13 @@ namespace steamBackupCLI
                 }
                 else
                 {
-                    Console.Write(@"{0}", shorted.PadRight(ConsoleWidth));
+                    Console.Write(@"{0}", shorted.PadRight(m_consoleWidth));
                 }
 
                 shorted = string.Empty;
 
                 Console.SetCursorPosition(0, instanceLine + 1);
-                restWidth = ConsoleWidth - eta.Length - 12;
+                restWidth = m_consoleWidth - eta.Length - 12;
                 
                 if (jobId != -1)
                 {
@@ -359,7 +359,7 @@ namespace steamBackupCLI
                 }
                 else
                 {
-                    Console.Write(@"{0}", shorted.PadRight(ConsoleWidth));
+                    Console.Write(@"{0}", shorted.PadRight(m_consoleWidth));
                 }
 
                 Console.SetCursorPosition(0, lastInstanceLine);
@@ -368,19 +368,19 @@ namespace steamBackupCLI
 
         private static void RegisterInstance(int instanceId)
         {
-            lock (RegisteredInstances)
+            lock (m_registeredInstances)
             {
-                var freeInstance = RegisteredInstances.FindIndex(i => i == -1);
-                RegisteredInstances[freeInstance] = instanceId;
+                var freeInstance = m_registeredInstances.FindIndex(i => i == -1);
+                m_registeredInstances[freeInstance] = instanceId;
             }
         }
 
         private static void UnRegisterInstance(int instanceId)
         {
-            lock (RegisteredInstances)
+            lock (m_registeredInstances)
             {
-                var instance = RegisteredInstances.FindIndex(i => i == instanceId);
-                RegisteredInstances[instance] = -1;
+                var instance = m_registeredInstances.FindIndex(i => i == instanceId);
+                m_registeredInstances[instance] = -1;
             }
         }
     }

@@ -8,7 +8,7 @@
 
     public class SevenZipWrapper : IDisposable
     {
-        private static readonly bool Is64Bit = Environment.Is64BitProcess;
+        private static readonly bool m_is64Bit = Environment.Is64BitProcess;
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         delegate void ProgressCallback(int value);
@@ -120,11 +120,11 @@
         [DllImport(@"rsc\32\SevenZip++Lib.dll", EntryPoint = "DecompressArchive", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
         private static extern void DecompressArchive32(IntPtr handle, string targetPath);
 
-        private bool _useMt;
-        private int _mtNumCores;
-        private bool _useLzma2;
-        private bool _useSolidCompression;
-        private int _compressionLevel;
+        private bool m_useMt;
+        private int m_mtNumCores;
+        private bool m_useLzma2;
+        private bool m_useSolidCompression;
+        private int m_compressionLevel;
 
         public event EventHandler<ProgressEventArgs> Compressing;
         public event EventHandler<FileNameEventArgs> FileCompressionStarted;
@@ -134,201 +134,201 @@
         public event EventHandler<FileNameEventArgs> FileExtractionStarted;
         public event EventHandler<EventArgs> ExtractionFinished;
 
-        private IntPtr _libHandle;
+        private IntPtr m_libHandle;
 
-        private int _progress;
+        private int m_progress;
 
-        private ProgressCallback _progressCallback;
-        private FileNameCallback _fileNameCallback;
-        private TotalSizeCallback _totalSizeCallback;
-        private ProcessedSizeCallback _processedSizeCallback;
+        private ProgressCallback m_progressCallback;
+        private FileNameCallback m_fileNameCallback;
+        private TotalSizeCallback m_totalSizeCallback;
+        private ProcessedSizeCallback m_processedSizeCallback;
 
         public bool UseMultithreading
         {
-            get { return _useMt; }
+            get { return m_useMt; }
             set
             {
-                _useMt = value;
+                m_useMt = value;
 
-                if (Is64Bit)
-                    SetUseMt64(_libHandle, value);
+                if (m_is64Bit)
+                    SetUseMt64(m_libHandle, value);
                 else
-                    SetUseMt32(_libHandle, value);
+                    SetUseMt32(m_libHandle, value);
             }
         }
 
         public int MultithreadingNumThreads
         {
-            get { return _mtNumCores; }
+            get { return m_mtNumCores; }
             set
             {
-                _mtNumCores = value;
+                m_mtNumCores = value;
 
-                if (Is64Bit)
-                    SetMtNumCores64(_libHandle, value);
+                if (m_is64Bit)
+                    SetMtNumCores64(m_libHandle, value);
                 else
-                    SetMtNumCores32(_libHandle, value);
+                    SetMtNumCores32(m_libHandle, value);
             }
         }
 
         public int CompressionLevel
         {
-            get { return _compressionLevel; }
+            get { return m_compressionLevel; }
             set
             {
-                _compressionLevel = value;
+                m_compressionLevel = value;
 
-                if (Is64Bit)
-                    SetCompressionLevel64(_libHandle, value);
+                if (m_is64Bit)
+                    SetCompressionLevel64(m_libHandle, value);
                 else
-                    SetCompressionLevel32(_libHandle, value);
+                    SetCompressionLevel32(m_libHandle, value);
             }
         }
 
         public bool UseLzma2Compression
         {
-            get { return _useLzma2; }
+            get { return m_useLzma2; }
             set
             {
-                _useLzma2 = value;
+                m_useLzma2 = value;
 
-                if (Is64Bit)
-                    SetUseLzma264(_libHandle, value);
+                if (m_is64Bit)
+                    SetUseLzma264(m_libHandle, value);
                 else
-                    SetUseLzma232(_libHandle, value);
+                    SetUseLzma232(m_libHandle, value);
             }
         }
 
         public bool UseSolidCompression
         {
-            get { return _useSolidCompression; }
+            get { return m_useSolidCompression; }
             set
             {
-                _useSolidCompression = value;
+                m_useSolidCompression = value;
 
-                if (Is64Bit)
-                    SetUseSolid64(_libHandle, value);
+                if (m_is64Bit)
+                    SetUseSolid64(m_libHandle, value);
                 else
-                    SetUseSolid32(_libHandle, value);
+                    SetUseSolid32(m_libHandle, value);
             }
         }
 
-        public ulong TotalSize { get; set; }
+        public ulong m_totalSize { get; set; }
 
-        public ulong ProcessedSize { get; set; }
+        public ulong m_processedSize { get; set; }
 
         public SevenZipWrapper(string archiveName, bool decompressor)
         {
             var rootDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             // check for IntPtr.Size == 8 does not work here, as we are in a 32 bit process, IntPtr.Size is always 4
-            var libraryPath = Path.Combine(rootDir, "rsc", Is64Bit ? "64" : "32", "7z.dll");
+            var libraryPath = Path.Combine(rootDir, "rsc", m_is64Bit ? "64" : "32", "7z.dll");
             
             if (decompressor)
             {
-                _fileNameCallback = value =>
+                m_fileNameCallback = value =>
                 {
                     var fPath = Path.GetFileName(value);
                     if (FileExtractionStarted == null) return;
 
-                    var ev = new FileNameEventArgs(fPath, (byte)_progress);
+                    var ev = new FileNameEventArgs(fPath, (byte)m_progress);
                     FileExtractionStarted(this, ev);
                     if (ev.Cancel)
                         Cancel(false);
                 };
-                _progressCallback = value =>
+                m_progressCallback = value =>
                 {
-                    _progress = value;
+                    m_progress = value;
                     if (Extracting != null)
                     {
-                        Extracting(this, new ProgressEventArgs((byte)_progress, (byte)(100 - _progress)));
+                        Extracting(this, new ProgressEventArgs((byte)m_progress, (byte)(100 - m_progress)));
                     }
                 };
-                _totalSizeCallback = value =>
+                m_totalSizeCallback = value =>
                 {
-                    TotalSize = value;
+                    m_totalSize = value;
                 };
-                _processedSizeCallback = value =>
+                m_processedSizeCallback = value =>
                 {
-                    ProcessedSize = value;
+                    m_processedSize = value;
                 };
 
-                if (Is64Bit)
-                    _libHandle = InitDecompressLibrary64(libraryPath, archiveName, _progressCallback, _fileNameCallback,
-                        _totalSizeCallback, _processedSizeCallback);
+                if (m_is64Bit)
+                    m_libHandle = InitDecompressLibrary64(libraryPath, archiveName, m_progressCallback, m_fileNameCallback,
+                        m_totalSizeCallback, m_processedSizeCallback);
                 else
-                    _libHandle = InitDecompressLibrary32(libraryPath, archiveName, _progressCallback, _fileNameCallback,
-                        _totalSizeCallback, _processedSizeCallback);
+                    m_libHandle = InitDecompressLibrary32(libraryPath, archiveName, m_progressCallback, m_fileNameCallback,
+                        m_totalSizeCallback, m_processedSizeCallback);
             }
             else
             {
-                _fileNameCallback = value =>
+                m_fileNameCallback = value =>
                 {
                     var fPath = Path.GetFileName(value);
                     if (FileCompressionStarted == null) return;
 
-                    var ev = new FileNameEventArgs(fPath, (byte) _progress);
+                    var ev = new FileNameEventArgs(fPath, (byte) m_progress);
                     FileCompressionStarted(this, ev);
                     if (ev.Cancel)
                         Cancel(false);
                 };
-                _progressCallback = value =>
+                m_progressCallback = value =>
                 {
-                    _progress = value;
+                    m_progress = value;
                     if (Compressing != null)
                     {
-                        Compressing(this, new ProgressEventArgs((byte) _progress, (byte) (100 - _progress)));
+                        Compressing(this, new ProgressEventArgs((byte) m_progress, (byte) (100 - m_progress)));
                     }
                 };
-                _totalSizeCallback = value =>
+                m_totalSizeCallback = value =>
                 {
-                    TotalSize = value;
+                    m_totalSize = value;
                 };
-                _processedSizeCallback = value =>
+                m_processedSizeCallback = value =>
                 {
-                    ProcessedSize = value;
+                    m_processedSize = value;
                 };
 
-                if (Is64Bit)
-                    _libHandle = InitCompressLibrary64(libraryPath, archiveName, _progressCallback, _fileNameCallback,
-                        _totalSizeCallback, _processedSizeCallback);
+                if (m_is64Bit)
+                    m_libHandle = InitCompressLibrary64(libraryPath, archiveName, m_progressCallback, m_fileNameCallback,
+                        m_totalSizeCallback, m_processedSizeCallback);
                 else
-                    _libHandle = InitCompressLibrary32(libraryPath, archiveName, _progressCallback, _fileNameCallback,
-                        _totalSizeCallback, _processedSizeCallback);
+                    m_libHandle = InitCompressLibrary32(libraryPath, archiveName, m_progressCallback, m_fileNameCallback,
+                        m_totalSizeCallback, m_processedSizeCallback);
             }
         }
 
 
         ~SevenZipWrapper()
         {
-            _fileNameCallback = null;
-            _progressCallback = null;
-            _processedSizeCallback = null;
-            _totalSizeCallback = null;
+            m_fileNameCallback = null;
+            m_progressCallback = null;
+            m_processedSizeCallback = null;
+            m_totalSizeCallback = null;
         }
 
         public void Dispose(bool decompressor)
         {
             if (decompressor)
             {
-                if (Is64Bit)
-                    DestroyDecompressLibrary64(_libHandle);
+                if (m_is64Bit)
+                    DestroyDecompressLibrary64(m_libHandle);
                 else
-                    DestroyDecompressLibrary32(_libHandle);
+                    DestroyDecompressLibrary32(m_libHandle);
             }
             else
             {
-                if (Is64Bit)
-                    DestroyCompressLibrary64(_libHandle);
+                if (m_is64Bit)
+                    DestroyCompressLibrary64(m_libHandle);
                 else
-                    DestroyCompressLibrary32(_libHandle);
+                    DestroyCompressLibrary32(m_libHandle);
             }
 
-            _fileNameCallback = null;
-            _progressCallback = null;
-            _processedSizeCallback = null;
-            _totalSizeCallback = null;
+            m_fileNameCallback = null;
+            m_progressCallback = null;
+            m_processedSizeCallback = null;
+            m_totalSizeCallback = null;
 
-            _libHandle = new IntPtr();
+            m_libHandle = new IntPtr();
             Dispose();
         }
 
@@ -341,17 +341,17 @@
         {
             if (decompressor)
             {
-                if (Is64Bit)
-                    CancelDecompression64(_libHandle);
+                if (m_is64Bit)
+                    CancelDecompression64(m_libHandle);
                 else
-                    CancelDecompression32(_libHandle);
+                    CancelDecompression32(m_libHandle);
             }
             else
             {
-                if (Is64Bit)
-                    CancelCompression64(_libHandle);
+                if (m_is64Bit)
+                    CancelCompression64(m_libHandle);
                 else
-                    CancelCompression32(_libHandle);
+                    CancelCompression32(m_libHandle);
             }
         }
 
@@ -360,10 +360,10 @@
             if (!pathPrefix.EndsWith(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
                 pathPrefix += Path.DirectorySeparatorChar;
 
-            if (Is64Bit)
-                CompressFileList64(_libHandle, pathPrefix, filePaths, filePaths.Length);
+            if (m_is64Bit)
+                CompressFileList64(m_libHandle, pathPrefix, filePaths, filePaths.Length);
             else
-                CompressFileList32(_libHandle, pathPrefix, filePaths, filePaths.Length);
+                CompressFileList32(m_libHandle, pathPrefix, filePaths, filePaths.Length);
 
             if (CompressionFinished != null)
             {
@@ -373,10 +373,10 @@
 
         public void DecompressFileArchive(string targetPath)
         {
-            if (Is64Bit)
-                DecompressArchive64(_libHandle, targetPath);
+            if (m_is64Bit)
+                DecompressArchive64(m_libHandle, targetPath);
             else
-                DecompressArchive32(_libHandle, targetPath);
+                DecompressArchive32(m_libHandle, targetPath);
 
             if (ExtractionFinished != null)
             {

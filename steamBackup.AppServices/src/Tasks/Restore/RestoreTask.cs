@@ -17,23 +17,23 @@
         
         public override int RamUsage(bool useLzma2)
         {
-            return (useLzma2 ? 1 : ThreadCount) * 40;
+            return (useLzma2 ? 1 : m_threadCount) * 40;
         }
 
         public override void Scan()
         {
             // Find all of the backed up items and a it to the job list
 
-            var files = Directory.GetFiles(Path.Combine(BackupDir, BackupDirectory.Common), "*.7z");
+            var files = Directory.GetFiles(Path.Combine(m_backupDir, BackupDirectory.Common), "*.7z");
             foreach (var file in files)
             {
-                Job job = new RestoreJob(Path.GetFileName(file), SteamDir, BackupDir);
+                Job job = new RestoreJob(Path.GetFileName(file), m_steamDir, m_backupDir);
 
                 JobList.Add(job);
             }
 
 
-            var configDir = Path.Combine(BackupDir, "config.sbt");
+            var configDir = Path.Combine(m_backupDir, "config.sbt");
             if (File.Exists(configDir))
             {
                 using (var streamReader = new StreamReader(configDir))
@@ -52,18 +52,17 @@
                     {
                         if (cfgFile != null)
                         {
-                            CurrentArchiveVer = cfgFile.ArchiverVersion;
+                            m_currentArchiveVer = cfgFile.ArchiverVersion;
                             foreach (var acfId in cfgFile.AcfIds)
                             {
                                 var name = acfId.Key;
                                 var ids = acfId.Value;
 
-                                var foundJob = JobList.Find(job => job.Name.Equals(name));
+                                var foundJob = (RestoreJob)JobList.Find(job => job.m_name.Equals(name));
 
                                 if (foundJob == null) continue;
 
-                                foundJob.AcfFiles = ids;
-                                foundJob.AcfDir = Path.Combine(SteamDir, Utilities.GetSteamAppsFolder(SteamDir));
+                                foundJob.addAcfInfo(ids, Path.Combine(m_steamDir, Utilities.GetSteamAppsFolder(m_steamDir)));
                             }
                         }
                     }
@@ -73,7 +72,7 @@
 
         public override void Setup()
         {
-            if (CurrentArchiveVer == 1)
+            if (m_currentArchiveVer == 1)
                 AddMiscItems();
 
             SharedStart();
@@ -83,7 +82,7 @@
         {
             // for legacy backups (version 1)
 
-            Job job = new RestoreJob("steamapps", SteamDir, BackupDir);
+            Job job = new RestoreJob("steamapps", m_steamDir, m_backupDir);
 
             JobList.Insert(0, job);
         }

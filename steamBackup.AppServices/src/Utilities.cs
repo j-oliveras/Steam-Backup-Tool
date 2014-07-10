@@ -97,13 +97,13 @@
         /// <param name="backupDir">Backup directory</param>
         public static void CopyAcfToBackup(Job job, string backupDir)
         {
-            if (String.IsNullOrEmpty(job.AcfFiles)) return;
+            if (String.IsNullOrEmpty(job.m_acfFiles)) return;
 
-            var acfId = job.AcfFiles.Split('|');
+            var acfId = job.m_acfFiles.Split('|');
 
             foreach(var id in acfId)
             {
-                var src = Path.Combine(job.AcfDir, "appmanifest_" + id + ".acf");
+                var src = Path.Combine(job.m_acfDir, "appmanifest_" + id + ".acf");
                 var dst = Path.Combine(backupDir, BackupDirectory.Acf);
 
                 if (!Directory.Exists(dst))
@@ -113,7 +113,7 @@
                 var reader = fi.OpenText();
 
                 var acf = reader.ReadToEnd();
-                var gameCommonFolder = UpDirLvl(job.GetSteamDir());
+                var gameCommonFolder = UpDirLvl(job.m_steamDir);
                 acf = acf.Replace(gameCommonFolder, "|DIRECTORY-STD|");
                 acf = acf.Replace(gameCommonFolder.ToLower(), "|DIRECTORY-LOWER|");
                 acf = acf.Replace(gameCommonFolder.ToLower().Replace("\\", "\\\\"), "|DIRECTORY-ESCSLASH-LOWER|");
@@ -130,14 +130,14 @@
         /// <param name="backupDir">Backup directory</param>
         public static void CopyAcfToRestore(Job job, string backupDir)
         {
-            if (String.IsNullOrEmpty(job.AcfFiles)) return;
+            if (String.IsNullOrEmpty(job.m_acfFiles)) return;
 
-            var acfId = job.AcfFiles.Split('|');
+            var acfId = job.m_acfFiles.Split('|');
 
             foreach (var id in acfId)
             {
                 var src = Path.Combine(backupDir, BackupDirectory.Acf, "appmanifest_" + id + ".acf");
-                var dst = job.AcfDir;
+                var dst = job.m_acfDir;
 
                 if (!Directory.Exists(dst))
                     Directory.CreateDirectory(dst);
@@ -146,7 +146,7 @@
                 var reader = fi.OpenText();
 
                 var acf = reader.ReadToEnd();
-                var gameCommonFolder = Path.Combine(job.AcfDir, SteamDirectory.Common);
+                var gameCommonFolder = Path.Combine(job.m_acfDir, SteamDirectory.Common);
 
                 acf = acf.Replace("|DIRECTORY-STD|", gameCommonFolder);
                 acf = acf.Replace("|DIRECTORY-LOWER|", gameCommonFolder.ToLower());

@@ -9,22 +9,22 @@
         protected TaskType Type = TaskType.Unset;
         public TaskType GetTaskType() { return Type; }
 
-        public int JobsToDoCount = 0;
-        public int JobsToSkipCount = 0;
-        public int JobsAnalysed = 0;
-        public int JobsDone = 0;
-        public int JobsSkiped = 0;
-        public int JobCount;
+        public int m_jobsToDoCount = 0;
+        public int m_jobsToSkipCount = 0;
+        public int m_jobsAnalysed = 0;
+        public int m_jobsDone = 0;
+        public int m_jobsSkiped = 0;
+        public int m_jobCount;
         
         public List<Job> JobList = new List<Job>();
 
-        public const int ArchiveVer = 2;
-        public int CurrentArchiveVer = -1;
+        public const int m_archiveVer = 2;
+        public int m_currentArchiveVer = -1;
 
-        public string SteamDir;
-        public string BackupDir;
+        public string m_steamDir;
+        public string m_backupDir;
 
-        public int ThreadCount = 0;
+        public int m_threadCount = 0;
 
         abstract public int RamUsage(bool useLzma2);
         abstract public void Scan();
@@ -32,43 +32,43 @@
 
         protected void SharedStart()
         {
-            JobsToDoCount = 0;
-            JobsToSkipCount = 0;
-            JobsAnalysed = 0;
-            JobsDone = 0;
-            JobsSkiped = 0;
-            JobCount = 0;
+            m_jobsToDoCount = 0;
+            m_jobsToSkipCount = 0;
+            m_jobsAnalysed = 0;
+            m_jobsDone = 0;
+            m_jobsSkiped = 0;
+            m_jobCount = 0;
 
             foreach (var job in JobList)
             {
-                if (job.Status == JobStatus.Waiting)
-                    JobsToDoCount++;
+                if (job.m_status == JobStatus.Waiting)
+                    m_jobsToDoCount++;
                 else
-                    JobsToSkipCount++;
+                    m_jobsToSkipCount++;
             }
 
-            JobCount = JobsToDoCount + JobsToSkipCount;
+            m_jobCount = m_jobsToDoCount + m_jobsToSkipCount;
         }
 
         public string ProgressText()
         {
-            return string.Format(Resources.ProgressFormatStr, JobsDone, JobsToDoCount, JobsSkiped, JobsToSkipCount, JobsAnalysed, JobCount);
+            return string.Format(Resources.ProgressFormatStr, m_jobsDone, m_jobsToDoCount, m_jobsSkiped, m_jobsToSkipCount, m_jobsAnalysed, m_jobCount);
         }
 
         public Job GetNextJob()
         {
-            while (JobsAnalysed < JobCount)
+            while (m_jobsAnalysed < m_jobCount)
             {
-                var job = JobList[JobsAnalysed];
-                JobsAnalysed++;
+                var job = JobList[m_jobsAnalysed];
+                m_jobsAnalysed++;
 
-                if (job.Status == JobStatus.Waiting)
+                if (job.m_status == JobStatus.Waiting)
                 {
-                    JobsDone++;
+                    m_jobsDone++;
                     return job;
                 }
 
-                JobsSkiped++;
+                m_jobsSkiped++;
             }
             return null;
         }
@@ -80,7 +80,7 @@
 
         public void EnableJob(Job job)
         {
-            job.Status = JobStatus.Waiting;
+            job.m_status = JobStatus.Waiting;
         }
 
         public void DisableJob(int id)
@@ -90,7 +90,7 @@
 
         public void DisableJob(Job job)
         {
-            job.Status = JobStatus.Skipped;
+            job.m_status = JobStatus.Skipped;
         }
         
         public void SetEnableAll()

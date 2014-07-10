@@ -17,23 +17,23 @@
             InitializeComponent();
         }
 
-        public BackupTask BupTask = new BackupTask();
+        public BackupTask m_task = new BackupTask();
         
-        public bool Canceled = true;
+        public bool m_canceled = true;
 
-        private static readonly string[] CompressionStrings = { "Copy", "Fastest", "Fast", "Normal", "Maximum", "Ultra", "N/A" };
+        private static readonly string[] m_compressionStrings = { "Copy", "Fastest", "Fast", "Normal", "Maximum", "Ultra", "N/A" };
 
         private void BackupUserCtrl_Load(object sender, EventArgs e)
         {
 
-            BupTask.SteamDir = Settings.SteamDir;
-            BupTask.BackupDir = Settings.BackupDir;
+            m_task.m_steamDir = Settings.SteamDir;
+            m_task.m_backupDir = Settings.BackupDir;
 
-            BupTask.JobList.Clear();
-            BupTask.Scan();
+            m_task.JobList.Clear();
+            m_task.Scan();
 
             // use databinding instead of direct access to the control
-            chkList.DataSource = BupTask.JobList;
+            chkList.DataSource = m_task.JobList;
             chkList.DisplayMember = "name";
 
             UpdCheckBoxList();
@@ -45,14 +45,14 @@
                 tbarThread.Maximum = cBoxUnlockThreads.Checked ? 8 : Math.Min(8, Environment.ProcessorCount);
 
                 tbarThread.Value = Settings.Lzma2Threads;
-                BupTask.ThreadCount = Settings.Lzma2Threads;
+                m_task.m_threadCount = Settings.Lzma2Threads;
                 cBoxUnlockThreads.Visible = true;
             }
             else
             {
                 tbarThread.Maximum = 4;
                 tbarThread.Value = Settings.ThreadsBup;
-                BupTask.ThreadCount = Settings.ThreadsBup;
+                m_task.m_threadCount = Settings.ThreadsBup;
                 cBoxUnlockThreads.Visible = false;
             }
 
@@ -61,7 +61,7 @@
             ThreadText();
 
             tbarComp.Value = Settings.Compression;
-            BupTask.SetCompLevel(Settings.Compression);
+            m_task.SetCompLevel(Settings.Compression);
             CompresionText();
 
             RamUsage();
@@ -69,7 +69,7 @@
 
         private void BackupUserCtrl_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Settings.Compression = BupTask.GetCompLevel();
+            Settings.Compression = m_task.GetCompLevel();
             Settings.UseLzma2 = cBoxLzma2.Checked;
 
             Settings.Lzma2UnlockThreads = cBoxUnlockThreads.Checked;
@@ -87,10 +87,10 @@
 
             // disable ItemCheck event temporarily
             chkList.ItemCheck -= chkList_ItemCheck;
-            foreach (var item in BupTask.JobList)
+            foreach (var item in m_task.JobList)
             {
                 var index = chkList.Items.IndexOf(item);
-                var enabled = item.Status == JobStatus.Waiting;
+                var enabled = item.m_status == JobStatus.Waiting;
                 chkList.SetItemChecked(index, enabled);
             }
             // reenable ItemCheck event
@@ -101,28 +101,28 @@
 
         private void btnBupAll_Click(object sender, EventArgs e)
         {
-            DisableButtons(false);
+            EnableButtons(false);
 
             cBoxDelBup.Enabled = true;
             cBoxDelBup.Checked = false;
 
-            BupTask.SetEnableAll();
+            m_task.SetEnableAll();
             UpdCheckBoxList();
 
-            DisableButtons(true);
+            EnableButtons(true);
         }
 
         private void btnBupNone_Click(object sender, EventArgs e)
         {
-            DisableButtons(false);
+            EnableButtons(false);
 
             cBoxDelBup.Enabled = true;
             cBoxDelBup.Checked = false;
 
-            BupTask.SetEnableNone();
+            m_task.SetEnableNone();
             UpdCheckBoxList();
 
-            DisableButtons(true);
+            EnableButtons(true);
         }
 
         private void btnUpdBup_Click(object sender, EventArgs e)
@@ -137,7 +137,7 @@
 
         private void UpdateSelection(bool archivedOnly)
         {
-            DisableButtons(false);
+            EnableButtons(false);
 
             cBoxDelBup.Enabled = false;
             cBoxDelBup.Checked = false;
@@ -145,24 +145,24 @@
             Cursor = Cursors.WaitCursor;
 
             var worker = new BackgroundWorker();
-            worker.DoWork += (o, args) => BupTask.SetEnableUpd(archivedOnly);
+            worker.DoWork += (o, args) => m_task.SetEnableUpd(archivedOnly);
             worker.RunWorkerCompleted += (o, args) =>
             {
                 UpdCheckBoxList();
                 Cursor = Cursors.Arrow;
-                DisableButtons(true);
+                EnableButtons(true);
             };
 
             worker.RunWorkerAsync();
         }
 
-        private void DisableButtons(bool disableBool)
+        private void EnableButtons(bool enabled)
         {
-            btnBupAll.Enabled = disableBool;
-            btnBupNone.Enabled = disableBool;
-            btnUpdBup.Enabled = disableBool;
-            btnUpdLib.Enabled = disableBool;
-            chkList.Enabled = disableBool;
+            btnBupAll.Enabled = enabled;
+            btnBupNone.Enabled = enabled;
+            btnUpdBup.Enabled = enabled;
+            btnUpdLib.Enabled = enabled;
+            chkList.Enabled = enabled;
         }
 
         private void btnStartBup_Click(object sender, EventArgs e)
@@ -173,9 +173,9 @@
             }
             else
             {
-                Canceled = false;
+                m_canceled = false;
 
-                BupTask.Setup();
+                m_task.Setup();
 
                 Close();
             }
@@ -183,17 +183,17 @@
 
         private void btnCancelBup_Click(object sender, EventArgs e)
         {
-            Canceled = true;
+            m_canceled = true;
             
             Close();
         }
 
         private void tbarThread_Scroll(object sender, EventArgs e)
         {
-            BupTask.ThreadCount = tbarThread.Value;
+            m_task.m_threadCount = tbarThread.Value;
 
             if (cBoxLzma2.Checked)
-                BupTask.SetLzma2Threads(tbarThread.Value);
+                m_task.SetLzma2Threads(tbarThread.Value);
 
             ThreadText();
 
@@ -216,7 +216,7 @@
 
         private void tbarComp_Scroll(object sender, EventArgs e)
         {
-            BupTask.SetCompLevel(tbarComp.Value);
+            m_task.SetCompLevel(tbarComp.Value);
             
             CompresionText();
 
@@ -231,17 +231,17 @@
 
         private void CompresionText()
         {
-            var compLevel = BupTask.GetCompLevel();
+            var compLevel = m_task.GetCompLevel();
 
             if (compLevel <= 5 && compLevel >= 0)
-                lblComp.Text = Resources.CompressionLevelText + CompressionStrings[compLevel];
+                lblComp.Text = Resources.CompressionLevelText + m_compressionStrings[compLevel];
             else
-                lblComp.Text = Resources.CompressionLevelText + CompressionStrings[6];
+                lblComp.Text = Resources.CompressionLevelText + m_compressionStrings[6];
         }
 
         private int RamUsage()
         {
-            int ram = BupTask.RamUsage(cBoxLzma2.Checked);
+            int ram = m_task.RamUsage(cBoxLzma2.Checked);
 
             lblRamBackup.Text = string.Format(Resources.MaxRamUsageText, ram);
 
@@ -262,11 +262,11 @@
 
             if (e.NewValue == CheckState.Checked)
             {
-                BupTask.EnableJob(job);
+                m_task.EnableJob(job);
             }
             else
             {
-                BupTask.DisableJob(job);
+                m_task.DisableJob(job);
             }
         }
 
@@ -274,12 +274,12 @@
         {
             cBoxDelBup.ForeColor = cBoxDelBup.Checked ? Color.Red : Color.Black;
 
-            BupTask.DeleteAll = cBoxDelBup.Checked;
+            m_task.m_deleteAll = cBoxDelBup.Checked;
         }
 
         public Task GetTask()
         {
-            return BupTask;
+            return m_task;
         }
 
         #region Info text handling
@@ -355,15 +355,15 @@
         {
             if (cBoxLzma2.Checked)
             {
-                BupTask.SetCompMethod(true);
+                m_task.SetCompMethod(true);
 
                 tbarThread.Maximum = cBoxUnlockThreads.Checked ? 8 : Math.Min(8, Environment.ProcessorCount);
 
                 var numThreads = Math.Min(tbarThread.Maximum, tbarThread.Value);
                 tbarThread.Value = numThreads;
-                BupTask.ThreadCount = numThreads;
+                m_task.m_threadCount = numThreads;
 
-                BupTask.SetLzma2Threads(numThreads);
+                m_task.SetLzma2Threads(numThreads);
 
                 tbarThreadLbl.Text = Resources.ThreadsCountTooltip;
 
@@ -371,13 +371,13 @@
             }
             else
             {
-                BupTask.SetCompMethod(false);
+                m_task.SetCompMethod(false);
 
                 tbarThread.Maximum = 4;
 
                 var numThreads = Math.Min(tbarThread.Maximum, tbarThread.Value);
                 tbarThread.Value = numThreads;
-                BupTask.ThreadCount = numThreads;
+                m_task.m_threadCount = numThreads;
 
                 tbarThreadLbl.Text = Resources.InstancesCountTooltip;
 
@@ -398,11 +398,11 @@
             {
                 tbarThread.Maximum = Math.Min(8, Environment.ProcessorCount);
 
-                var numThreads = Math.Min(tbarThread.Maximum, BupTask.ThreadCount);
+                var numThreads = Math.Min(tbarThread.Maximum, m_task.m_threadCount);
                 tbarThread.Value = numThreads;
-                BupTask.ThreadCount = numThreads;
+                m_task.m_threadCount = numThreads;
 
-                BupTask.SetLzma2Threads(numThreads);
+                m_task.SetLzma2Threads(numThreads);
 
                 ThreadText();
                 RamUsage();

@@ -11,10 +11,10 @@
     public partial class UpdateWizard : Form
     {
 
-        private string _updName = @"N/A";
-        private string _updVersion = @"N/A";
-        private string _updUrl = @"N/A";
-        private string _updChangeList = @"N/A";
+        private string m_updName = @"N/A";
+        private string m_updVersion = @"N/A";
+        private string m_updUrl = @"N/A";
+        private string m_updChangeList = @"N/A";
 
         public UpdateWizard()
         {
@@ -47,19 +47,19 @@
                     {
                         case "name":
                             data.Read();
-                            _updName = data.Value.ToString();
+                            m_updName = data.Value.ToString();
                             break;
                         case "version":
                             data.Read();
-                            _updVersion = data.Value.ToString();
+                            m_updVersion = data.Value.ToString();
                             break;
                         case "url":
                             data.Read();
-                            _updUrl = data.Value.ToString();
+                            m_updUrl = data.Value.ToString();
                             break;
                         case "changelist":
                             data.Read();
-                            _updChangeList = data.Value.ToString();
+                            m_updChangeList = data.Value.ToString();
                             break;
                     }
                 }
@@ -70,13 +70,13 @@
                 return;
             }
                 
-            if (thisVer.Equals(_updVersion))
+            if (thisVer.Equals(m_updVersion))
             {
                 infoBox.Text = Resources.ToolUpdateNoNewVersion;
             }
             else
             {
-                infoBox.Text = string.Format(Resources.UpdateAvailable, _updName, _updChangeList, Resources.ChangeListLegend, Environment.NewLine);
+                infoBox.Text = string.Format(Resources.UpdateAvailable, m_updName, m_updChangeList, Resources.ChangeListLegend, Environment.NewLine);
                 btnUpdate.Enabled = true;
             }
         }
@@ -124,7 +124,7 @@
             // Download the Web resource and save it into the current filesystem folder.
             try
             {
-                myWebClient.DownloadFile(_updUrl, downloadLocation);
+                myWebClient.DownloadFile(m_updUrl, downloadLocation);
             }
             catch
             {
@@ -132,7 +132,6 @@
                 btnCancel.Enabled = true;
                 return;
             }
-
 
             infoBox.Text = Resources.DownloadingUpdateSuccess;
 

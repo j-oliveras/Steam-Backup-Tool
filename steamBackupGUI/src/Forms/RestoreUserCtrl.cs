@@ -16,25 +16,25 @@
             InitializeComponent();
         }
 
-        public RestoreTask RstTask = new RestoreTask();
+        public RestoreTask m_task = new RestoreTask();
 
-        public bool Canceled = true;
+        public bool m_canceled = true;
 
         private void RestoreUserCtrl_Load(object sender, EventArgs e)
         {
             tbarThread.Value = Settings.ThreadsRest;
-            RstTask.ThreadCount = Settings.ThreadsRest;
+            m_task.m_threadCount = Settings.ThreadsRest;
             ThreadText();
 
             btnRestAll.Enabled = false;
 
-            RstTask.SteamDir = Settings.SteamDir;
-            RstTask.BackupDir = Settings.BackupDir;
+            m_task.m_steamDir = Settings.SteamDir;
+            m_task.m_backupDir = Settings.BackupDir;
 
-            RstTask.Scan();
+            m_task.Scan();
 
             // use databinding instead of direct access to the control
-            chkList.DataSource = RstTask.JobList;
+            chkList.DataSource = m_task.JobList;
             chkList.DisplayMember = "name";
 
             UpdCheckBoxList();
@@ -43,7 +43,7 @@
 
         private void RestoreUserCtrl_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Settings.ThreadsRest = RstTask.ThreadCount;
+            Settings.ThreadsRest = m_task.m_threadCount;
             Settings.Save();
         }
 
@@ -53,10 +53,10 @@
 
             // disable ItemCheck event temporarily
             chkList.ItemCheck -= chkList_ItemCheck;
-            foreach (var job in RstTask.JobList)
+            foreach (var job in m_task.JobList)
             {
                 var index = chkList.Items.IndexOf(job);
-                var enabled = job.Status == JobStatus.Waiting;
+                var enabled = job.m_status == JobStatus.Waiting;
                 chkList.SetItemChecked(index, enabled);
             }
             // reenable ItemCheck event
@@ -98,15 +98,15 @@
             }
 
             var job = (Job) chkList.SelectedItem;
-            if (string.IsNullOrEmpty(job.AcfFiles))
+            if (string.IsNullOrEmpty(job.m_acfFiles))
             {
                 dboxLibList.Enabled = false;
-                dboxLibList.SelectedItem = Utilities.UpDirLvl(job.GetSteamDir());
+                dboxLibList.SelectedItem = Utilities.UpDirLvl(job.m_steamDir);
             }
             else
             {
                 dboxLibList.Enabled = true;
-                dboxLibList.SelectedItem = Utilities.UpDirLvl(job.GetSteamDir());
+                dboxLibList.SelectedItem = Utilities.UpDirLvl(job.m_steamDir);
             }
         }
 
@@ -119,8 +119,8 @@
             var selectedPath = dboxLibList.SelectedItem as string;
             if (selectedPath == null) return;
 
-            job.SetSteamDir(Path.Combine(selectedPath, SteamDirectory.Common));
-            job.AcfDir = dboxLibList.SelectedItem.ToString();
+            job.m_steamDir = Path.Combine(selectedPath, SteamDirectory.Common);
+            job.m_acfDir = dboxLibList.SelectedItem.ToString();
         }
 
         private void btnRestAll_Click(object sender, EventArgs e)
@@ -128,7 +128,7 @@
             btnRestAll.Enabled = false;
             btnRestNone.Enabled = true;
 
-            RstTask.SetEnableAll();
+            m_task.SetEnableAll();
             UpdCheckBoxList();
         }
 
@@ -137,7 +137,7 @@
             btnRestNone.Enabled = false;
             btnRestAll.Enabled = true;
 
-            RstTask.SetEnableNone();
+            m_task.SetEnableNone();
             UpdCheckBoxList();
         }
 
@@ -149,9 +149,9 @@
             }
             else
             {
-                Canceled = false;
+                m_canceled = false;
 
-                RstTask.Setup();
+                m_task.Setup();
 
                 Close();
             }
@@ -165,17 +165,17 @@
 
             if (e.NewValue == CheckState.Checked)
             {
-                RstTask.EnableJob(job);
+                m_task.EnableJob(job);
             }
             else
             {
-                RstTask.DisableJob(job);
+                m_task.DisableJob(job);
             }
         }
 
         private void btnCancelRest_Click(object sender, EventArgs e)
         {
-            Canceled = true;
+            m_canceled = true;
             
             Close();
         }
@@ -192,7 +192,7 @@
 
         public Task GetTask()
         {
-            return RstTask;
+            return m_task;
         }
 
         private void controls_MouseLeave(object sender, EventArgs e)

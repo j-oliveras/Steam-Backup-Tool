@@ -11,67 +11,67 @@
 
     class BackupJob : Job
     {
-        private SevenZipWrapper _wrapper;
-        private bool _compressionLzma2;
-        private int _compLevel = 5;
-        private DateTime _compStarted;
-        private int _lzma2Threads;
+        private SevenZipWrapper m_wrapper;
+        private bool m_compIsLzma2;
+        private int m_compLevel = 5;
+        private DateTime m_compStarted;
+        private int m_lzma2Threads;
 
         private BackupJob() { }
 
-        public BackupJob(string folder, string steamDir, string backupDir, string library, Dictionary<string, string> acfFiles)
+        public BackupJob(string steamDir, string backupDir, string library, Dictionary<string, string> acfFiles)
         {
-            Type = JobType.Backup;
+            m_type = JobType.Backup;
 
             var textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
-            var name = Path.GetFileName(folder) ?? string.Empty;
-            Name = textInfo.ToTitleCase(name);
-            SetSteamDir(folder);
-            SetBackupDir(Path.Combine(backupDir, BackupDirectory.Common, name + ".7z"));
-            Status = JobStatus.Waiting;
-            AcfDir = library;
+            var name = Path.GetFileName(steamDir) ?? string.Empty;
+            m_name = textInfo.ToTitleCase(name);
+            m_steamDir = steamDir;
+            m_backupDir = Path.Combine(backupDir, BackupDirectory.Common, name + ".7z");
+            m_status = JobStatus.Waiting;
+            m_acfDir = library;
 
-            if (acfFiles.ContainsKey(folder))
+            if (acfFiles.ContainsKey(steamDir))
             {
-                AcfFiles = acfFiles[folder];
-                acfFiles.Remove(folder);
+                m_acfFiles = acfFiles[steamDir];
+                acfFiles.Remove(steamDir);
             }
             else
             {
-                AcfFiles = "";
+                m_acfFiles = "";
             }
         }
 
         ~BackupJob()
         {
-            if (_wrapper != null)
+            if (m_wrapper != null)
             {
-                _wrapper.Dispose(false);
-                _wrapper = null;
+                m_wrapper.Dispose(false);
+                m_wrapper = null;
             }
         }
 
         public override void Start()
         {
-            _compStarted = DateTime.Now;
-            var fileList = Directory.GetFiles(DirSteam, "*.*", SearchOption.AllDirectories);
+            m_compStarted = DateTime.Now;
+            var fileList = Directory.GetFiles(m_steamDir, "*.*", SearchOption.AllDirectories);
 
             try
             {
-                _wrapper = new SevenZipWrapper(DirBackup, false);
+                m_wrapper = new SevenZipWrapper(m_backupDir, false);
 
-                _wrapper.Compressing += Working;
-                _wrapper.FileCompressionStarted += Started;
-                _wrapper.CompressionFinished += Finished;
+                m_wrapper.Compressing += Working;
+                m_wrapper.FileCompressionStarted += Started;
+                m_wrapper.CompressionFinished += Finished;
 
-                if (_compressionLzma2)
+                if (m_compIsLzma2)
                 {
-                    _wrapper.UseLzma2Compression = true;
-                    _wrapper.MultithreadingNumThreads = _lzma2Threads;
+                    m_wrapper.UseLzma2Compression = true;
+                    m_wrapper.MultithreadingNumThreads = m_lzma2Threads;
                 }
 
                 int compressionLevel;
-                switch (_compLevel)
+                switch (m_compLevel)
                 {
                     case 2:
                         compressionLevel = 3;
@@ -86,15 +86,15 @@
                         compressionLevel = 9;
                         break;
                     default:
-                        compressionLevel = _compLevel;
+                        compressionLevel = m_compLevel;
                         break;
                 }
 
-                _wrapper.CompressionLevel = compressionLevel;
-                _wrapper.UseMultithreading = true;
+                m_wrapper.CompressionLevel = compressionLevel;
+                m_wrapper.UseMultithreading = true;
 
-                _wrapper.CompressFiles(Utilities.UpDirLvl(DirSteam), fileList);
-                _wrapper.Dispose(false);
+                m_wrapper.CompressFiles(Utilities.UpDirLvl(m_steamDir), fileList);
+                m_wrapper.Dispose(false);
             }
             catch (Exception ex)
             {
@@ -104,16 +104,16 @@
 
         public override string GetSpeedEta(bool shortStr)
         {
-            if (_wrapper == null) return string.Empty;
+            if (m_wrapper == null) return string.Empty;
 
             try
             {
                 UInt64 processedSize;
                 UInt64 totalSize;
-                lock (_wrapper)
+                lock (m_wrapper)
                 {
-                    totalSize = _wrapper.TotalSize;
-                    processedSize = _wrapper.ProcessedSize;
+                    totalSize = m_wrapper.m_totalSize;
+                    processedSize = m_wrapper.m_processedSize;
                 }
 
                 if (totalSize <= 0)
@@ -123,7 +123,7 @@
 
                 var sizeRemaining = totalSize - processedSize;
 
-                var processingTime = DateTime.Now.Subtract(_compStarted);
+                var processingTime = DateTime.Now.Subtract(m_compStarted);
                 var processingDateTime = new DateTime().AddSeconds(processingTime.TotalSeconds);
 
                 var processingSeconds = processingTime.TotalSeconds;
@@ -156,30 +156,19 @@
             }
         }
 
-        public override void SetSteamDir(string dir)
-        {
-            DirSteam = dir;
-        }
-
-        public override void SetBackupDir(string dir)
-        {
-            DirBackup = dir;
-            //sevenZip.TempFolderPath = dir + ".tmp";
-        }
-
         public void SetCompression(int level)
         {
-            _compLevel = level;
+            m_compLevel = level;
         }
 
         public void SetLzma2Compression(bool lzma2Compression)
         {
-            _compressionLzma2 = lzma2Compression;
+            m_compIsLzma2 = lzma2Compression;
         }
 
         public void SetLzma2Threads(int threads)
         {
-            _lzma2Threads = threads;
+            m_lzma2Threads = threads;
         }
     }
 }

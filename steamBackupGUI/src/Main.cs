@@ -22,22 +22,22 @@ namespace steamBackup
 
     public partial class Main : Form
     {
-        readonly string _versionNum = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        readonly string m_versionNum = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-        bool _working = false;
+        bool m_working = false;
 
-        bool _cancelJob;
-        bool _pauseJob;
-        int _threadDone;
+        bool m_cancelJob;
+        bool m_pauseJob;
+        int m_threadDone;
 
-        Task _task;
+        Task m_task;
 
-        readonly Job[] _currJobs = new Job[4];
-        readonly Thread[] _threadList = new Thread[4];
+        readonly Job[] m_currJobs = new Job[4];
+        readonly Thread[] m_threadList = new Thread[4];
 
         private void main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_working && MessageBox.Show(Resources.ClosingWhileRunning, "Close Application", MessageBoxButtons.YesNo) == DialogResult.No)
+            if (m_working && MessageBox.Show(Resources.ClosingWhileRunning, "Close Application", MessageBoxButtons.YesNo) == DialogResult.No)
             {
                 e.Cancel = true;
                 this.Activate();
@@ -68,7 +68,7 @@ namespace steamBackup
             tbxBackupDir.Text = Settings.BackupDir;
 
             lblStarted.Text = null;
-            lbl0.Text = string.Format(Resources.VersionStr, _versionNum);
+            lbl0.Text = string.Format(Resources.VersionStr, m_versionNum);
         }
 
         private void btnBrowseSteam_Click(object sender, EventArgs e)
@@ -110,13 +110,13 @@ namespace steamBackup
             var backupUserCtrl = new BackupUserCtrl();
             backupUserCtrl.ShowDialog(this);
 
-            if (backupUserCtrl.Canceled)
+            if (backupUserCtrl.m_canceled)
                 return;
 
             // create folders if needed
             Utilities.SetupBackupDirectory(tbxBackupDir.Text);
 
-            _task = backupUserCtrl.GetTask();
+            m_task = backupUserCtrl.GetTask();
             Start();
         }
 
@@ -146,20 +146,20 @@ namespace steamBackup
             var restoreUserCtrl = new RestoreUserCtrl();
             restoreUserCtrl.ShowDialog(this);
 
-            if (restoreUserCtrl.Canceled)
+            if (restoreUserCtrl.m_canceled)
                 return;
 
-            _task = restoreUserCtrl.GetTask();
+            m_task = restoreUserCtrl.GetTask();
             Start();
         }
 
         private void Start()
         {
-            _working = true;
+            m_working = true;
             
             // set UI to starting values
             pgsBarAll.Value = 0;
-            pgsBarAll.Maximum = _task.JobsToDoCount;
+            pgsBarAll.Maximum = m_task.m_jobsToDoCount;
 
             btnBackup.Visible = false;
             btnRestore.Visible = false;
@@ -171,9 +171,9 @@ namespace steamBackup
             tbxBackupDir.Enabled = false;
 
             lblStarted.Text = string.Format(Resources.ProcessingStarted, DateTime.Now.ToString("H:mm.ss dd/MM/yyyy"));
-            _cancelJob = false;
-            _pauseJob = false;
-            _threadDone = 0;
+            m_cancelJob = false;
+            m_pauseJob = false;
+            m_threadDone = 0;
 
             btnCancel.Visible = true;
             btnPause.Visible = true;
@@ -189,70 +189,70 @@ namespace steamBackup
         private void StartThreads()
         {
             // setup the UI for each thread that is running
-            if (_task.ThreadCount >= 1)
+            if (m_task.m_threadCount >= 1)
             {
-                _threadList[0] = new Thread(() => DoWork(0))
+                m_threadList[0] = new Thread(() => DoWork(0))
                 {
                     Priority = ThreadPriority.Lowest,
                     Name = string.Format(Resources.JobThreadText, 1),
                     IsBackground = true
                 };
-                _threadList[0].Start();
+                m_threadList[0].Start();
 
                 lbl0.Text = string.Format(Resources.InstanceNumText, 1);
                 lbl0Info.Text = Resources.WaitingText;
                 lbl0SpeedEta.Text = string.Empty;
                 this.Size = new Size(400, 482);
-                lbl1.Text = string.Format(Resources.VersionStr, _versionNum);
+                lbl1.Text = string.Format(Resources.VersionStr, m_versionNum);
             }
-            if (_task.ThreadCount >= 2 && !Settings.UseLzma2)
+            if (m_task.m_threadCount >= 2 && !Settings.UseLzma2)
             {
-                _threadList[1] = new Thread(() => DoWork(1))
+                m_threadList[1] = new Thread(() => DoWork(1))
                 {
                     Priority = ThreadPriority.Lowest,
                     Name = string.Format(Resources.JobThreadText, 2),
                     IsBackground = true
                 };
-                _threadList[1].Start();
+                m_threadList[1].Start();
 
                 lbl1.Text = string.Format(Resources.InstanceNumText, 2);
                 lbl1Info.Text = Resources.WaitingText;
                 lbl1SpeedEta.Text = string.Empty;
                 this.Size = new Size(400, 562);
-                lbl2.Text = string.Format(Resources.VersionStr, _versionNum);
+                lbl2.Text = string.Format(Resources.VersionStr, m_versionNum);
             }
-            if (_task.ThreadCount >= 3 && !Settings.UseLzma2)
+            if (m_task.m_threadCount >= 3 && !Settings.UseLzma2)
             {
-                _threadList[2] = new Thread(() => DoWork(2))
+                m_threadList[2] = new Thread(() => DoWork(2))
                 {
                     Priority = ThreadPriority.Lowest,
                     Name = string.Format(Resources.JobThreadText, 3),
                     IsBackground = true
                 };
-                _threadList[2].Start();
+                m_threadList[2].Start();
 
                 lbl2.Text = string.Format(Resources.InstanceNumText, 3);
                 lbl2Info.Text = Resources.WaitingText;
                 lbl2SpeedEta.Text = string.Empty;
                 this.Size = new Size(400, 642);
-                lbl3.Text = string.Format(Resources.VersionStr, _versionNum);
+                lbl3.Text = string.Format(Resources.VersionStr, m_versionNum);
             }
 
-            if (_task.ThreadCount < 4 || Settings.UseLzma2) return;
+            if (m_task.m_threadCount < 4 || Settings.UseLzma2) return;
 
-            _threadList[3] = new Thread(() => DoWork(3))
+            m_threadList[3] = new Thread(() => DoWork(3))
             {
                 Priority = ThreadPriority.Lowest,
                 Name = string.Format(Resources.JobThreadText, 4),
                 IsBackground = true
             };
-            _threadList[3].Start();
+            m_threadList[3].Start();
 
             lbl3.Text = string.Format(Resources.InstanceNumText, 4);
             lbl3Info.Text = Resources.WaitingText;
             lbl3SpeedEta.Text = string.Empty;
             this.Size = new Size(400, 722);
-            lbl4.Text = string.Format(Resources.VersionStr, _versionNum);
+            lbl4.Text = string.Format(Resources.VersionStr, m_versionNum);
         }
 
         private void DoWork(int thread)
@@ -292,18 +292,18 @@ namespace steamBackup
                     break;
             }
 
-            while (_task.JobsAnalysed < _task.JobCount && !_cancelJob)
+            while (m_task.m_jobsAnalysed < m_task.m_jobCount && !m_cancelJob)
             {
-                var job = _task.GetNextJob();
+                var job = m_task.GetNextJob();
                 if (job == null)
                     break;
 
-                _currJobs[thread] = job;
+                m_currJobs[thread] = job;
                 if (pgsBar != null) 
                     pgsBar.Value = 0;
-                pgsBarAll.Value = _task.JobsDone;
-                lblProgress.Text = _task.ProgressText();
-                job.Status = JobStatus.Working;
+                pgsBarAll.Value = m_task.m_jobsDone;
+                lblProgress.Text = m_task.ProgressText();
+                job.m_status = JobStatus.Working;
                 UpdateList();
 
                 if (lblJobFile != null)
@@ -314,7 +314,7 @@ namespace steamBackup
 
                 job.Start();
 
-                if(job.GetJobType() == JobType.Backup)
+                if(job.m_type == JobType.Backup)
                     Utilities.CopyAcfToBackup(job, tbxBackupDir.Text);
                 else
                     Utilities.CopyAcfToRestore(job, tbxBackupDir.Text);
@@ -324,9 +324,9 @@ namespace steamBackup
                 if (lblJobFile != null) 
                     lblJobFile.Text = Resources.FinishedJobText;
 
-                if(_cancelJob)
-                    job.Status = JobStatus.Canceled;
-                _currJobs[thread] = null;
+                if(m_cancelJob)
+                    job.m_status = JobStatus.Canceled;
+                m_currJobs[thread] = null;
             }
 
             if (pgsBar != null) 
@@ -349,9 +349,9 @@ namespace steamBackup
         {
             for (var i = 0; i < 4; i++)
             {
-                if (_currJobs[i] != null)
+                if (m_currJobs[i] != null)
                 {
-                    UpdateStats(i, _currJobs[i]);
+                    UpdateStats(i, m_currJobs[i]);
                 }
             }
         }
@@ -392,34 +392,34 @@ namespace steamBackup
                     break;
             }
 
-            var name = job.Name;
-            if (job.Name.Length >= 28)
-                name = job.Name.Substring(0, 25) + "...";
+            var name = job.m_name;
+            if (job.m_name.Length >= 28)
+                name = job.m_name.Substring(0, 25) + "...";
 
             if (lblJobTitle != null)
-                lblJobTitle.Text = string.Format(Resources.InstanceProcessing, (thread + 1), job.Status, name);
+                lblJobTitle.Text = string.Format(Resources.InstanceProcessing, (thread + 1), job.m_status, name);
 
-            if (pgsBar != null) 
-                pgsBar.Value = job.GetPercDone();
+            if (pgsBar != null)
+                pgsBar.Value = job.m_percDone;
 
             if (lblJobSpeedEta != null) 
                 lblJobSpeedEta.Text = job.GetSpeedEta(false);
 
-            if (string.IsNullOrEmpty(job.GetCurFileStr())) return;
+            if (string.IsNullOrEmpty(job.m_curFileStr)) return;
 
-            if (lblJobFile != null) 
-                lblJobFile.Text = job.GetCurFileStr();
+            if (lblJobFile != null)
+                lblJobFile.Text = job.m_curFileStr;
         }
 
         // Runs after each job is done.
         private void JobsFinished()
         {
-            _threadDone++;
-            if ((_task.ThreadCount == _threadDone && !Settings.UseLzma2) || Settings.UseLzma2)
+            m_threadDone++;
+            if ((m_task.m_threadCount == m_threadDone && !Settings.UseLzma2) || Settings.UseLzma2)
             {
                 timer.Stop();
 
-                _working = false;
+                m_working = false;
                 btnBrowseSteam.Enabled = true;
                 btnFindSteam.Enabled = true;
                 btnBrowseBackup.Enabled = true;
@@ -433,24 +433,24 @@ namespace steamBackup
                 btnShowLog.Visible = false;
                 btnUpdWiz.Visible = true;
                 this.Size = new Size(400, 402);
-                lbl0.Text = string.Format(Resources.VersionStr, _versionNum);
+                lbl0.Text = string.Format(Resources.VersionStr, m_versionNum);
 
                 if (ErrorList.HasErrors())
                 {
-                    MessageBox.Show(string.Format(Resources.FinishedWithErrorsText, _task.JobsDone, _task.JobsToDoCount), Resources.FinishedWithErrorsTitle,MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(string.Format(Resources.FinishedWithErrorsText, m_task.m_jobsDone, m_task.m_jobsToDoCount), Resources.FinishedWithErrorsTitle,MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                 {
-                    MessageBox.Show(string.Format(Resources.FinishedText, _task.JobsDone, _task.JobsToDoCount), Resources.FinishedTitle);
+                    MessageBox.Show(string.Format(Resources.FinishedText, m_task.m_jobsDone, m_task.m_jobsToDoCount), Resources.FinishedTitle);
                 }
 
                 ErrorList.Clear();
-                lblProgress.Text = _task.ProgressText();
-                _task = null;
+                lblProgress.Text = m_task.ProgressText();
+                m_task = null;
             }
             else
             {
-                lblProgress.Text = _task.ProgressText();
+                lblProgress.Text = m_task.ProgressText();
             }
         }
 
@@ -470,46 +470,46 @@ namespace steamBackup
         {
             if (MessageBox.Show(Resources.CancelQueryText, Resources.CancelQueryTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
             {
-                _cancelJob = true;
-                _pauseJob = false;
+                m_cancelJob = true;
+                m_pauseJob = false;
                 btnPause.Visible = false;
 
                 for (var i = 0; i < 4; i++)
                 {
-                    if (_currJobs[i] != null)
-                        _currJobs[i].Status = JobStatus.Canceled;
+                    if (m_currJobs[i] != null)
+                        m_currJobs[i].m_status = JobStatus.Canceled;
                 }
             }
             else
             {
-                _cancelJob = true;
-                _pauseJob = false;
+                m_cancelJob = true;
+                m_pauseJob = false;
                 btnPause.Visible = false;
             }
         }
 
         private void btnPause_Click(object sender, EventArgs e)
         {
-            if (_pauseJob)
+            if (m_pauseJob)
             {
-                _pauseJob = false;
+                m_pauseJob = false;
                 btnPause.Text = Resources.PauseText;
 
                 for (var i = 0; i < 4; i++)
                 {
-                    if (_currJobs[i] != null)
-                        _currJobs[i].Status = JobStatus.Working;
+                    if (m_currJobs[i] != null)
+                        m_currJobs[i].m_status = JobStatus.Working;
                 }
             }
             else
             {
-                _pauseJob = true;
+                m_pauseJob = true;
                 btnPause.Text = Resources.ResumeText;
 
                 for (var i = 0; i < 4; i++)
                 {
-                    if (_currJobs[i] != null)
-                        _currJobs[i].Status = JobStatus.Paused;
+                    if (m_currJobs[i] != null)
+                        m_currJobs[i].m_status = JobStatus.Paused;
                 }
             }
         }
@@ -556,17 +556,17 @@ namespace steamBackup
             var i = 0;
 
             listView.BeginUpdate();
-            foreach (var job in _task.JobList)
+            foreach (var job in m_task.JobList)
             {
                 i++;
                 var listItem = listView.Items.Add(i.ToString(CultureInfo.InvariantCulture));
-                listItem.SubItems.Add(job.Name);
+                listItem.SubItems.Add(job.m_name);
                 listItem.SubItems.Add("");
-                listItem.SubItems.Add(job.Status.ToString());
+                listItem.SubItems.Add(job.m_status.ToString());
                 listItem.SubItems.Add("");
-                listItem.SubItems.Add(job.AcfFiles);
+                listItem.SubItems.Add(job.m_acfFiles);
 
-                switch (job.Status)
+                switch (job.m_status)
                 {
                     case JobStatus.Paused:
                         listItem.ForeColor = Color.Blue;

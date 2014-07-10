@@ -9,23 +9,23 @@
 
     public static class ErrorList
     {
-        static private readonly List<ErrorItem> MList = new List<ErrorItem>();
+        static private readonly List<ErrorItem> m_errorList = new List<ErrorItem>();
 
         static public void Clear()
         {
-            MList.Clear();
+            m_errorList.Clear();
         }
 
         static public void Add(ErrorItem item)
         {
-            MList.Add(item);
+            m_errorList.Add(item);
 
             ToFile();
         }
 
         static public bool HasErrors()
         {
-            return MList.Count != 0;
+            return m_errorList.Count != 0;
         }
 
         public new static string ToString()
@@ -39,7 +39,7 @@
                 Assembly.GetExecutingAssembly().GetName().Version.ToString()
                 );
             
-            return MList.Aggregate(errorHeader, (current, error) => current + error.ToString());
+            return m_errorList.Aggregate(errorHeader, (current, error) => current + error.ToString());
         }
 
         static public void ToFile()
