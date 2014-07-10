@@ -30,13 +30,28 @@
             m_task.m_backupDir = Settings.BackupDir;
 
             m_task.JobList.Clear();
-            m_task.Scan();
 
-            // use databinding instead of direct access to the control
-            chkList.DataSource = m_task.JobList;
-            chkList.DisplayMember = "m_name";
+            Cursor = Cursors.WaitCursor;
+            EnableControl(false);
+            var worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.DoWork += (o, args) => m_task.Scan(worker);
+            worker.ProgressChanged += (o, args) =>
+            {
+                workingProgBar.Value = args.ProgressPercentage;
+            };
+            worker.RunWorkerCompleted += (o, args) =>
+            {
+                chkList.DataSource = m_task.JobList;
+                chkList.DisplayMember = "m_name";
 
-            UpdCheckBoxList();
+                UpdCheckBoxList();
+                
+                Cursor = Cursors.Arrow;
+                EnableControl(true);
+            };
+            worker.RunWorkerAsync();
+
 
             cBoxUnlockThreads.Checked = Settings.Lzma2UnlockThreads;
             
@@ -101,68 +116,51 @@
 
         private void btnBupAll_Click(object sender, EventArgs e)
         {
-            EnableButtons(false);
-
             cBoxDelBup.Enabled = true;
             cBoxDelBup.Checked = false;
 
             m_task.SetEnableAll();
             UpdCheckBoxList();
-
-            EnableButtons(true);
         }
 
         private void btnBupNone_Click(object sender, EventArgs e)
         {
-            EnableButtons(false);
-
             cBoxDelBup.Enabled = true;
             cBoxDelBup.Checked = false;
 
             m_task.SetEnableNone();
             UpdCheckBoxList();
-
-            EnableButtons(true);
         }
 
         private void btnUpdBup_Click(object sender, EventArgs e)
         {
-            UpdateSelection(true);
+            cBoxDelBup.Enabled = false;
+            cBoxDelBup.Checked = false;
+
+            m_task.SetEnableUpd(true);
+            UpdCheckBoxList();
         }
 
         private void btnUpdLib_Click(object sender, EventArgs e)
         {
-            UpdateSelection(false);
-        }
-
-        private void UpdateSelection(bool archivedOnly)
-        {
-            EnableButtons(false);
-
             cBoxDelBup.Enabled = false;
             cBoxDelBup.Checked = false;
 
-            Cursor = Cursors.WaitCursor;
-
-            var worker = new BackgroundWorker();
-            worker.DoWork += (o, args) => m_task.SetEnableUpd(archivedOnly);
-            worker.RunWorkerCompleted += (o, args) =>
-            {
-                UpdCheckBoxList();
-                Cursor = Cursors.Arrow;
-                EnableButtons(true);
-            };
-
-            worker.RunWorkerAsync();
+            m_task.SetEnableUpd(false);
+            UpdCheckBoxList();
         }
 
-        private void EnableButtons(bool enabled)
+        private void EnableControl(bool enabled)
         {
             btnBupAll.Enabled = enabled;
             btnBupNone.Enabled = enabled;
             btnUpdBup.Enabled = enabled;
             btnUpdLib.Enabled = enabled;
             chkList.Enabled = enabled;
+            btnStartBup.Enabled = enabled;
+
+            workingLbl.Visible = !enabled;
+            workingProgBar.Visible = !enabled;
         }
 
         private void btnStartBup_Click(object sender, EventArgs e)

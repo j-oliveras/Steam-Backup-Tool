@@ -26,20 +26,27 @@
             var textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
             var name = Path.GetFileName(steamDir) ?? string.Empty;
             m_name = textInfo.ToTitleCase(name);
+
             m_steamDir = steamDir;
+
+            var fileList = Directory.EnumerateFiles(m_steamDir, "*.*", SearchOption.AllDirectories);
+            foreach (string file in fileList)
+            {
+                FileInfo fileInfo = new FileInfo(file);
+
+                m_steamFileSize = fileInfo.Length;
+                if(fileInfo.LastWriteTimeUtc.CompareTo(m_steamFileDate) > 0)
+                    m_steamFileDate = fileInfo.LastWriteTimeUtc;
+            }
+
             m_backupDir = Path.Combine(backupDir, BackupDirectory.Common, name + ".7z");
+            m_backupFileDate = new FileInfo(m_backupDir).LastWriteTimeUtc;
+            m_backupFileSize = File.Exists(m_backupDir) ? new FileInfo(m_backupDir).Length : 0;
+
             m_status = JobStatus.Waiting;
             m_acfDir = library;
-
-            if (acfFiles.ContainsKey(steamDir))
-            {
-                m_acfFiles = acfFiles[steamDir];
-                acfFiles.Remove(steamDir);
-            }
-            else
-            {
-                m_acfFiles = "";
-            }
+            m_acfFiles = GetAcfFiles(acfFiles);
+            
         }
 
         ~BackupJob()
@@ -154,6 +161,23 @@
             {
                 return string.Empty;
             }
+        }
+
+        private string GetAcfFiles(Dictionary<string, string> acfFiles)
+        {
+            string acfStr = null;
+
+            if (acfFiles.ContainsKey(m_steamDir))
+            {
+                acfStr = acfFiles[m_steamDir];
+                acfFiles.Remove(m_steamDir);
+            }
+            else
+            {
+                acfStr = "";
+            }
+
+            return acfStr;
         }
 
         public void SetCompression(int level)

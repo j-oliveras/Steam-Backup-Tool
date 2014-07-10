@@ -11,6 +11,7 @@
     using System.IO;
     using System.Text;
     using System.Threading;
+    using System.ComponentModel;
 
     public class BackupTask : Task
     {
@@ -89,12 +90,7 @@
             {
                 if (File.Exists(job.m_backupDir))
                 {
-                    var achiveDate = new FileInfo(job.m_backupDir).LastWriteTimeUtc;
-                    var fileList = Directory.GetFiles(job.m_steamDir, "*.*", SearchOption.AllDirectories);
-
-                    if (
-                        fileList.Select(file => new FileInfo(file).LastWriteTimeUtc)
-                            .Any(fileDate => fileDate.CompareTo(achiveDate) > 0))
+                    if (job.m_steamFileDate.CompareTo(job.m_backupFileDate) > 0)
                     {
                         EnableJob(job);
                         continue;
@@ -113,12 +109,12 @@
             }
         }
 
-        public override void Scan()
+        public override void Scan(BackgroundWorker worker = null)
         {
             // Find all of the backed up items and a it to the job list
             
             //scanMisc();
-            ScanCommonFolders();
+            ScanCommonFolders(worker);
         }
 
         public override void Setup()
@@ -132,7 +128,7 @@
             SharedStart();
         }
 
-        private void ScanCommonFolders()
+        private void ScanCommonFolders(BackgroundWorker worker = null)
         {
 
             var libraries = Utilities.GetLibraries(m_steamDir);
@@ -146,12 +142,19 @@
                 var acfFiles = new Dictionary<string, string>();
                 BuildAcfFileList(acfFiles, lib);
 
+                int count = 0;
                 var folders = Directory.GetDirectories(commonDir);
                 foreach (var folder in folders)
                 {
+                    
+
                     Job job = new BackupJob(folder, m_backupDir, lib, acfFiles);
 
                     JobList.Add(job);
+
+                    if (worker != null)
+                        worker.ReportProgress((int)((float)count / folders.Count() * 100));
+                    count++;
                 }
             }
         }

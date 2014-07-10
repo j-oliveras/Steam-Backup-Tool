@@ -7,6 +7,7 @@
     using System.IO;
     using System.Threading;
     using System.Reflection;
+    using System.ComponentModel;
 
     public class RestoreTask : Task
     {
@@ -20,7 +21,7 @@
             return (useLzma2 ? 1 : m_threadCount) * 40;
         }
 
-        public override void Scan()
+        public override void Scan(BackgroundWorker worker = null)
         {
             // Find all of the backed up items and a it to the job list
 

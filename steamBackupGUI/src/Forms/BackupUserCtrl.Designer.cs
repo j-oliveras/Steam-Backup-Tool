@@ -55,6 +55,8 @@
             this.btnUpdLib = new System.Windows.Forms.Button();
             this.cBoxLzma2 = new System.Windows.Forms.CheckBox();
             this.cBoxUnlockThreads = new System.Windows.Forms.CheckBox();
+            this.workingLbl = new System.Windows.Forms.Label();
+            this.workingProgBar = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.tbarComp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbarThread)).BeginInit();
             this.SuspendLayout();
@@ -357,11 +359,30 @@
             this.cBoxUnlockThreads.MouseLeave += new System.EventHandler(this.controls_MouseLeave);
             this.cBoxUnlockThreads.MouseHover += new System.EventHandler(this.cBoxUnlockThreads_MouseHover);
             // 
+            // workingLbl
+            // 
+            this.workingLbl.AutoSize = true;
+            this.workingLbl.BackColor = System.Drawing.Color.White;
+            this.workingLbl.Location = new System.Drawing.Point(34, 169);
+            this.workingLbl.Name = "workingLbl";
+            this.workingLbl.Size = new System.Drawing.Size(67, 13);
+            this.workingLbl.TabIndex = 56;
+            this.workingLbl.Text = "Please Wait:";
+            // 
+            // workingProgBar
+            // 
+            this.workingProgBar.Location = new System.Drawing.Point(36, 190);
+            this.workingProgBar.Name = "workingProgBar";
+            this.workingProgBar.Size = new System.Drawing.Size(213, 23);
+            this.workingProgBar.TabIndex = 57;
+            // 
             // BackupUserCtrl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(590, 646);
+            this.Controls.Add(this.workingProgBar);
+            this.Controls.Add(this.workingLbl);
             this.Controls.Add(this.cBoxUnlockThreads);
             this.Controls.Add(this.cBoxLzma2);
             this.Controls.Add(this.btnUpdLib);
@@ -431,6 +452,8 @@
         private System.Windows.Forms.Button btnUpdLib;
         private System.Windows.Forms.CheckBox cBoxLzma2;
         private System.Windows.Forms.CheckBox cBoxUnlockThreads;
+        private System.Windows.Forms.Label workingLbl;
+        private System.Windows.Forms.ProgressBar workingProgBar;
 
     }
 }

@@ -3,6 +3,7 @@
     using steamBackup.AppServices.Jobs;
     using steamBackup.AppServices.Properties;
     using System.Collections.Generic;
+    using System.ComponentModel;
 
     public abstract class Task
     {
@@ -27,7 +28,7 @@
         public int m_threadCount = 0;
 
         abstract public int RamUsage(bool useLzma2);
-        abstract public void Scan();
+        abstract public void Scan(BackgroundWorker worker);
         abstract public void Setup();
 
         protected void SharedStart()

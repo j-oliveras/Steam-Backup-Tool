@@ -17,9 +17,13 @@
 
         // Steam Info
         public string m_steamDir;
+        public DateTime m_steamFileDate;
+        public long m_steamFileSize;
 
         // Backup Info
         public string m_backupDir;
+        public DateTime m_backupFileDate;
+        public long m_backupFileSize;
 
         // ACF Info
         public string m_acfFiles { get; protected set; }
