@@ -149,27 +149,7 @@
                 var folders = Directory.GetDirectories(commonDir);
                 foreach (var folder in folders)
                 {
-                    var name = Path.GetFileName(folder) ?? string.Empty;
-
-                    var textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
-
-                    Job job = new BackupJob();
-
-                    job.Name = textInfo.ToTitleCase(name);
-                    job.SetSteamDir(folder);
-                    job.SetBackupDir(Path.Combine(BackupDir, BackupDirectory.Common ,name + ".7z"));
-                    job.Status = JobStatus.Waiting;
-                    job.AcfDir = lib;
-
-                    if (acfFiles.ContainsKey(folder))
-                    {
-                        job.AcfFiles = acfFiles[folder];
-                        acfFiles.Remove(folder);
-                    }
-                    else
-                    {
-                        job.AcfFiles = "";
-                    }
+                    Job job = new BackupJob(folder, SteamDir, BackupDir, lib, acfFiles);
 
                     JobList.Add(job);
                 }

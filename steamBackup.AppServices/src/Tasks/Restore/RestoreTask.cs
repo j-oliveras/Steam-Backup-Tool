@@ -6,6 +6,7 @@
     using System;
     using System.IO;
     using System.Threading;
+    using System.Reflection;
 
     public class RestoreTask : Task
     {
@@ -26,14 +27,7 @@
             var files = Directory.GetFiles(Path.Combine(BackupDir, BackupDirectory.Common), "*.7z");
             foreach (var file in files)
             {
-                var name = Path.GetFileNameWithoutExtension(file);
-
-                Job job = new RestoreJob();
-
-                job.Name = name;
-                job.SetSteamDir(Path.Combine(SteamDir, Utilities.GetSteamAppsFolder(SteamDir), SteamDirectory.Common));
-                job.SetBackupDir(Path.Combine(BackupDir, BackupDirectory.Common, job.Name + ".7z"));
-                job.Status = JobStatus.Waiting;
+                Job job = new RestoreJob(Path.GetFileName(file), SteamDir, BackupDir);
 
                 JobList.Add(job);
             }
@@ -75,10 +69,6 @@
                     }
                 }
             }
-
-            var textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
-            foreach (var job in JobList)
-                job.Name = textInfo.ToTitleCase(job.Name);
         }
 
         public override void Setup()
@@ -93,14 +83,9 @@
         {
             // for legacy backups (version 1)
 
-            Job job = new RestoreJob();
-
-            job.SetBackupDir(BackupDir);
-            job.Name = "steamapps";
-            job.Status = JobStatus.Waiting;
+            Job job = new RestoreJob("steamapps", SteamDir, BackupDir);
 
             JobList.Insert(0, job);
-
         }
     }
 }

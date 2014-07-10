@@ -5,7 +5,9 @@
     using steamBackup.AppServices.SevenZipWrapper;
     using System;
     using System.IO;
+    using System.Threading;
     using System.Reflection;
+    using System.Collections.Generic;
 
     class BackupJob : Job
     {
@@ -15,9 +17,29 @@
         private DateTime _compStarted;
         private int _lzma2Threads;
 
-        public BackupJob()
+        private BackupJob() { }
+
+        public BackupJob(string folder, string steamDir, string backupDir, string library, Dictionary<string, string> acfFiles)
         {
             Type = JobType.Backup;
+
+            var textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
+            var name = Path.GetFileName(folder) ?? string.Empty;
+            Name = textInfo.ToTitleCase(name);
+            SetSteamDir(folder);
+            SetBackupDir(Path.Combine(backupDir, BackupDirectory.Common, name + ".7z"));
+            Status = JobStatus.Waiting;
+            AcfDir = library;
+
+            if (acfFiles.ContainsKey(folder))
+            {
+                AcfFiles = acfFiles[folder];
+                acfFiles.Remove(folder);
+            }
+            else
+            {
+                AcfFiles = "";
+            }
         }
 
         ~BackupJob()

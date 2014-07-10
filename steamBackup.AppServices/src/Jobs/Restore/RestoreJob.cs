@@ -5,6 +5,7 @@
     using steamBackup.AppServices.SevenZipWrapper;
     using System;
     using System.IO;
+    using System.Threading;
     using System.Reflection;
 
     class RestoreJob : Job
@@ -13,9 +14,18 @@
 
         private DateTime _compStarted;
 
-        public RestoreJob()
+        private RestoreJob() { }
+
+        public RestoreJob(string fileName, string steamDir, string backupDir)
         {            
             Type = JobType.Restore;
+
+            var textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
+            var name = Path.GetFileNameWithoutExtension(fileName);
+            Name = textInfo.ToTitleCase(name);
+            SetSteamDir(Path.Combine(steamDir, Utilities.GetSteamAppsFolder(steamDir), SteamDirectory.Common));
+            SetBackupDir(Path.Combine(backupDir, BackupDirectory.Common, fileName));
+            Status = JobStatus.Waiting;
         }
 
         ~RestoreJob()
