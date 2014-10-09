@@ -78,6 +78,9 @@ All contributors are recognized in the tools credits.
 ### Version Changelist ###
 
 ```
+v1.8.4
+^ Fixed compression settings being applied before the job list was loaded
+
 v1.8.3
 + readme.txt
 ^ The updater now cleans up the downloaded archive after installation
