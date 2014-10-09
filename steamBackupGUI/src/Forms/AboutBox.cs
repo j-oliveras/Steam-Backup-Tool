@@ -14,7 +14,7 @@
             labelProductName.Text = AssemblyProduct;
             labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
             labelCopyright.Text = AssemblyCopyright;
-            labelCredit.Text = Resources.AppCredits;
+            textBoxDescription.Text = Resources.AppCredits;
         }
 
 
