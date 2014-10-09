@@ -46,40 +46,41 @@
                 chkList.DisplayMember = "m_name";
 
                 UpdCheckBoxList();
-                
+
+                cBoxUnlockThreads.Checked = Settings.Lzma2UnlockThreads;
+
+                if (Settings.UseLzma2)
+                {
+                    tbarThread.Maximum = cBoxUnlockThreads.Checked ? 8 : Math.Min(8, Environment.ProcessorCount);
+
+                    tbarThread.Value = Settings.Lzma2Threads;
+                    m_task.m_threadCount = Settings.Lzma2Threads;
+                    cBoxUnlockThreads.Visible = true;
+                }
+                else
+                {
+                    tbarThread.Maximum = 4;
+                    tbarThread.Value = Settings.ThreadsBup;
+                    m_task.m_threadCount = Settings.ThreadsBup;
+                    cBoxUnlockThreads.Visible = false;
+                }
+
+                cBoxLzma2.Checked = Settings.UseLzma2;
+
+                ThreadText();
+
+                tbarComp.Value = Settings.Compression;
+                m_task.SetCompLevel(Settings.Compression);
+                CompresionText();
+
+                RamUsage();
+
                 Cursor = Cursors.Arrow;
                 EnableControl(true);
             };
             worker.RunWorkerAsync();
 
-
-            cBoxUnlockThreads.Checked = Settings.Lzma2UnlockThreads;
             
-            if (Settings.UseLzma2)
-            {
-                tbarThread.Maximum = cBoxUnlockThreads.Checked ? 8 : Math.Min(8, Environment.ProcessorCount);
-
-                tbarThread.Value = Settings.Lzma2Threads;
-                m_task.m_threadCount = Settings.Lzma2Threads;
-                cBoxUnlockThreads.Visible = true;
-            }
-            else
-            {
-                tbarThread.Maximum = 4;
-                tbarThread.Value = Settings.ThreadsBup;
-                m_task.m_threadCount = Settings.ThreadsBup;
-                cBoxUnlockThreads.Visible = false;
-            }
-
-            cBoxLzma2.Checked = Settings.UseLzma2;
-
-            ThreadText();
-
-            tbarComp.Value = Settings.Compression;
-            m_task.SetCompLevel(Settings.Compression);
-            CompresionText();
-
-            RamUsage();
         }
 
         private void BackupUserCtrl_FormClosing(object sender, FormClosingEventArgs e)
