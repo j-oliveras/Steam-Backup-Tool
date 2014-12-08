@@ -106,6 +106,13 @@ namespace steamBackup
                 return;
             }
 
+            // create folders if needed
+            if (!Utilities.SetupBackupDirectory(tbxBackupDir.Text))
+            {
+                MessageBox.Show(string.Format(Resources.UnwritableDirectory, tbxBackupDir.Text));
+                return;
+            }
+
             Save();
 
             // Open Backup User Control Window
@@ -114,9 +121,6 @@ namespace steamBackup
 
             if (backupUserCtrl.m_canceled)
                 return;
-
-            // create folders if needed
-            Utilities.SetupBackupDirectory(tbxBackupDir.Text);
 
             m_task = backupUserCtrl.GetTask();
             Start();

@@ -657,6 +657,15 @@ namespace steamBackup.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; cannot be written to..
+        /// </summary>
+        internal static string UnwritableDirectory {
+            get {
+                return ResourceManager.GetString("UnwritableDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update available: {0}{3}{3}{1}{3}{2}.
         /// </summary>
         internal static string UpdateAvailable {

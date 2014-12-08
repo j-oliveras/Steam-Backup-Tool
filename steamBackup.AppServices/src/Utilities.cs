@@ -189,16 +189,26 @@
         /// Create Backup folders if needed
         /// </summary>
         /// <param name="backupDir">Target Backup directory</param>
-        public static void SetupBackupDirectory(string backupDir)
+        /// <returns>False if the directories could not be written</returns>
+        public static bool SetupBackupDirectory(string backupDir)
         {
-            if (!Directory.Exists(backupDir))
-                Directory.CreateDirectory(backupDir);
+            try
+            {
+                if (!Directory.Exists(backupDir))
+                    Directory.CreateDirectory(backupDir);
 
-            if (!Directory.Exists(Path.Combine(backupDir, BackupDirectory.Common)))
-                Directory.CreateDirectory(Path.Combine(backupDir, BackupDirectory.Common));
+                if (!Directory.Exists(Path.Combine(backupDir, BackupDirectory.Common)))
+                    Directory.CreateDirectory(Path.Combine(backupDir, BackupDirectory.Common));
 
-            if (!Directory.Exists(Path.Combine(backupDir, BackupDirectory.Acf)))
-                Directory.CreateDirectory(Path.Combine(backupDir, BackupDirectory.Acf));
+                if (!Directory.Exists(Path.Combine(backupDir, BackupDirectory.Acf)))
+                    Directory.CreateDirectory(Path.Combine(backupDir, BackupDirectory.Acf));
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>

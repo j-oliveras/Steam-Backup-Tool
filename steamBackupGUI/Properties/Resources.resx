@@ -350,4 +350,7 @@ Steam tends to leave some files left over after using its "Delete Local Content"
 
 Are you sure you want to backup {0}?</value>
   </data>
+  <data name="UnwritableDirectory" xml:space="preserve">
+    <value>'{0}' cannot be written to.</value>
+  </data>
 </root>

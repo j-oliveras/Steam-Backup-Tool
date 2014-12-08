@@ -318,5 +318,14 @@ namespace steamBackup.AppServices.Properties {
                 return ResourceManager.GetString("SteamFolderNotFound", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; cannot be written to..
+        /// </summary>
+        public static string UnwritableDirectory {
+            get {
+                return ResourceManager.GetString("UnwritableDirectory", resourceCulture);
+            }
+        }
     }
 }

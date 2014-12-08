@@ -228,4 +228,7 @@ Please browse for it manually.</value>
   <data name="ConsoleCompressionStatus" xml:space="preserve">
     <value>Jobs total: {0} | Compressing: {1} | Pending: {2} | Finished: {3} | Skipped: {4}</value>
   </data>
+  <data name="UnwritableDirectory" xml:space="preserve">
+    <value>'{0}' cannot be written to.</value>
+  </data>
 </root>

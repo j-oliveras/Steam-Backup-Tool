@@ -177,11 +177,16 @@ namespace steamBackupCLI
 
             if (!Utilities.IsValidSteamFolder(m_steamDir))
             {
-                Console.WriteLine(Resources.NotValidSteamDirectory);
+                Console.WriteLine(string.Format(Resources.NotValidSteamDirectory, m_steamDir));
                 Environment.Exit(3);
             }
 
-            Utilities.SetupBackupDirectory(m_outDir);
+            // create folders if needed
+            if (!Utilities.SetupBackupDirectory(m_outDir))
+            {
+                Console.WriteLine(string.Format(Resources.UnwritableDirectory, m_outDir));
+                Environment.Exit(4);
+            }
 
             m_consoleWidth = Console.BufferWidth;
             m_statusLine = Console.CursorTop;
