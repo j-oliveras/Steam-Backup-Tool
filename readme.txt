@@ -78,6 +78,10 @@ All contributors are recognized in the tools credits.
 ### Version Changelist ###
 
 ```
+V1.8.5
+* Fixed not finding additional Steam libraries that has spaces, brackets and other non word characters in it
+^ Now checks that the backup directory can be written to before opening the Backup Wizard
+
 v1.8.4
 ^ Fixed compression settings being applied before the job list was loaded
 
