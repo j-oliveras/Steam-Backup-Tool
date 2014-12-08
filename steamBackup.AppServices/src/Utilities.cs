@@ -62,7 +62,7 @@
             using (var reader = new FileInfo(Path.Combine(steamDir, SteamDirectory.Config, "config.vdf")).OpenText())
             {
                 var content = reader.ReadToEnd();
-                var regEx = new Regex(@"^\s*?""BaseInstallFolder_\d*?""\s*?""([\w:\\]*?)""$",
+                var regEx = new Regex(@"^\s*?""BaseInstallFolder_\d*?""\s*?""(.*?)""$",
                                       RegexOptions.Multiline);
                 var matches = regEx.Matches(content);
 
