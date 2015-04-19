@@ -126,7 +126,7 @@ will be selectable from the drop down box.
 
 If you want to add a new library location to this list, you
 can now safely start Steam and navigate to: View -&gt;
-Settings -&gt; Downloads + Cloud -&gt; Steam Library Folders
+Settings -&gt; Downloads -&gt; Steam Library Folders
 When finished close steam and click 'Refresh List' below.</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />

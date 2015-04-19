@@ -25,30 +25,30 @@
 
         private void BackupUserCtrl_Load(object sender, EventArgs e)
         {
-
             m_task.m_steamDir = Settings.SteamDir;
             m_task.m_backupDir = Settings.BackupDir;
 
-            m_task.JobList.Clear();
+            m_task.m_jobList.Clear();
 
             Cursor = Cursors.WaitCursor;
             EnableControl(false);
+
             var worker = new BackgroundWorker();
             worker.WorkerReportsProgress = true;
             worker.DoWork += (o, args) => m_task.Scan(worker);
             worker.ProgressChanged += (o, args) =>
             {
                 workingProgBar.Value = args.ProgressPercentage;
+                workingLbl.Text = "Working: " + m_task.m_jobList.Count + "/" + m_task.m_jobList.Capacity + " Apps Analysed";
             };
             worker.RunWorkerCompleted += (o, args) =>
             {
-                chkList.DataSource = m_task.JobList;
+                chkList.DataSource = m_task.m_jobList;
                 chkList.DisplayMember = "m_name";
 
                 UpdCheckBoxList();
 
                 cBoxUnlockThreads.Checked = Settings.Lzma2UnlockThreads;
-
                 if (Settings.UseLzma2)
                 {
                     tbarThread.Maximum = cBoxUnlockThreads.Checked ? 8 : Math.Min(8, Environment.ProcessorCount);
@@ -103,7 +103,7 @@
 
             // disable ItemCheck event temporarily
             chkList.ItemCheck -= chkList_ItemCheck;
-            foreach (var item in m_task.JobList)
+            foreach (var item in m_task.m_jobList)
             {
                 var index = chkList.Items.IndexOf(item);
                 var enabled = item.m_status == JobStatus.Waiting;
@@ -160,13 +160,15 @@
             chkList.Enabled = enabled;
             btnStartBup.Enabled = enabled;
 
+            cBoxUnlockThreads.Enabled = enabled;
+
             workingLbl.Visible = !enabled;
             workingProgBar.Visible = !enabled;
         }
 
         private void btnStartBup_Click(object sender, EventArgs e)
         {
-            foreach(Job job in m_task.JobList)
+            foreach(Job job in m_task.m_jobList)
             {
                 if (job.m_status == JobStatus.Waiting && job.m_steamFileSize < job.m_backupFileSize / 2)
                 {
@@ -185,7 +187,7 @@
             {
                 m_canceled = false;
 
-                m_task.Setup();
+                m_task.Start();
 
                 Close();
             }

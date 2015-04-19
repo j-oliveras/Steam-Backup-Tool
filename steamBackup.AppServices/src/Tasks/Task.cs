@@ -7,8 +7,7 @@
 
     public abstract class Task
     {
-        protected TaskType Type = TaskType.Unset;
-        public TaskType GetTaskType() { return Type; }
+        protected TaskType m_taskType = TaskType.Unset;
 
         public int m_jobsToDoCount = 0;
         public int m_jobsToSkipCount = 0;
@@ -17,7 +16,7 @@
         public int m_jobsSkiped = 0;
         public int m_jobCount;
         
-        public List<Job> JobList = new List<Job>();
+        public List<Job> m_jobList = new List<Job>();
 
         public const int m_archiveVer = 2;
         public int m_currentArchiveVer = -1;
@@ -29,9 +28,8 @@
 
         abstract public int RamUsage(bool useLzma2);
         abstract public void Scan(BackgroundWorker worker);
-        abstract public void Setup();
 
-        protected void SharedStart()
+        public virtual void Start()
         {
             m_jobsToDoCount = 0;
             m_jobsToSkipCount = 0;
@@ -40,7 +38,7 @@
             m_jobsSkiped = 0;
             m_jobCount = 0;
 
-            foreach (var job in JobList)
+            foreach (var job in m_jobList)
             {
                 if (job.m_status == JobStatus.Waiting)
                     m_jobsToDoCount++;
@@ -60,7 +58,7 @@
         {
             while (m_jobsAnalysed < m_jobCount)
             {
-                var job = JobList[m_jobsAnalysed];
+                var job = m_jobList[m_jobsAnalysed];
                 m_jobsAnalysed++;
 
                 if (job.m_status == JobStatus.Waiting)
@@ -76,7 +74,7 @@
 
         public void EnableJob(int id)
         {
-            EnableJob(JobList[id]);
+            EnableJob(m_jobList[id]);
         }
 
         public void EnableJob(Job job)
@@ -86,7 +84,7 @@
 
         public void DisableJob(int id)
         {
-            DisableJob(JobList[id]);
+            DisableJob(m_jobList[id]);
         }
 
         public void DisableJob(Job job)
@@ -97,7 +95,7 @@
         public void SetEnableAll()
         {
             // Mark all jobs as enable
-            foreach (var job in JobList)
+            foreach (var job in m_jobList)
             {
                 EnableJob(job);
             }
@@ -106,7 +104,7 @@
         public void SetEnableNone()
         {
             // Mark all jobs as disabled
-            foreach (var job in JobList)
+            foreach (var job in m_jobList)
             {
                 DisableJob(job);
             }

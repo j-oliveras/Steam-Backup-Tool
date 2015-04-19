@@ -37,6 +37,9 @@ namespace steamBackup
         readonly Thread[] m_threadList = new Thread[4];
         Stopwatch m_stopWatch = new Stopwatch();
 
+        // the unscaled form size
+        Size m_formSize = new Size(400, 402);
+
         private void main_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (m_working && MessageBox.Show(Resources.ClosingWhileRunning, "Close Application", MessageBoxButtons.YesNo) == DialogResult.No)
@@ -209,7 +212,7 @@ namespace steamBackup
                 lbl0.Text = string.Format(Resources.InstanceNumText, 1);
                 lbl0Info.Text = Resources.WaitingText;
                 lbl0SpeedEta.Text = string.Empty;
-                this.Size = new Size(400, 482);
+                SetScreenSize(400, 482);
                 lbl1.Text = string.Format(Resources.VersionStr, m_versionNum);
             }
             if (m_task.m_threadCount >= 2 && !Settings.UseLzma2)
@@ -225,7 +228,7 @@ namespace steamBackup
                 lbl1.Text = string.Format(Resources.InstanceNumText, 2);
                 lbl1Info.Text = Resources.WaitingText;
                 lbl1SpeedEta.Text = string.Empty;
-                this.Size = new Size(400, 562);
+                SetScreenSize(400, 562);
                 lbl2.Text = string.Format(Resources.VersionStr, m_versionNum);
             }
             if (m_task.m_threadCount >= 3 && !Settings.UseLzma2)
@@ -241,7 +244,7 @@ namespace steamBackup
                 lbl2.Text = string.Format(Resources.InstanceNumText, 3);
                 lbl2Info.Text = Resources.WaitingText;
                 lbl2SpeedEta.Text = string.Empty;
-                this.Size = new Size(400, 642);
+                SetScreenSize(400, 642);
                 lbl3.Text = string.Format(Resources.VersionStr, m_versionNum);
             }
 
@@ -258,7 +261,7 @@ namespace steamBackup
             lbl3.Text = string.Format(Resources.InstanceNumText, 4);
             lbl3Info.Text = Resources.WaitingText;
             lbl3SpeedEta.Text = string.Empty;
-            this.Size = new Size(400, 722);
+            SetScreenSize(400, 722);
             lbl4.Text = string.Format(Resources.VersionStr, m_versionNum);
         }
 
@@ -440,7 +443,7 @@ namespace steamBackup
                 btnPause.Text = Resources.PauseText;
                 btnShowLog.Visible = false;
                 btnUpdWiz.Visible = true;
-                this.Size = new Size(400, 402);
+                SetScreenSize(400, 402);
                 lbl0.Text = string.Format(Resources.VersionStr, m_versionNum);
 
                 TimeSpan ts = m_stopWatch.Elapsed;
@@ -547,29 +550,30 @@ namespace steamBackup
 
         private void btnShowList_Click(object sender, EventArgs e)
         {
-            if (Size.Width == 400)
+            if (m_formSize.Width == 400)
             {
-                this.Size = new Size(Size.Width + 600, Size.Height);
+                SetScreenSize(m_formSize.Width + 600, m_formSize.Height);
                 listView.Size = new Size(listView.Size.Width, this.Size.Height - 50);
                 btnShowLog.Text = Resources.JobListHideText;
                 UpdateList();
             }
             else
             {
-                this.Size = new Size(400, Size.Height);
+                SetScreenSize(400, m_formSize.Height);
                 btnShowLog.Text = Resources.JobListShowText;
             }
         }
 
         private void UpdateList()
         {
-            if (Size.Width == 400) return;
+            if (m_formSize.Width == 400)
+                return;
 
             listView.Items.Clear();
             var i = 0;
 
             listView.BeginUpdate();
-            foreach (var job in m_task.JobList)
+            foreach (var job in m_task.m_jobList)
             {
                 i++;
                 var listItem = listView.Items.Add(i.ToString(CultureInfo.InvariantCulture));
@@ -621,5 +625,29 @@ namespace steamBackup
             var updater = new UpdateWizard();
             updater.ShowDialog();
         }
+
+        private Size CalcSizeAfterDPI(Size size)
+        {
+            Graphics graphics = this.CreateGraphics();
+            float dpiX = graphics.DpiX / 96.0f;
+            float dpiY = graphics.DpiY / 96.0f;
+
+            //MessageBox.Show("DPI Scaler = " + graphics.DpiX + " / " + 96.0f + " = " + dpiX);
+
+            Size retVal = new Size();
+            retVal.Width = (int)((float)size.Width * dpiX);
+            retVal.Height = (int)((float)size.Height * dpiX);
+
+            return retVal;
+        }
+
+        private void SetScreenSize(int width, int height)
+        {
+            m_formSize = new Size(width, height);
+
+            this.Size = CalcSizeAfterDPI(m_formSize);
+        }
+
+
     }
 }

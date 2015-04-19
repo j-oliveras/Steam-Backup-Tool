@@ -210,7 +210,7 @@ namespace steamBackupCLI
             Console.SetCursorPosition(0, m_statusLine);
             Console.WriteLine(Resources.Scanning.PadRight(m_consoleWidth));
 
-            m_bupTask.JobList.Clear();
+            m_bupTask.m_jobList.Clear();
             m_bupTask.Scan();
 
             m_bupTask.SetCompMethod(m_useLzma2);
@@ -231,7 +231,7 @@ namespace steamBackupCLI
                 m_bupTask.m_deleteAll = m_deleteBackup;
             }
 
-            m_bupTask.Setup();
+            m_bupTask.Start();
         }
 
         private static void StartCompression()
@@ -245,7 +245,7 @@ namespace steamBackupCLI
             var factory = new TaskFactory(lcts);
             var cts = new CancellationTokenSource();
 
-            var procList = m_bupTask.JobList.FindAll(job => job.m_status == JobStatus.Waiting);
+            var procList = m_bupTask.m_jobList.FindAll(job => job.m_status == JobStatus.Waiting);
 
             var statusTimer = new Timer(2500) { AutoReset = true };
             statusTimer.Elapsed += (sender, args) => UpdateStats();
@@ -307,9 +307,9 @@ namespace steamBackupCLI
             {
                 totalCount = m_bupTask.m_jobCount;
                 skippedCount = m_bupTask.m_jobsToSkipCount;
-                waitingCount = m_bupTask.JobList.FindAll(job => job.m_status == JobStatus.Waiting).Count;
-                finishedCount = m_bupTask.JobList.FindAll(job => job.m_status == JobStatus.Finished).Count;
-                compressingCount = m_bupTask.JobList.FindAll(job => job.m_status == JobStatus.Working).Count;
+                waitingCount = m_bupTask.m_jobList.FindAll(job => job.m_status == JobStatus.Waiting).Count;
+                finishedCount = m_bupTask.m_jobList.FindAll(job => job.m_status == JobStatus.Finished).Count;
+                compressingCount = m_bupTask.m_jobList.FindAll(job => job.m_status == JobStatus.Working).Count;
             }
 
             lock (Console.Out)

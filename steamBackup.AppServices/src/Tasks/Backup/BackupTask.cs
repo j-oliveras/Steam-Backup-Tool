@@ -21,14 +21,25 @@
         protected bool m_useLzma2;
         protected int m_lzma2Threads;
 
+        public BackupTask()
+        {
+            m_taskType = TaskType.Backup;
+        }
+
+        public override void Start()
+        {
+            // Delete backup if the archive is not being updated (i.e all items are checked)
+            if (m_deleteAll && Directory.Exists(m_backupDir))
+                Directory.Delete(m_backupDir, true);
+
+            MakeConfigFile();
+
+            base.Start();
+        }
+
         public int GetCompLevel()
         {
             return m_compLevel;
-        }
-
-        public BackupTask()
-        {
-            Type = TaskType.Backup;
         }
         
         public override int RamUsage(bool useLzma2)
@@ -58,7 +69,7 @@
         {
             m_compLevel = compressionLevel;
 
-            foreach (var bJob in JobList.Cast<BackupJob>())
+            foreach (var bJob in m_jobList.Cast<BackupJob>())
             {
                 bJob.SetCompression(compressionLevel);
             }
@@ -68,7 +79,7 @@
         {
             m_useLzma2 = useLzma2;
 
-            foreach (var bJob in JobList.Cast<BackupJob>())
+            foreach (var bJob in m_jobList.Cast<BackupJob>())
             {
                 bJob.SetLzma2Compression(m_useLzma2);
             }
@@ -78,7 +89,7 @@
         {
             m_lzma2Threads = threads;
 
-            foreach (var bJob in JobList.Cast<BackupJob>())
+            foreach (var bJob in m_jobList.Cast<BackupJob>())
             {
                 bJob.SetLzma2Threads(threads);
             }
@@ -86,7 +97,7 @@
 
         public void SetEnableUpd(bool achivedOnly)
         {
-            foreach (var job in JobList)
+            foreach (var job in m_jobList)
             {
                 if (File.Exists(job.m_backupDir))
                 {
@@ -117,17 +128,6 @@
             ScanCommonFolders(worker);
         }
 
-        public override void Setup()
-        {
-            // Delete backup if the archive is not being updated (i.e all items are checked)
-            if (m_deleteAll && Directory.Exists(m_backupDir))
-                Directory.Delete(m_backupDir, true);
-
-            MakeConfigFile();
-
-            SharedStart();
-        }
-
         private void ScanCommonFolders(BackgroundWorker worker = null)
         {
 
@@ -144,13 +144,12 @@
 
                 int count = 0;
                 var folders = Directory.GetDirectories(commonDir);
+                m_jobList.Capacity += folders.Length;
                 foreach (var folder in folders)
                 {
-                    
-
                     Job job = new BackupJob(folder, m_backupDir, lib, acfFiles);
 
-                    JobList.Add(job);
+                    m_jobList.Add(job);
 
                     if (worker != null)
                         worker.ReportProgress((int)((float)count / folders.Count() * 100));
@@ -287,7 +286,7 @@
                 // Add new apps to the list
                 writer.WriteWhitespace(Environment.NewLine);
                 writer.WriteComment("From latest backup");
-                foreach (var job in JobList)
+                foreach (var job in m_jobList)
                 {
                     if (string.IsNullOrEmpty(job.m_acfFiles) || job.m_status != JobStatus.Waiting) continue;
 

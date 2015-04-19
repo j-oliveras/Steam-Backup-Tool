@@ -13,7 +13,15 @@
     {
         public RestoreTask()
         {
-            Type = TaskType.Restore;
+            m_taskType = TaskType.Restore;
+        }
+
+        public override void Start()
+        {
+            if (m_currentArchiveVer == 1)
+                AddMiscItems();
+
+            base.Start();
         }
         
         public override int RamUsage(bool useLzma2)
@@ -30,7 +38,7 @@
             {
                 Job job = new RestoreJob(Path.GetFileName(file), m_steamDir, m_backupDir);
 
-                JobList.Add(job);
+                m_jobList.Add(job);
             }
 
 
@@ -59,7 +67,7 @@
                                 var name = acfId.Key;
                                 var ids = acfId.Value;
 
-                                var foundJob = (RestoreJob)JobList.Find(job => job.m_name.Equals(name));
+                                var foundJob = (RestoreJob)m_jobList.Find(job => job.m_name.Equals(name));
 
                                 if (foundJob == null) continue;
 
@@ -71,21 +79,13 @@
             }
         }
 
-        public override void Setup()
-        {
-            if (m_currentArchiveVer == 1)
-                AddMiscItems();
-
-            SharedStart();
-        }
-
         private void AddMiscItems()
         {
             // for legacy backups (version 1)
 
             Job job = new RestoreJob("steamapps", m_steamDir, m_backupDir);
 
-            JobList.Insert(0, job);
+            m_jobList.Insert(0, job);
         }
     }
 }

@@ -34,7 +34,7 @@
             m_task.Scan();
 
             // use databinding instead of direct access to the control
-            chkList.DataSource = m_task.JobList;
+            chkList.DataSource = m_task.m_jobList;
             chkList.DisplayMember = "m_name";
 
             UpdCheckBoxList();
@@ -53,7 +53,7 @@
 
             // disable ItemCheck event temporarily
             chkList.ItemCheck -= chkList_ItemCheck;
-            foreach (var job in m_task.JobList)
+            foreach (var job in m_task.m_jobList)
             {
                 var index = chkList.Items.IndexOf(job);
                 var enabled = job.m_status == JobStatus.Waiting;
@@ -151,7 +151,7 @@
             {
                 m_canceled = false;
 
-                m_task.Setup();
+                m_task.Start();
 
                 Close();
             }
@@ -183,6 +183,8 @@
         private void tbarThread_Scroll(object sender, EventArgs e)
         {
             ThreadText();
+
+            m_task.m_threadCount = tbarThread.Value;
         }
 
         private void ThreadText() 

@@ -29,24 +29,23 @@
 
             m_steamDir = steamDir;
 
-            var fileList = Directory.EnumerateFiles(m_steamDir, "*.*", SearchOption.AllDirectories);
-            foreach (string file in fileList)
+            var dirInfo = new  DirectoryInfo(m_steamDir);
+            foreach (FileInfo fileInfo in dirInfo.EnumerateFiles("*.*", SearchOption.AllDirectories))
             {
-                FileInfo fileInfo = new FileInfo(file);
-
                 m_steamFileSize += fileInfo.Length;
                 if(fileInfo.LastWriteTimeUtc.CompareTo(m_steamFileDate) > 0)
                     m_steamFileDate = fileInfo.LastWriteTimeUtc;
             }
 
             m_backupDir = Path.Combine(backupDir, BackupDirectory.Common, name + ".7z");
-            m_backupFileDate = new FileInfo(m_backupDir).LastWriteTimeUtc;
-            m_backupFileSize = File.Exists(m_backupDir) ? new FileInfo(m_backupDir).Length : 0;
+
+            FileInfo backupFileInfo = new FileInfo(m_backupDir);
+            m_backupFileDate = backupFileInfo.LastWriteTimeUtc;
+            m_backupFileSize = backupFileInfo.Exists ? backupFileInfo.Length : 0;
 
             m_status = JobStatus.Waiting;
             m_acfDir = library;
             m_acfFiles = GetAcfFiles(acfFiles);
-            
         }
 
         ~BackupJob()
