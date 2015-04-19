@@ -10,9 +10,6 @@
 
     class RestoreJob : Job
     {
-        private SevenZipWrapper m_wrapper;
-
-        private DateTime m_compStarted;
 
         private RestoreJob() { }
 
@@ -45,7 +42,8 @@
 
         public override void Start()
         {
-            m_compStarted = DateTime.Now;
+            base.Start();
+
             try
             {
                 m_wrapper = new SevenZipWrapper(m_backupDir, true);
@@ -60,57 +58,6 @@
             catch (Exception ex)
             {
                 ErrorList.Add(new ErrorItem(ex.Message, this, ex.StackTrace));
-            }
-        }
-
-        public override string GetSpeedEta(bool shortStr)
-        {
-            if (m_wrapper == null) return string.Empty;
-
-            try
-            {
-                UInt64 processedSize;
-                UInt64 totalSize;
-                lock (m_wrapper)
-                {
-                    totalSize = m_wrapper.m_totalSize;
-                    processedSize = m_wrapper.m_processedSize;
-                }
-
-                if (totalSize <= 0)
-                    totalSize = 1;
-                if (processedSize <= 0)
-                    processedSize = 1;
-
-                var sizeRemaining = totalSize - processedSize;
-
-                var processingTime = DateTime.Now.Subtract(m_compStarted);
-                var processingDateTime = new DateTime().AddSeconds(processingTime.TotalSeconds);
-
-                var processingSeconds = processingTime.TotalSeconds;
-                double bytesPerSec;
-
-                if (processingSeconds > 0)
-                    bytesPerSec = processedSize / processingTime.TotalSeconds;
-                else
-                    bytesPerSec = processedSize;
-
-                var remainingSeconds = sizeRemaining / bytesPerSec;
-                var remainingTime = new DateTime().AddSeconds(remainingSeconds);
-
-                var etaResult = string.Format(Resources.EtaFormatStr,
-                    processingDateTime.ToString("HH:mm:ss"),
-                    remainingTime.ToString("HH:mm:ss"));
-                string speedResult;
-                if (bytesPerSec < 10485760f /* 10 MB/s */)
-                    speedResult = string.Format(Resources.SpeedKBFormatStr, bytesPerSec / 1024f, etaResult);
-                else
-                    speedResult = string.Format(Resources.SpeedMBFormatStr, bytesPerSec / 1048576f, etaResult);
-                return speedResult;
-            }
-            catch (Exception)
-            {
-                return string.Empty;
             }
         }
     }

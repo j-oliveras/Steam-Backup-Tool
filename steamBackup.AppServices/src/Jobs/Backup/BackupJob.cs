@@ -11,10 +11,8 @@
 
     class BackupJob : Job
     {
-        private SevenZipWrapper m_wrapper;
         private bool m_compIsLzma2;
         private int m_compLevel = 5;
-        private DateTime m_compStarted;
         private int m_lzma2Threads;
 
         private BackupJob() { }
@@ -59,7 +57,8 @@
 
         public override void Start()
         {
-            m_compStarted = DateTime.Now;
+            base.Start();
+
             var fileList = Directory.GetFiles(m_steamDir, "*.*", SearchOption.AllDirectories);
 
             try
@@ -105,60 +104,6 @@
             catch (Exception ex)
             {
                 ErrorList.Add(new ErrorItem(ex.Message, this, ex.StackTrace));
-            }
-        }
-
-        public override string GetSpeedEta(bool shortStr)
-        {
-            if (m_wrapper == null) return string.Empty;
-
-            try
-            {
-                UInt64 processedSize;
-                UInt64 totalSize;
-                lock (m_wrapper)
-                {
-                    totalSize = m_wrapper.m_totalSize;
-                    processedSize = m_wrapper.m_processedSize;
-                }
-
-                if (totalSize <= 0)
-                    totalSize = 2;
-                if (processedSize <= 0)
-                    processedSize = 1;
-
-                var sizeRemaining = totalSize - processedSize;
-
-                var processingTime = DateTime.Now.Subtract(m_compStarted);
-                var processingDateTime = new DateTime().AddSeconds(processingTime.TotalSeconds);
-
-                var processingSeconds = processingTime.TotalSeconds;
-                double bytesPerSec;
-
-                if (processingSeconds > 0)
-                    bytesPerSec = processedSize / processingTime.TotalSeconds;
-                else
-                    bytesPerSec = processedSize;
-
-                var remainingSeconds = sizeRemaining / bytesPerSec;
-                var remainingTime = new DateTime().AddSeconds(remainingSeconds);
-
-                var etaResult = string.Format(shortStr ? Resources.EtaShortFormatStr : Resources.EtaFormatStr,
-                    processingDateTime.ToString("HH:mm:ss"),
-                    remainingTime.ToString("HH:mm:ss"));
-
-                string speedResult;
-
-                if (bytesPerSec < 10485760f /* 10 MB/s */)
-                    speedResult = string.Format(shortStr ? Resources.SpeedShortKBFormatStr : Resources.SpeedKBFormatStr, bytesPerSec / 1024f, etaResult);
-                else
-                    speedResult = string.Format(shortStr ? Resources.SpeedShortMBFormatStr : Resources.SpeedMBFormatStr, bytesPerSec / 1048576f, etaResult);
-
-                return speedResult;
-            }
-            catch (Exception)
-            {
-                return string.Empty;
             }
         }
 

@@ -78,7 +78,15 @@ All contributors are recognized in the tools credits.
 ### Version Changelist ###
 
 ```
-V1.8.5
+v1.8.6
++ Added progress counter for the Backup Wizard
+^ Pausing the backup now also pauses the backup statistics.
+^ Improved Backup Wizard analysis performance
+^ Updated instructions for the Restore Wizard to reflect changes made to Steams menus
+* Disabled 'Do not limit threads' checkbox for the Backup Wizard during analysis to prevent null reference errors
+* Fixed restore always using 4 instances
+
+v1.8.5
 * Fixed not finding additional Steam libraries that has spaces, brackets and other non word characters in it
 ^ Now checks that the backup directory can be written to before opening the Backup Wizard
 
