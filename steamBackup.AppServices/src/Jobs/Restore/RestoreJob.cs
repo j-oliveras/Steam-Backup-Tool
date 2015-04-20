@@ -3,6 +3,7 @@
     using steamBackup.AppServices.Errors;
     using steamBackup.AppServices.Properties;
     using steamBackup.AppServices.SevenZipWrapper;
+    using steamBackup.AppServices.Tasks;
     using System;
     using System.IO;
     using System.Threading;
@@ -40,9 +41,9 @@
             }
         }
 
-        public override void Start()
+        public override void Start(Task parentTask)
         {
-            base.Start();
+            base.Start(parentTask);
 
             try
             {

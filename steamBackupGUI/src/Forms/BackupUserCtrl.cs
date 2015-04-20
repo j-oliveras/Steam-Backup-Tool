@@ -70,7 +70,7 @@
                 ThreadText();
 
                 tbarComp.Value = Settings.Compression;
-                m_task.SetCompLevel(Settings.Compression);
+                m_task.m_compLevel = Settings.Compression;
                 CompresionText();
 
                 RamUsage();
@@ -205,7 +205,7 @@
             m_task.m_threadCount = tbarThread.Value;
 
             if (cBoxLzma2.Checked)
-                m_task.SetLzma2Threads(tbarThread.Value);
+                m_task.m_lzma2Threads = tbarThread.Value;
 
             ThreadText();
 
@@ -228,7 +228,7 @@
 
         private void tbarComp_Scroll(object sender, EventArgs e)
         {
-            m_task.SetCompLevel(tbarComp.Value);
+            m_task.m_compLevel = tbarComp.Value;
             
             CompresionText();
 
@@ -367,7 +367,7 @@
         {
             if (cBoxLzma2.Checked)
             {
-                m_task.SetCompMethod(true);
+                m_task.m_useLzma2 = true;
 
                 tbarThread.Maximum = cBoxUnlockThreads.Checked ? 8 : Math.Min(8, Environment.ProcessorCount);
 
@@ -375,7 +375,7 @@
                 tbarThread.Value = numThreads;
                 m_task.m_threadCount = numThreads;
 
-                m_task.SetLzma2Threads(numThreads);
+                m_task.m_lzma2Threads = numThreads;
 
                 tbarThreadLbl.Text = Resources.ThreadsCountTooltip;
 
@@ -383,7 +383,7 @@
             }
             else
             {
-                m_task.SetCompMethod(false);
+                m_task.m_useLzma2 = false;
 
                 tbarThread.Maximum = 4;
 
@@ -414,7 +414,7 @@
                 tbarThread.Value = numThreads;
                 m_task.m_threadCount = numThreads;
 
-                m_task.SetLzma2Threads(numThreads);
+                m_task.m_lzma2Threads = numThreads;
 
                 ThreadText();
                 RamUsage();

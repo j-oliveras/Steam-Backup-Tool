@@ -322,7 +322,7 @@ namespace steamBackup
                 if (lblJobSpeedEta != null) 
                     lblJobSpeedEta.Text = string.Empty;
 
-                job.Start();
+                job.Start(m_task);
 
                 if(job.m_type == JobType.Backup)
                     Utilities.CopyAcfToBackup(job, tbxBackupDir.Text);
@@ -413,7 +413,7 @@ namespace steamBackup
                 pgsBar.Value = job.m_percDone;
 
             if (lblJobSpeedEta != null) 
-                lblJobSpeedEta.Text = job.GetSpeedEta(false);
+                lblJobSpeedEta.Text = job.GetSpeedEta();
 
             if (string.IsNullOrEmpty(job.m_curFileStr)) return;
 

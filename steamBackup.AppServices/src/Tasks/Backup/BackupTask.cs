@@ -17,9 +17,9 @@
     {
         public bool m_deleteAll = false;
 
-        protected int m_compLevel;
-        protected bool m_useLzma2;
-        protected int m_lzma2Threads;
+        public int m_compLevel;
+        public bool m_useLzma2;
+        public int m_lzma2Threads;
 
         public BackupTask()
         {
@@ -62,36 +62,6 @@
 
                 // times the ramPerThread with the number of instances used.
                 return (m_threadCount * ramPerThread[m_compLevel]);
-            }
-        }
-
-        public void SetCompLevel(int compressionLevel)
-        {
-            m_compLevel = compressionLevel;
-
-            foreach (var bJob in m_jobList.Cast<BackupJob>())
-            {
-                bJob.SetCompression(compressionLevel);
-            }
-        }
-
-        public void SetCompMethod(bool useLzma2)
-        {
-            m_useLzma2 = useLzma2;
-
-            foreach (var bJob in m_jobList.Cast<BackupJob>())
-            {
-                bJob.SetLzma2Compression(m_useLzma2);
-            }
-        }
-
-        public void SetLzma2Threads(int threads)
-        {
-            m_lzma2Threads = threads;
-
-            foreach (var bJob in m_jobList.Cast<BackupJob>())
-            {
-                bJob.SetLzma2Threads(threads);
             }
         }
 

@@ -3,6 +3,7 @@
     using steamBackup.AppServices.Errors;
     using steamBackup.AppServices.Properties;
     using steamBackup.AppServices.SevenZipWrapper;
+    using steamBackup.AppServices.Tasks;
     using System;
     using System.Threading;
     using System.Diagnostics;
@@ -33,7 +34,7 @@
         public string m_acfFiles { get; protected set; }
         public string m_acfDir { get; set; }
 
-        public virtual void Start()
+        public virtual void Start(Task parentTask)
         {
             m_stopWatch = new Stopwatch();
             m_stopWatch.Start();
@@ -84,7 +85,7 @@
             return str;
         }
 
-        public string GetSpeedEta(bool shortStr)
+        public string GetSpeedEta()
         {
             if (m_wrapper == null) return string.Empty;
 

@@ -3,6 +3,8 @@
     using steamBackup.AppServices.Errors;
     using steamBackup.AppServices.Properties;
     using steamBackup.AppServices.SevenZipWrapper;
+    using steamBackup.AppServices.Tasks;
+    using steamBackup.AppServices.Tasks.Backup;
     using System;
     using System.IO;
     using System.Threading;
@@ -11,10 +13,6 @@
 
     class BackupJob : Job
     {
-        private bool m_compIsLzma2;
-        private int m_compLevel = 5;
-        private int m_lzma2Threads;
-
         private BackupJob() { }
 
         public BackupJob(string steamDir, string backupDir, string library, Dictionary<string, string> acfFiles)
@@ -55,9 +53,10 @@
             }
         }
 
-        public override void Start()
+        public override void Start(Task parentTask)
         {
-            base.Start();
+            base.Start(parentTask);
+            BackupTask parentBackupTask = (BackupTask)parentTask;
 
             var fileList = Directory.GetFiles(m_steamDir, "*.*", SearchOption.AllDirectories);
 
@@ -69,14 +68,14 @@
                 m_wrapper.FileCompressionStarted += Started;
                 m_wrapper.CompressionFinished += Finished;
 
-                if (m_compIsLzma2)
+                if (parentBackupTask.m_useLzma2)
                 {
                     m_wrapper.UseLzma2Compression = true;
-                    m_wrapper.MultithreadingNumThreads = m_lzma2Threads;
+                    m_wrapper.MultithreadingNumThreads = parentBackupTask.m_lzma2Threads;
                 }
 
                 int compressionLevel;
-                switch (m_compLevel)
+                switch (parentBackupTask.m_compLevel)
                 {
                     case 2:
                         compressionLevel = 3;
@@ -91,7 +90,7 @@
                         compressionLevel = 9;
                         break;
                     default:
-                        compressionLevel = m_compLevel;
+                        compressionLevel = parentBackupTask.m_compLevel;
                         break;
                 }
 
@@ -122,21 +121,6 @@
             }
 
             return acfStr;
-        }
-
-        public void SetCompression(int level)
-        {
-            m_compLevel = level;
-        }
-
-        public void SetLzma2Compression(bool lzma2Compression)
-        {
-            m_compIsLzma2 = lzma2Compression;
-        }
-
-        public void SetLzma2Threads(int threads)
-        {
-            m_lzma2Threads = threads;
         }
     }
 }

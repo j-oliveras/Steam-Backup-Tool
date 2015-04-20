@@ -213,11 +213,11 @@ namespace steamBackupCLI
             m_bupTask.m_jobList.Clear();
             m_bupTask.Scan();
 
-            m_bupTask.SetCompMethod(m_useLzma2);
-            m_bupTask.SetCompLevel(m_compLevel);
+            m_bupTask.m_useLzma2 = m_useLzma2;
+            m_bupTask.m_compLevel = m_compLevel;
 
             if (m_useLzma2)
-                m_bupTask.SetLzma2Threads(m_numThreads);
+                m_bupTask.m_lzma2Threads = m_numThreads;
             else
                 m_bupTask.m_threadCount = m_numThreads;
 
@@ -269,14 +269,14 @@ namespace steamBackupCLI
                     {
                         lock (lJob)
                         {
-                            var eta = lJob.GetSpeedEta(true);
+                            var eta = lJob.GetSpeedEta();
                             var file = lJob.m_curFileStr;
                             var perc = lJob.m_percDone;
                             WriteConsole(tId, jobId, lJob.m_name, perc, file, eta);
                         }
                     };
 
-                    lJob.Start();
+                    lJob.Start(m_bupTask);
                     Utilities.CopyAcfToBackup(lJob, m_outDir);
 
                     timer.Stop();
