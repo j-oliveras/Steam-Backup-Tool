@@ -1,4 +1,4 @@
-﻿namespace steamBackup.AppServices.Errors
+﻿namespace steamBackup.AppServices
 {
     using System;
     using steamBackup.AppServices.Properties;

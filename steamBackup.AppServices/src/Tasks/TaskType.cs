@@ -1,4 +1,4 @@
-namespace steamBackup.AppServices.Tasks
+namespace steamBackup.AppServices
 {
     public enum TaskType
     {

@@ -1,4 +1,4 @@
-﻿namespace steamBackup.AppServices.Jobs
+﻿namespace steamBackup.AppServices
 {
     public enum JobStatus
     {

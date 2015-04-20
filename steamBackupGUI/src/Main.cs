@@ -8,9 +8,6 @@
 namespace steamBackup
 {
     using steamBackup.AppServices;
-    using steamBackup.AppServices.Errors;
-    using steamBackup.AppServices.Jobs;
-    using steamBackup.AppServices.Tasks;
     using steamBackup.Forms;
     using steamBackup.Properties;
     using System;

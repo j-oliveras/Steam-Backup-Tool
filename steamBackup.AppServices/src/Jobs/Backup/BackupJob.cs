@@ -1,10 +1,7 @@
-﻿namespace steamBackup.AppServices.Jobs.Backup
+﻿namespace steamBackup.AppServices
 {
-    using steamBackup.AppServices.Errors;
+    using steamBackup.AppServices;
     using steamBackup.AppServices.Properties;
-    using steamBackup.AppServices.SevenZipWrapper;
-    using steamBackup.AppServices.Tasks;
-    using steamBackup.AppServices.Tasks.Backup;
     using System;
     using System.IO;
     using System.Threading;

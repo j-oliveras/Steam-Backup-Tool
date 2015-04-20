@@ -1,6 +1,6 @@
-namespace steamBackup.AppServices.Errors
+namespace steamBackup.AppServices
 {
-    using steamBackup.AppServices.Jobs;
+    using steamBackup.AppServices;
     using steamBackup.AppServices.Properties;
     using System;
 

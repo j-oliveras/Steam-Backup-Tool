@@ -3,9 +3,7 @@ namespace steamBackupCLI
 {
     using NDesk.Options;
     using steamBackup.AppServices;
-    using steamBackup.AppServices.Jobs;
     using steamBackup.AppServices.Properties;
-    using steamBackup.AppServices.Tasks.Backup;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -240,7 +238,7 @@ namespace steamBackupCLI
             Console.Write(Resources.ArchivingGames.PadRight(m_consoleWidth));
 
             var lcts = new LimitedConcurrencyLevelTaskScheduler(m_useLzma2 ? 1 : m_numThreads);
-            var tasks = new List<Task>();
+            var tasks = new List<System.Threading.Tasks.Task>();
 
             var factory = new TaskFactory(lcts);
             var cts = new CancellationTokenSource();
@@ -291,7 +289,7 @@ namespace steamBackupCLI
             }
 
             statusTimer.Start();
-            Task.WaitAll(tasks.ToArray());
+            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
             statusTimer.Stop();
         }
 

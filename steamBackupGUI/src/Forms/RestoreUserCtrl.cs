@@ -2,9 +2,6 @@
 {
     using System.IO;
     using steamBackup.AppServices;
-    using steamBackup.AppServices.Jobs;
-    using steamBackup.AppServices.Tasks;
-    using steamBackup.AppServices.Tasks.Restore;
     using steamBackup.Properties;
     using System;
     using System.Windows.Forms;

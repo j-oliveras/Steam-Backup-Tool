@@ -1,9 +1,6 @@
 ﻿namespace steamBackup.Forms
 {
     using steamBackup.AppServices;
-    using steamBackup.AppServices.Jobs;
-    using steamBackup.AppServices.Tasks;
-    using steamBackup.AppServices.Tasks.Backup;
     using steamBackup.Properties;
     using System;
     using System.ComponentModel;

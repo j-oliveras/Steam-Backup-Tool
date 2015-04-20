@@ -1,6 +1,6 @@
-﻿namespace steamBackup.AppServices.Tasks
+﻿namespace steamBackup.AppServices
 {
-    using steamBackup.AppServices.Jobs;
+    using steamBackup.AppServices;
     using steamBackup.AppServices.Properties;
     using System.Collections.Generic;
     using System.ComponentModel;

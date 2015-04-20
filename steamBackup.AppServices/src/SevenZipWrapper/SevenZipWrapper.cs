@@ -1,4 +1,4 @@
-﻿namespace steamBackup.AppServices.SevenZipWrapper
+﻿namespace steamBackup.AppServices
 {
     using System;
     using System.Globalization;

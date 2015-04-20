@@ -1,11 +1,9 @@
-﻿namespace steamBackup.AppServices.Tasks.Backup
+﻿namespace steamBackup.AppServices
 {
     using System.Linq;
     using System.Text.RegularExpressions;
     using Newtonsoft.Json;
     using steamBackup.AppServices;
-    using steamBackup.AppServices.Jobs;
-    using steamBackup.AppServices.Jobs.Backup;
     using System;
     using System.Collections.Generic;
     using System.IO;

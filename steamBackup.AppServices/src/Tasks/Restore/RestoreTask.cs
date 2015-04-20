@@ -1,8 +1,7 @@
-﻿namespace steamBackup.AppServices.Tasks.Restore
+﻿namespace steamBackup.AppServices
 {
     using Newtonsoft.Json;
-    using steamBackup.AppServices.Jobs;
-    using steamBackup.AppServices.Jobs.Restore;
+    using steamBackup.AppServices;
     using System;
     using System.IO;
     using System.Threading;
