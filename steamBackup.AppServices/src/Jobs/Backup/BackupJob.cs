@@ -36,6 +36,13 @@
             m_backupFileDate = backupFileInfo.LastWriteTimeUtc;
             m_backupFileSize = backupFileInfo.Exists ? backupFileInfo.Length : 0;
 
+            var driveLetter = Path.GetPathRoot(steamDir).Substring(0, 1);
+            if (driveLetter != "C")
+            {
+                m_name += " (" + driveLetter + ")";
+            }
+            m_name += " Size: " + BytesToString(m_steamFileSize);
+
             m_status = JobStatus.Waiting;
             m_acfDir = library;
             m_acfFiles = GetAcfFiles(acfFiles);
@@ -118,6 +125,17 @@
             }
 
             return acfStr;
+        }
+
+        private string BytesToString(long byteCount)
+        {
+            string[] suf = { "B", "KB", "MB", "GB", "TB" };
+            if (byteCount == 0)
+                return "0" + suf[0];
+            long bytes = Math.Abs(byteCount);
+            int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
+            double num = Math.Round(bytes / Math.Pow(1024, place), 1);
+            return (Math.Sign(byteCount) * num).ToString() + suf[place];
         }
     }
 }
