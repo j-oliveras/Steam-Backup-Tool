@@ -67,7 +67,6 @@
             this.chkList.Location = new System.Drawing.Point(12, 106);
             this.chkList.Name = "chkList";
             this.chkList.Size = new System.Drawing.Size(260, 454);
-            this.chkList.Sorted = true;
             this.chkList.TabIndex = 0;
             this.chkList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkList_ItemCheck);
             this.chkList.MouseLeave += new System.EventHandler(this.controls_MouseLeave);

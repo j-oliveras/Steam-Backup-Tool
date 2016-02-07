@@ -40,6 +40,7 @@
             };
             worker.RunWorkerCompleted += (o, args) =>
             {
+                m_task.m_jobList.Sort();
                 chkList.DataSource = m_task.m_jobList;
                 chkList.DisplayMember = "m_name";
 

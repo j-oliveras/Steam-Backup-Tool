@@ -6,7 +6,7 @@
     using System.Threading;
     using System.Diagnostics;
 
-    public abstract class Job
+    public abstract class Job : IComparable
     {
         // General Info
         protected SevenZipWrapper m_wrapper;
@@ -130,6 +130,11 @@
             {
                 return string.Empty;
             }
+        }
+
+        public int CompareTo(object obj)
+        {
+            return m_steamFileSize < ((Job)obj).m_steamFileSize ? 1 : -1;
         }
     }
 }
