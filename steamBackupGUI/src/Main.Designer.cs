@@ -72,6 +72,7 @@
             this.lbl2SpeedEta = new System.Windows.Forms.Label();
             this.lbl3SpeedEta = new System.Windows.Forms.Label();
             this.btnUpdWiz = new System.Windows.Forms.Button();
+            this.chkHideSkippedJobs = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -286,9 +287,9 @@
             this.cHeadAcfId});
             this.listView.FullRowSelect = true;
             this.listView.GridLines = true;
-            this.listView.Location = new System.Drawing.Point(410, 12);
+            this.listView.Location = new System.Drawing.Point(410, 35);
             this.listView.Name = "listView";
-            this.listView.Size = new System.Drawing.Size(568, 346);
+            this.listView.Size = new System.Drawing.Size(568, 323);
             this.listView.TabIndex = 40;
             this.listView.UseCompatibleStateImageBehavior = false;
             this.listView.View = System.Windows.Forms.View.Details;
@@ -316,12 +317,12 @@
             // cHeadArg
             // 
             this.cHeadArg.Text = "Argument";
-            this.cHeadArg.Width = 1250;
+            this.cHeadArg.Width = 100;
             // 
             // cHeadAcfId
             // 
             this.cHeadAcfId.Text = "ACF ID";
-            this.cHeadAcfId.Width = 150;
+            this.cHeadAcfId.Width = 100;
             // 
             // btnPause
             // 
@@ -458,6 +459,17 @@
             this.btnUpdWiz.UseVisualStyleBackColor = true;
             this.btnUpdWiz.Click += new System.EventHandler(this.btnUpdWiz_Click);
             // 
+            // chkHideSkippedJobs
+            // 
+            this.chkHideSkippedJobs.AutoSize = true;
+            this.chkHideSkippedJobs.Location = new System.Drawing.Point(410, 12);
+            this.chkHideSkippedJobs.Name = "chkHideSkippedJobs";
+            this.chkHideSkippedJobs.Size = new System.Drawing.Size(110, 17);
+            this.chkHideSkippedJobs.TabIndex = 55;
+            this.chkHideSkippedJobs.Text = "Hide skipped jobs";
+            this.chkHideSkippedJobs.UseVisualStyleBackColor = true;
+            this.chkHideSkippedJobs.CheckedChanged += new System.EventHandler(this.chkHideSkippedJobs_CheckedChanged);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -465,6 +477,7 @@
             this.BackgroundImage = global::steamBackup.Properties.Resources.flamew;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(390, 370);
+            this.Controls.Add(this.chkHideSkippedJobs);
             this.Controls.Add(this.btnUpdWiz);
             this.Controls.Add(this.lbl3SpeedEta);
             this.Controls.Add(this.lbl2SpeedEta);
@@ -556,6 +569,7 @@
         private System.Windows.Forms.Label lbl2SpeedEta;
         private System.Windows.Forms.Label lbl3SpeedEta;
         private System.Windows.Forms.Button btnUpdWiz;
+        private System.Windows.Forms.CheckBox chkHideSkippedJobs;
     }
 }
 

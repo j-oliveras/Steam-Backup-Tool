@@ -104,7 +104,7 @@
 
                 var sizeRemaining = totalSize - processedSize;
 
-                var processingDateTime = new DateTime().AddSeconds(m_stopWatch.Elapsed.Seconds);
+                var processingDateTime = m_stopWatch.Elapsed;
 
                 double bytesPerSec;
 
@@ -114,11 +114,11 @@
                     bytesPerSec = processedSize;
 
                 var remainingSeconds = sizeRemaining / bytesPerSec;
-                var remainingTime = new DateTime().AddSeconds(remainingSeconds);
+                var remainingTime = TimeSpan.FromSeconds(remainingSeconds);
 
                 var etaResult = string.Format(Resources.EtaFormatStr,
-                    processingDateTime.ToString("HH:mm:ss"),
-                    remainingTime.ToString("HH:mm:ss"));
+                    processingDateTime.ToString("hh':'mm':'ss"),
+                    remainingTime.ToString("hh':'mm':'ss"));
                 string speedResult;
                 if (bytesPerSec < 10485760f /* 10 MB/s */)
                     speedResult = string.Format(Resources.SpeedKBFormatStr, bytesPerSec / 1024f, etaResult);

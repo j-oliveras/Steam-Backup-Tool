@@ -561,10 +561,19 @@ namespace steamBackup
             }
         }
 
-        private void UpdateList()
+        private void chkHideSkippedJobs_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateList(true);
+        }
+
+        private void UpdateList(bool fromHideSkippedJobs = false)
         {
             if (m_formSize.Width == 400)
                 return;
+
+            var firstIndex = listView.Items.Count > 0 ? (fromHideSkippedJobs ? 0 : listView.TopItem.Index) : -1;
+
+            var hideSkipped = chkHideSkippedJobs.Checked;
 
             listView.Items.Clear();
             var i = 0;
@@ -573,40 +582,47 @@ namespace steamBackup
             foreach (var job in m_task.m_jobList)
             {
                 i++;
-                var listItem = listView.Items.Add(i.ToString(CultureInfo.InvariantCulture));
-                listItem.SubItems.Add(job.m_name);
-                listItem.SubItems.Add("");
-                listItem.SubItems.Add(job.m_status.ToString());
-                listItem.SubItems.Add("");
-                listItem.SubItems.Add(job.m_acfFiles);
-
-                switch (job.m_status)
+                if (!hideSkipped || hideSkipped && job.m_status != JobStatus.Skipped)
                 {
-                    case JobStatus.Paused:
-                        listItem.ForeColor = Color.Blue;
-                        break;
-                    case JobStatus.Waiting:
-                        listItem.ForeColor = Color.Green;
-                        break;
-                    case JobStatus.Working:
-                        listItem.ForeColor = Color.BlueViolet;
-                        break;
-                    case JobStatus.Skipped:
-                        listItem.ForeColor = Color.DarkOrange;
-                        break;
-                    case JobStatus.Error:
-                        listItem.ForeColor = Color.Red;
-                        break;
-                    case JobStatus.Canceled:
-                        listItem.ForeColor = Color.Orange;
-                        break;
-                    case JobStatus.Finished:
-                        listItem.ForeColor = Color.DarkBlue;
-                        break;
-                    default:
-                        listItem.ForeColor = Color.Black;
-                        break;
+                    var listItem = listView.Items.Add(i.ToString(CultureInfo.InvariantCulture));
+                    listItem.SubItems.Add(job.m_name);
+                    listItem.SubItems.Add("");
+                    listItem.SubItems.Add(job.m_status.ToString());
+                    listItem.SubItems.Add("");
+                    listItem.SubItems.Add(job.m_acfFiles);
+
+                    switch (job.m_status)
+                    {
+                        case JobStatus.Paused:
+                            listItem.ForeColor = Color.Blue;
+                            break;
+                        case JobStatus.Waiting:
+                            listItem.ForeColor = Color.Green;
+                            break;
+                        case JobStatus.Working:
+                            listItem.ForeColor = Color.BlueViolet;
+                            break;
+                        case JobStatus.Skipped:
+                            listItem.ForeColor = Color.DarkOrange;
+                            break;
+                        case JobStatus.Error:
+                            listItem.ForeColor = Color.Red;
+                            break;
+                        case JobStatus.Canceled:
+                            listItem.ForeColor = Color.Orange;
+                            break;
+                        case JobStatus.Finished:
+                            listItem.ForeColor = Color.DarkBlue;
+                            break;
+                        default:
+                            listItem.ForeColor = Color.Black;
+                            break;
+                    }
                 }
+            }
+            if (firstIndex >= 0)
+            {
+                listView.TopItem = listView.Items[firstIndex];
             }
             listView.EndUpdate();
         }
@@ -644,7 +660,5 @@ namespace steamBackup
 
             this.Size = CalcSizeAfterDPI(m_formSize);
         }
-
-
     }
 }
